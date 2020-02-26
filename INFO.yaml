@@ -1,0 +1,58 @@
+---
+project: ric_plt_xapp_frame_py
+project_creation_date: '2020-02-25'
+project_category: ''
+lifecycle_state: Incubation
+project_lead: &oran_ric_plt_xapp_frame_py_ptl
+    name: Thoralf Czichy
+    email: thoralf.czichy@nokia.com
+    id: czichy
+    company: Nokia
+    timezone: Europe/Helsinki
+primary_contact: *oran_ric_plt_xapp_frame_py_ptl
+issue_tracking:
+    type: jira
+    url: https://jira.o-ran-sc.org/projects/
+    key: RIC
+mailing_list:
+    type: groups.io
+    url: main@lists.o-ran-sc.org
+    tag: '[]'
+realtime_discussion:
+    type: NA
+    server: NA
+    channel: NA
+meetings:
+    - type: gotomeeting+irc
+      agenda: https://wiki.o-ran-sc.org/display/
+      url: ''
+      server: freenode.net
+      channel: '#oran'
+      repeats: ''
+      time: ''
+repositories:
+    - ric-plt/xapp-frame-py
+committers:
+    - <<: *oran_ric_plt_xapp_frame_py_ptl
+    - name: Tommy Carpenter
+      email: 'c677g@att.com'
+      company: AT&T
+      id: tommycarpenter
+      timezone: America/New_York
+    - name: Jack Lucas
+      email: jflucas@research.att.com
+      company: AT&T
+      id: jackl
+      timezone: America/New_York
+    - name: Timo Tietavainen
+      email: timo.tietavainen@nokia.com
+      company: Nokia
+      id: tietavai
+      timezone: Europe/Helsinki
+tsc:
+    # yamllint disable rule:line-length
+    approval: https://lists.o-ran-sc.org/g/main/topic/71383459#488
+    changes:
+        - type: ''
+          name: ''
+          link: ''

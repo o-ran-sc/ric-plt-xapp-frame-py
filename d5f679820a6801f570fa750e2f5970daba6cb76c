@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d5922e28_95f784c7",
+        "filename": "INFO.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-02-26T16:40:46Z",
+      "side": 1,
+      "message": "Europe/Helsinki",
+      "range": {
+        "startLine": 11,
+        "startChar": 15,
+        "endLine": 11,
+        "endChar": 31
+      },
+      "revId": "d5f679820a6801f570fa750e2f5970daba6cb76c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d9b54b0b_a1a4026f",
+        "filename": "INFO.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-02-26T16:40:46Z",
+      "side": 1,
+      "message": "AT\u0026T",
+      "range": {
+        "startLine": 39,
+        "startChar": 16,
+        "endLine": 39,
+        "endChar": 19
+      },
+      "revId": "d5f679820a6801f570fa750e2f5970daba6cb76c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5967eb57_d459087a",
+        "filename": "INFO.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-02-26T16:40:46Z",
+      "side": 1,
+      "message": "AT\u0026T",
+      "range": {
+        "startLine": 44,
+        "startChar": 16,
+        "endLine": 44,
+        "endChar": 19
+      },
+      "revId": "d5f679820a6801f570fa750e2f5970daba6cb76c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

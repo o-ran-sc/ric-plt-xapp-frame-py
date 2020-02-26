@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f03ecfcb_797712cb",
+        "filename": "INFO.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-02-26T17:52:23Z",
+      "side": 1,
+      "message": "Do I need to have also timezone defined here? .. timezone: Europe/Helsinki",
+      "revId": "6b8c5d0c81e2bbe3160f00e1a7446bd8da69f8a9",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

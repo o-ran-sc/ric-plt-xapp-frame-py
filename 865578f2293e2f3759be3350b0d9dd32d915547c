@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "659dfc95_67cb1183",
+        "filename": "ricxappframe/xapp_rmr.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-02-27T16:08:45Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "cecc72ab_afb4ee24",
+      "range": {
+        "startLine": 51,
+        "startChar": 121,
+        "endLine": 51,
+        "endChar": 127
+      },
+      "revId": "865578f2293e2f3759be3350b0d9dd32d915547c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "436754d0_431e9de9",
         "filename": "ricxappframe/xapp_rmr.py",
         "patchSetId": 8
@@ -39,6 +63,24 @@
       "revId": "865578f2293e2f3759be3350b0d9dd32d915547c",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d75cb78f_06b81562",
+        "filename": "ricxappframe/xapp_rmr.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-02-27T16:08:45Z",
+      "side": 1,
+      "message": "made this change. I also snuck in a couple of other changes with more hope of A1 adopting this rmr loop too.\n\none thing a1 has that this currently does not is a way to swap the receive function out, which is critical for unit testing. But ill make that a seperate change here.",
+      "parentUuid": "436754d0_431e9de9",
+      "revId": "865578f2293e2f3759be3350b0d9dd32d915547c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
     }
   ]
 }

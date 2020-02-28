@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8691b49f_69e0ff19",
+        "filename": "docs/conf.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-02-28T15:26:04Z",
+      "side": 1,
+      "message": "Perhaps remove unneeded ws",
+      "revId": "6f53d69835f4742a48cd8cdd984042fa36734b49",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "568b3a50_0794e410",
+        "filename": "docs/conf.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-02-28T15:26:04Z",
+      "side": 1,
+      "message": "fix",
+      "revId": "6f53d69835f4742a48cd8cdd984042fa36734b49",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

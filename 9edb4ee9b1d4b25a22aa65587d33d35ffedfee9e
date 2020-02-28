@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "94d771e3_18aa3833",
+        "filename": "docs/index.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-02-28T15:26:04Z",
+      "side": 1,
+      "message": "Pls update",
+      "range": {
+        "startLine": 6,
+        "startChar": 20,
+        "endLine": 6,
+        "endChar": 29
+      },
+      "revId": "9edb4ee9b1d4b25a22aa65587d33d35ffedfee9e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

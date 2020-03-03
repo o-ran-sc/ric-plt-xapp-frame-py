@@ -14,14 +14,43 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 # ==================================================================================
+from os.path import dirname, abspath, join as path_join
 from setuptools import setup, find_packages
+
+SETUP_DIR = abspath(dirname(__file__))
+
+
+def _long_descr():
+    """Yields the content of documentation files for the long description"""
+    try:
+        doc_path = path_join(SETUP_DIR, "docs/overview.rst")
+        with open(doc_path) as f:
+            return f.read()
+    except FileNotFoundError:  # this happens during unit testing, we don't need it
+        return ""
+
 
 setup(
     name="ricxappframe",
-    version="0.1.0",
+    version="0.2.0",
     packages=find_packages(exclude=["tests.*", "tests"]),
     author="Tommy Carpenter",
     description="Xapp framework for python",
     url="https://gerrit.o-ran-sc.org/r/admin/repos/ric-plt/xapp-frame-py",
     install_requires=["msgpack", "rmr>=2.2.0, <3.0.0", "mdclogpy", "ricsdl>=2.0.3,<3.0.0"],
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Telecommunications Industry",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: POSIX :: Linux",
+        "Topic :: Communications",
+    ],
+    python_requires=">=3.7",
+    keywords="RIC xapp",
+    license="Apache 2.0",
+    data_files=[("", ["LICENSE.txt"])],
+    long_description=_long_descr(),
+    long_description_content_type="text/x-rst",
 )

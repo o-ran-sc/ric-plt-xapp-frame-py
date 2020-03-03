@@ -62,6 +62,19 @@ class _BaseXapp:
         # SDL
         self._sdl = SDLWrapper(use_fake_sdl)
 
+        # run the optionally provided user post init
+        self.post_init()
+
+    # Public methods to be implemented by the client
+    def post_init(self):
+        """
+        this method can optionally be implemented by the client to run code immediately after the xall initialized (but before the xapp starts it's processing loop)
+        the base method here does nothing (ie nothing is executed prior to starting if the client does not implement this)
+        """
+        pass
+
+    # Public rmr methods
+
     def rmr_get_messages(self):
         """
         returns a generator iterable over all current messages in the queue that have not yet been read by the client xapp
@@ -258,6 +271,7 @@ class RMRXapp(_BaseXapp):
         sbuf: ctypes c_void_p
             Pointer to an rmr message buffer. The user must call free on this when done.
         """
+        self.stop()
         raise NotImplementedError()
 
     def run(self):
@@ -278,15 +292,15 @@ class Xapp(_BaseXapp):
     Represents an xapp where the client provides a generic function to call, which is mostly likely a loop-forever loop
     """
 
-    def loop(self):
+    def entrypoint(self):
         """
-        This function is to be implemented by the client and is called
+        This function is to be implemented by the client and is called after post_init
         """
+        self.stop()
         raise NotImplementedError()
 
     def run(self):
         """
-        This function should be called when the client xapp is ready to start their loop
-        This is simple and the client could just call self.loop(), however this gives a consistent interface as the other xapps
+        This function should be called when the client xapp is ready to start their code
         """
-        self.loop()
+        self.entrypoint()

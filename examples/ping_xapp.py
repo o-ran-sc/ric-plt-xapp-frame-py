@@ -27,7 +27,7 @@ from ricxappframe.xapp_frame import Xapp
 
 # Now we use the framework to echo back the acks
 class MyXapp(Xapp):
-    def loop(self):
+    def entrypoint(self):
         my_ns = "myxapp"
         number = 0
         while True:

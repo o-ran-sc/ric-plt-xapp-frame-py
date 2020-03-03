@@ -31,6 +31,9 @@ from ricxappframe.xapp_frame import RMRXapp
 
 
 class MyXapp(RMRXapp):
+    def post_init(self):
+        print("ping xapp could do some useful stuff here!")
+
     def consume(self, summary, sbuf):
         """callbnack called for each new message"""
         print(summary)

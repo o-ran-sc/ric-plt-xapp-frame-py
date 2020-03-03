@@ -8,7 +8,7 @@ xapp-frame-py Overview
 This library is a framework for writing Xapps in python.
 There may or may not be many Xapps written in python; however rmr, sdl, and logging libraries all exist for python, and this framework brings them together.
 
-There are (at the time of writing) two "kinds" of Xapps one can instantiate with this framework that model "push" (RMR Xapps) and "pull" (Loop Xapps), as described below.
+There are (at the time of writing) two "kinds" of Xapps one can instantiate with this framework that model "push" (RMR Xapps) and "pull" (General Xapps), as described below.
 
 RMR Xapps
 ---------
@@ -17,8 +17,8 @@ That is, every time the Xapp receives an rmr message, they do something, then wa
 This is represented by a very simple callback `consume` that is invoked every time an rmr message arrives (note, this is subject to change, with more callbacks for specific messages like `A1_POLICY_REQUEST`).
 An analogy of this is AWS Lambda: "execute this code every time an event comes in" (the code to execute can depend on the type of event).
 
-Loop Xapps
-----------
+General Xapps
+-------------
 In this class of Xapp the user simply provides a function that gets invoked, and typically that function has a `while (something)` in it.
 If the function returns, the Xapp will stop.
 In this type of Xapp, the Xapp must "pull" it's own data, typically from SDL, rmr (ie query another component for data), or other sources.
@@ -31,14 +31,18 @@ NOTE: this is an implementation detail!
 We expose this for transparency but most users will not have to worry about this.
 
 In both types of Xapp, the framework launches a seperate thread whose only job is to read from rmr and deposit all messages (and their summaries) into a thread safe queue.
-When the client Xapp reads using the framework (this read is done by the framework itself in the RMR Xapp, but by the client in a Loop Xapp), the read is done from the queue.
+When the client Xapp reads using the framework (this read is done by the framework itself in the RMR Xapp, but by the client in a general Xapp), the read is done from the queue.
 The framework is implemented this way so that a long running client function (e.g., consume) cannot block rmr reads.
 This is important because rmr is *not* a persistent message bus, if any rmr client does not read "fast enough", messages can be lost.
 So in this framework the client code is not in the same thread as the rmr reads, so that long running client code can never lead to lost messages.
 
 Examples
 --------
-There are two examples in the `examples` directory; `ping` which is a Loop Xapp, and `pong` which is an RMR Xapp. Ping sends a message, pong receives the message and use rts to reply. Ping then reads it's own mailbox and demonstrates other functionality. The highlight to note is that `pong` is purely reactive, it only does anything when a message is received. Ping is a general loop that also happens to read it's rmr mailbox inside.
+There are two examples in the `examples` directory; `ping` which is a general Xapp, and `pong` which is an RMR Xapp.
+Ping sends a message, pong receives the message and use rts to reply.
+Ping then reads it's own mailbox and demonstrates other functionality.
+The highlight to note is that `pong` is purely reactive, it only does anything when a message is received.
+Ping uses a general that also happens to read it's rmr mailbox inside.
 
 Current gaps
 ------------

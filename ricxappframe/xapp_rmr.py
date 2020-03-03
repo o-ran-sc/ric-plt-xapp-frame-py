@@ -66,14 +66,16 @@ class RmrLoop:
                 time.sleep(0.1)
 
         # Private
-        self._keep_going = True
-        self._last_ran = time.time()
+        self._keep_going = True  # used to tell this thread to stop it's work
+        self._last_ran = time.time()  # used for healthcheck
+        self._loop_is_running = False  # used in stop to know when it's safe to kill the mrc
 
         # start the work loop
         mdc_logger.debug("Starting loop thread")
 
         def loop():
             mdc_logger.debug("Work loop starting")
+            self._loop_is_running = True
             while self._keep_going:
 
                 # read our mailbox
@@ -86,6 +88,8 @@ class RmrLoop:
 
                 self._last_ran = time.time()
 
+            self._loop_is_running = False
+
         self._thread = Thread(target=loop)
         self._thread.start()
 
@@ -94,7 +98,15 @@ class RmrLoop:
         sets a flag that will cleanly stop the thread
         note, this does not yet have a use yet for xapps to call, however this is very handy during unit testing.
         """
+        mdc_logger.debug("Stopping rmr thread. Waiting for last iteration to finish..")
         self._keep_going = False
+        # wait until the current batch of messages is done, then kill the rmr connection
+        # note; I debated putting this in "loop" however if the while loop was still going setting mrc to close here would blow up any processing still currently happening
+        # probably more polite to at least finish the current batch and then close. So here we wait until the current batch is done, then we kill the mrc
+        while self._loop_is_running:
+            pass
+        mdc_logger.debug("Closing rmr connection")
+        rmr.rmr_close(self.mrc)
 
     def healthcheck(self, seconds=30):
         """

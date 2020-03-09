@@ -14,6 +14,15 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
    :depth: 3
    :local:
 
+
+[0.3.0] - 3/10/2020
+-------------------
+::
+
+    * Large change to xapps: rather than subclass instantiation, xapps now use intlaization and registration functions to register handlers
+    * rmr xapps can now register handlers for specific message types (and prodive a default callback)
+    * RMR xapp now runs the polling loop in a thread, and returns execution back to the caller. The user is then free to loop, or do nothing, and call stop() when they want.
+
 [0.2.0] - 3/3/2020
 -------------------
 ::

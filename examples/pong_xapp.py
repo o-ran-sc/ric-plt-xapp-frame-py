@@ -30,17 +30,18 @@ from ricxappframe.xapp_frame import RMRXapp
 # However, the subclass looks slightly more natural. Open to the alternative.
 
 
-class MyXapp(RMRXapp):
-    def post_init(self):
-        print("ping xapp could do some useful stuff here!")
-
-    def consume(self, summary, sbuf):
-        """callbnack called for each new message"""
-        print(summary)
-        jpay = json.loads(summary["payload"])
-        self.rmr_rts(sbuf, new_payload=json.dumps({"ACK": jpay["test_send"]}).encode(), new_mtype=60001, retries=100)
-        self.rmr_free(sbuf)
+def post_init(self):
+    """post init"""
+    print("ping xapp could do some useful stuff here!")
 
 
-xapp = MyXapp(use_fake_sdl=True)
+def defh(self, summary, sbuf):
+    """callbnack called for each new message"""
+    print(summary)
+    jpay = json.loads(summary["payload"])
+    self.rmr_rts(sbuf, new_payload=json.dumps({"ACK": jpay["test_send"]}).encode(), new_mtype=60001, retries=100)
+    self.rmr_free(sbuf)
+
+
+xapp = RMRXapp(default_handler=defh, post_init=post_init, use_fake_sdl=True)
 xapp.run()

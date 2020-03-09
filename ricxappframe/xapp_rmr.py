@@ -96,7 +96,6 @@ class RmrLoop:
     def stop(self):
         """
         sets a flag that will cleanly stop the thread
-        note, this does not yet have a use yet for xapps to call, however this is very handy during unit testing.
         """
         mdc_logger.debug("Stopping rmr thread. Waiting for last iteration to finish..")
         self._keep_going = False

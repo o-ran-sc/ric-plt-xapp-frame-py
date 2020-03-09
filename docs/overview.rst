@@ -14,7 +14,8 @@ RMR Xapps
 ---------
 This class of Xapps are purely reactive to rmr; data is always "pushed" to it via rmr.
 That is, every time the Xapp receives an rmr message, they do something, then wait for the next message to arrive, end never need to execute functionality at another time (if they do, use the next class).
-This is represented by a very simple callback `consume` that is invoked every time an rmr message arrives (note, this is subject to change, with more callbacks for specific messages like `A1_POLICY_REQUEST`).
+This is represented by a series of callbacks that get registered to receive rmr message types.
+Every time an rmr message arrives, the user callback for that message type is invoked, or if the user has not registered a callback for that type, their default callback (mandatory) is invoked.
 An analogy of this is AWS Lambda: "execute this code every time an event comes in" (the code to execute can depend on the type of event).
 
 General Xapps
@@ -36,6 +37,8 @@ The framework is implemented this way so that a long running client function (e.
 This is important because rmr is *not* a persistent message bus, if any rmr client does not read "fast enough", messages can be lost.
 So in this framework the client code is not in the same thread as the rmr reads, so that long running client code can never lead to lost messages.
 
+In the case of RMR Xapps, there are currently 3 total threads; the thread that reads from rmr directly, the thread that reads from the queue and invokes the client callback, and the user thread. Running the xapp returns to the user and runs until the user calls `stop`.
+
 Examples
 --------
 There are two examples in the `examples` directory; `ping` which is a general Xapp, and `pong` which is an RMR Xapp.
@@ -50,5 +53,3 @@ The following are known gaps or potential enhancements at the time of writing.
 ::
 
     * a logger has to be provided to the xapp
-    * the ability to specify more callacks per message type?
-

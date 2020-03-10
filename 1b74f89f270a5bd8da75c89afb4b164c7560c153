@@ -16,6 +16,24 @@
       "revId": "1b74f89f270a5bd8da75c89afb4b164c7560c153",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "edb95c8e_2a50bf46",
+        "filename": "examples/ping_xapp.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-03-10T13:38:24Z",
+      "side": 1,
+      "message": "lol, removed, was a botched drunken typo i guess?",
+      "parentUuid": "49fe83a6_931e5d00",
+      "revId": "1b74f89f270a5bd8da75c89afb4b164c7560c153",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
     }
   ]
 }

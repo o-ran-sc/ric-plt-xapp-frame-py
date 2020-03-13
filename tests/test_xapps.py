@@ -50,7 +50,7 @@ def test_flow():
         self.rmr_free(sbuf)
 
     rmr_xapp.register_callback(sixtythou_handler, 60000)
-    rmr_xapp.run()
+    rmr_xapp.run(thread=True)  # in unit tests we need to thread here or else execution is not returned!
 
     time.sleep(1)
 

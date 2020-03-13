@@ -303,11 +303,16 @@ class RMRXapp(_BaseXapp):
         """
         self._dispatch[message_type] = handler
 
-    def run(self):
+    def run(self, thread=False):
         """
         This function should be called when the client xapp is ready to wait for their handlers to be called on received messages
 
-        execution is returned to caller
+        Parameters
+        ----------
+        thread: bool (optional)
+            if thread is True, execution is returned to caller and the queue read loop is executed in a thread.
+            The thread can be stopped using .stop()
+            if False, execution is not returned and the framework loops
         """
 
         def loop():
@@ -320,7 +325,10 @@ class RMRXapp(_BaseXapp):
                         func = self._default_handler
                     func(self, summary, sbuf)
 
-        Thread(target=loop).start()
+        if thread:
+            Thread(target=loop).start()
+        else:
+            loop()
 
     def stop(self):
         """

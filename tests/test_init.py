@@ -57,6 +57,7 @@ def test_init_rmr_xapp():
         pass
 
     rmr_xapp = RMRXapp(foo, post_init=post_init, rmr_wait_for_ready=False, use_fake_sdl=True)
-    rmr_xapp.run()
+    # pytest will never return without thread and stop
+    rmr_xapp.run(thread=True)
     time.sleep(1)
-    rmr_xapp.stop()  # pytest will never return without this.
+    rmr_xapp.stop()

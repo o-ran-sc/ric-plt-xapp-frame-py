@@ -37,7 +37,9 @@ The framework is implemented this way so that a long running client function (e.
 This is important because rmr is *not* a persistent message bus, if any rmr client does not read "fast enough", messages can be lost.
 So in this framework the client code is not in the same thread as the rmr reads, so that long running client code can never lead to lost messages.
 
-In the case of RMR Xapps, there are currently 3 total threads; the thread that reads from rmr directly, the thread that reads from the queue and invokes the client callback, and the user thread. Running the xapp returns to the user and runs until the user calls `stop`.
+In the case of RMR Xapps, there are currently 3 potential threads; the thread that reads from rmr directly, and the user can optionally have the rmr queue read run in a thread, returning execution back to the user thread.
+The default is only two threads however, where `.run` does not return back execution and the user code is "finished" at that point.
+
 
 Examples
 --------

@@ -14,6 +14,12 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
    :depth: 3
    :local:
 
+[0.4.0] - 3/13/2020
+-------------------
+::
+
+    * minor breaking change; switches the default behavior RE threading for RMRXapps. The default is not to return execution, but the caller (in `run`) can choose to loop in a thread.
+
 
 [0.3.0] - 3/10/2020
 -------------------

@@ -44,4 +44,4 @@ def defh(self, summary, sbuf):
 
 xapp = RMRXapp(default_handler=defh, post_init=post_init, use_fake_sdl=True)
 xapp.register_callback(sixtyh, 60000)
-xapp.run()
+xapp.run()  # will not thread by default

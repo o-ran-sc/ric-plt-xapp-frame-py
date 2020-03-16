@@ -19,6 +19,7 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 ::
 
     * minor breaking change; switches the default behavior RE threading for RMRXapps. The default is not to return execution, but the caller (in `run`) can choose to loop in a thread.
+    * Add Dockerized examples
 
 
 [0.3.0] - 3/10/2020

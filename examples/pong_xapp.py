@@ -23,7 +23,7 @@ from ricxappframe.xapp_frame import RMRXapp
 
 def post_init(_self):
     """post init"""
-    print("ping xapp could do some useful stuff here!")
+    print("pong xapp could do some useful stuff here!")
 
 
 def sixtyh(self, summary, sbuf):

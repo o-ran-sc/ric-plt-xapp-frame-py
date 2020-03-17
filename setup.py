@@ -32,7 +32,7 @@ def _long_descr():
 
 setup(
     name="ricxappframe",
-    version="0.4.0",
+    version="0.4.1",
     packages=find_packages(exclude=["tests.*", "tests"]),
     author="Tommy Carpenter",
     description="Xapp framework for python",
@@ -42,7 +42,6 @@ setup(
         "Development Status :: 4 - Beta",
         "Intended Audience :: Telecommunications Industry",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: POSIX :: Linux",
         "Topic :: Communications",

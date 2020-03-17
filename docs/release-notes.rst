@@ -14,6 +14,14 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
    :depth: 3
    :local:
 
+[0.4.1] - 3/17/2020
+-------------------
+::
+
+    * Switch tox to use py38
+    * switch to latest builders
+
+
 [0.4.0] - 3/13/2020
 -------------------
 ::

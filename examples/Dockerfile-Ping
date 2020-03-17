@@ -14,13 +14,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 # ==================================================================================
-FROM python:3.7-alpine
+FROM python:3.8-alpine
 
 # RMR setup
 RUN mkdir -p /opt/route/
 COPY test_route.rt /opt/route/test_route.rt
-COPY --from=nexus3.o-ran-sc.org:10004/bldr-alpine3-go:1-rmr1.13.1 /usr/local/lib64/libnng.so /usr/local/lib64/libnng.so
-COPY --from=nexus3.o-ran-sc.org:10004/bldr-alpine3-go:1-rmr1.13.1 /usr/local/lib64/librmr_nng.so /usr/local/lib64/librmr_nng.so
+COPY --from=nexus3.o-ran-sc.org:10004/bldr-alpine3-go:2-rmr1.13.1 /usr/local/lib64/libnng.so /usr/local/lib64/libnng.so
+COPY --from=nexus3.o-ran-sc.org:10004/bldr-alpine3-go:2-rmr1.13.1 /usr/local/lib64/librmr_nng.so /usr/local/lib64/librmr_nng.so
 ENV LD_LIBRARY_PATH /usr/local/lib/:/usr/local/lib64
 ENV RMR_SEED_RT /opt/route/test_route.rt
 

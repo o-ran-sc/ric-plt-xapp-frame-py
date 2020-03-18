@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5a51f4bd_49b2827e",
+        "filename": "examples/ping_xapp.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-03-18T17:08:09Z",
+      "side": 1,
+      "message": "of course things like b64 exist.. but not worth the effort in this example\n\nthis is more of an issue with the underlying RIC library, since even python\u0027s logger can handle bytes. I raised a bug many months ago...",
+      "parentUuid": "8bbcd76a_05aae037",
+      "range": {
+        "startLine": 53,
+        "startChar": 90,
+        "endLine": 53,
+        "endChar": 94
+      },
+      "revId": "0f8305b167601ce6ca87c55208038455a65eab62",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "019fa7bc_401631e7",
         "filename": "ricxappframe/xapp_frame.py",
         "patchSetId": 1
@@ -39,6 +63,24 @@
       "revId": "0f8305b167601ce6ca87c55208038455a65eab62",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "345cd9ed_d76ff780",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-03-18T17:08:09Z",
+      "side": 1,
+      "message": "well it shows up in the log messages. if you were doing something like aggregating all xapp logs together, it would be bad if every name had \"myxapp\" in it... \nit\u0027s not the name of the logger, it\u0027s the name of the component that shows up in the messages.",
+      "parentUuid": "019fa7bc_401631e7",
+      "revId": "0f8305b167601ce6ca87c55208038455a65eab62",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
     }
   ]
 }

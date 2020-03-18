@@ -14,6 +14,14 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
    :depth: 3
    :local:
 
+
+[0.5.0] - 3/18/2020
+-------------------
+::
+
+    * All xapps (via the base class) now have a logger attribute that can be invoked to provide mdc logging. It is a passthrough to the RIC mdc logger for python (untouched, no value in an API on top at the current time).
+
+
 [0.4.1] - 3/17/2020
 -------------------
 ::

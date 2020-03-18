@@ -28,7 +28,8 @@ def post_init(_self):
 
 def sixtyh(self, summary, sbuf):
     """callback for 60000"""
-    print("registered 60000 handler called!")
+    self.logger.info("registered 60000 handler called!")
+    # see comment in ping about this; bytes does not work with the ric mdc logger currently
     print(summary)
     jpay = json.loads(summary["payload"])
     self.rmr_rts(sbuf, new_payload=json.dumps({"ACK": jpay["test_send"]}).encode(), new_mtype=60001, retries=100)
@@ -37,7 +38,7 @@ def sixtyh(self, summary, sbuf):
 
 def defh(self, summary, sbuf):
     """default callback"""
-    print("default handler called!")
+    self.logger.info("default handler called!")
     print(summary)
     self.rmr_free(sbuf)
 

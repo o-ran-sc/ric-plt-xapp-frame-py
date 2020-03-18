@@ -41,12 +41,16 @@ def entry(self):
 
         # store it in SDL and read it back; delete and read
         self.sdl_set(my_ns, "numba", number)
-        print((self.sdl_get(my_ns, "numba"), self.sdl_find_and_get(my_ns, "num")))
+        self.logger.info(self.sdl_get(my_ns, "numba"))
+        self.logger.info(self.sdl_find_and_get(my_ns, "num"))
         self.sdl_delete(my_ns, "numba")
-        print(self.sdl_get(my_ns, "numba"))
+        self.logger.info(self.sdl_get(my_ns, "numba"))
 
         # rmr receive
         for (summary, sbuf) in self.rmr_get_messages():
+            # summary is a dict that contains bytes so we can't use json.dumps on it so we have no good way to turn this into a string to use the logger unfortunately
+            # print is more "verbose" than the ric logger
+            # if you try to log this you will get: TypeError: Object of type bytes is not JSON serializable
             print(summary)
             self.rmr_free(sbuf)
 

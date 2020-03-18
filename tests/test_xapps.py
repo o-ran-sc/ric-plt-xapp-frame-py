@@ -33,7 +33,8 @@ def test_flow():
     global rmr_xapp
 
     def post_init(self):
-        print("hey")
+        self.logger.info("suppp info")
+        self.logger.debug("suppp debug")
 
     def default_handler(self, summary, sbuf):
         nonlocal def_called

@@ -25,9 +25,6 @@ from rmr import rmr
 from mdclogpy import Logger
 
 
-mdc_logger = Logger(name=__name__)
-
-
 # Private base class; not for direct client use
 
 
@@ -57,6 +54,8 @@ class _BaseXapp:
             runs this user provided function after the base xapp is initialized
             it's signature should be post_init(self)
         """
+        # PUBLIC, can be used by xapps using self.(name):
+        self.logger = Logger(name=__name__)
 
         # Start rmr rcv thread
         self._rmr_loop = xapp_rmr.RmrLoop(port=rmr_port, wait_for_ready=rmr_wait_for_ready)
@@ -335,7 +334,7 @@ class RMRXapp(_BaseXapp):
         stops the rmr xapp completely.
         """
         super().stop()
-        mdc_logger.debug("Stopping queue reading thread..")
+        self.logger.debug("Stopping queue reading thread..")
         self._keep_going = False
 
 

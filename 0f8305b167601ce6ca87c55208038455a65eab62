@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8bbcd76a_05aae037",
+        "filename": "examples/ping_xapp.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1000263
+      },
+      "writtenOn": "2020-03-18T14:45:16Z",
+      "side": 1,
+      "message": "Is there no way to change the bytes parts into strings and then use logger?",
+      "range": {
+        "startLine": 53,
+        "startChar": 90,
+        "endLine": 53,
+        "endChar": 94
+      },
+      "revId": "0f8305b167601ce6ca87c55208038455a65eab62",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "019fa7bc_401631e7",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000263
+      },
+      "writtenOn": "2020-03-18T14:45:16Z",
+      "side": 1,
+      "message": "Why should we care about the name of the logger?",
+      "revId": "0f8305b167601ce6ca87c55208038455a65eab62",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

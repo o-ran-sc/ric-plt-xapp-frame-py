@@ -19,8 +19,7 @@ FROM python:3.8-alpine
 # RMR setup
 RUN mkdir -p /opt/route/
 COPY test_route.rt /opt/route/test_route.rt
-COPY --from=nexus3.o-ran-sc.org:10004/bldr-alpine3-go:2-rmr1.13.1 /usr/local/lib64/libnng.so /usr/local/lib64/libnng.so
-COPY --from=nexus3.o-ran-sc.org:10004/bldr-alpine3-go:2-rmr1.13.1 /usr/local/lib64/librmr_nng.so /usr/local/lib64/librmr_nng.so
+COPY --from=nexus3.o-ran-sc.org:10004/bldr-alpine3-go:3-rmr-si95-nng-3.6.1 /usr/local/lib64/librmr_si.so /usr/local/lib64/librmr_si.so
 ENV LD_LIBRARY_PATH /usr/local/lib/:/usr/local/lib64
 ENV RMR_SEED_RT /opt/route/test_route.rt
 
@@ -28,7 +27,7 @@ ENV RMR_SEED_RT /opt/route/test_route.rt
 RUN apk update && apk add gcc musl-dev bash
 
 # Install
-RUN pip install ricxappframe==0.5.0
+RUN pip install ricxappframe==0.6.0
 COPY pong_xapp.py .
 
 # Run

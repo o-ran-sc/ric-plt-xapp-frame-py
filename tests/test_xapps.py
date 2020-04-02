@@ -17,7 +17,7 @@
 import json
 import time
 from contextlib import suppress
-from ricxappframe.xapp_frame import Xapp, RMRXapp
+from ricxappframe.xapp_frame import Xapp, RMRXapp, RIC_HEALTH_CHECK_REQ
 
 rmr_xapp = None
 gen_xapp = None
@@ -26,8 +26,8 @@ gen_xapp = None
 def test_flow():
 
     # test variables
-    def_called = 0
-    sixty_called = 0
+    def_pay = None
+    sixty_pay = None
 
     # create rmr app
     global rmr_xapp
@@ -37,17 +37,15 @@ def test_flow():
         self.logger.debug("suppp debug")
 
     def default_handler(self, summary, sbuf):
-        nonlocal def_called
-        def_called += 1
-        assert json.loads(summary["payload"]) == {"test send 60001": 1}
+        nonlocal def_pay
+        def_pay = json.loads(summary["payload"])
         self.rmr_free(sbuf)
 
-    rmr_xapp = RMRXapp(default_handler, post_init=post_init, rmr_port=4564, rmr_wait_for_ready=False, use_fake_sdl=True)
+    rmr_xapp = RMRXapp(default_handler, post_init=post_init, rmr_port=4564, use_fake_sdl=True)
 
     def sixtythou_handler(self, summary, sbuf):
-        nonlocal sixty_called
-        sixty_called += 1
-        assert json.loads(summary["payload"]) == {"test send 60000": 1}
+        nonlocal sixty_pay
+        sixty_pay = json.loads(summary["payload"])
         self.rmr_free(sbuf)
 
     rmr_xapp.register_callback(sixtythou_handler, 60000)
@@ -55,7 +53,11 @@ def test_flow():
 
     time.sleep(1)
 
+    # create a general xapp that will demonstrate some SDL functionality and launch some requests against the rmr xapp
+
     def entry(self):
+
+        time.sleep(1)
 
         self.sdl_set("testns", "mykey", 6)
         assert self.sdl_get("testns", "mykey") == 6
@@ -68,14 +70,17 @@ def test_flow():
         val = json.dumps({"test send 60001": 2}).encode()
         self.rmr_send(val, 60001)
 
+        # test default healthcheck handler
+        self.rmr_send(b"", RIC_HEALTH_CHECK_REQ)
+
     global gen_xapp
-    gen_xapp = Xapp(entrypoint=entry, rmr_wait_for_ready=False, use_fake_sdl=True)
+    gen_xapp = Xapp(entrypoint=entry, use_fake_sdl=True)
     gen_xapp.run()
 
     time.sleep(1)
 
-    assert def_called == 1
-    assert sixty_called == 1
+    assert def_pay == {"test send 60001": 2}
+    assert sixty_pay == {"test send 60000": 1}
 
 
 def teardown_module():

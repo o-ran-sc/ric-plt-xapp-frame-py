@@ -14,6 +14,14 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
    :depth: 3
    :local:
 
+[0.7.0] - 4/2/2020
+-------------------
+::
+
+    * RMRXapps by default now implement the rmr healthcheck probe; users can also override it with a more complex handler if they wish
+    * Fix a bug in the unit tests where a payload mismatch wouldn't actually fail the test (would now)
+
+
 [0.6.0] - 3/23/2020
 -------------------
 ::

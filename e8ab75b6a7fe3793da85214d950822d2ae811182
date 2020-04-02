@@ -70,6 +70,30 @@
       "revId": "e8ab75b6a7fe3793da85214d950822d2ae811182",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0c118ee9_e9a93ae3",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000037
+      },
+      "writtenOn": "2020-04-02T17:58:50Z",
+      "side": 1,
+      "message": "This should be required as the function should be setting the message type to RESP before sending the rts",
+      "parentUuid": "a7f1a50e_50444d67",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 2
+      },
+      "revId": "e8ab75b6a7fe3793da85214d950822d2ae811182",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
     }
   ]
 }

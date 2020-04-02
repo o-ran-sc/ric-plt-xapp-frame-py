@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c02f09c9_ed66613c",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1000037
+      },
+      "writtenOn": "2020-04-02T19:45:37Z",
+      "side": 1,
+      "message": "I just noticed this.... rmr_rts() returns a new message buffer; you\u0027re freeing the one that you gave to rts which it could potentially destroy.  This isn\u0027t the reason that the messages aren\u0027t going through, but it could lead to problems. \n\nHowever, if you look at the code at line 137 you check the state and retry n times; is it possible that this is failing and you\u0027re not noticing it here?   Looks like you added a state dump on failure at 137.  It would also be interesting to dump the source from sbuf at the top of the function.",
+      "revId": "bc01144fdb3d0192ff2ef13776b1bccf9cd6745d",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

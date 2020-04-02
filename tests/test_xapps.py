@@ -17,7 +17,7 @@
 import json
 import time
 from contextlib import suppress
-from ricxappframe.xapp_frame import Xapp, RMRXapp
+from ricxappframe.xapp_frame import Xapp, RMRXapp, RIC_HEALTH_CHECK_REQ
 
 rmr_xapp = None
 gen_xapp = None
@@ -26,8 +26,8 @@ gen_xapp = None
 def test_flow():
 
     # test variables
-    def_called = 0
-    sixty_called = 0
+    def_pay = None
+    sixty_pay = None
 
     # create rmr app
     global rmr_xapp
@@ -37,23 +37,23 @@ def test_flow():
         self.logger.debug("suppp debug")
 
     def default_handler(self, summary, sbuf):
-        nonlocal def_called
-        def_called += 1
-        assert json.loads(summary["payload"]) == {"test send 60001": 1}
+        nonlocal def_pay
+        def_pay = json.loads(summary["payload"])
         self.rmr_free(sbuf)
 
     rmr_xapp = RMRXapp(default_handler, post_init=post_init, rmr_port=4564, rmr_wait_for_ready=False, use_fake_sdl=True)
 
     def sixtythou_handler(self, summary, sbuf):
-        nonlocal sixty_called
-        sixty_called += 1
-        assert json.loads(summary["payload"]) == {"test send 60000": 1}
+        nonlocal sixty_pay
+        sixty_pay = json.loads(summary["payload"])
         self.rmr_free(sbuf)
 
     rmr_xapp.register_callback(sixtythou_handler, 60000)
     rmr_xapp.run(thread=True)  # in unit tests we need to thread here or else execution is not returned!
 
-    time.sleep(1)
+    time.sleep(3)
+
+    # create a general xapp that will demonstrate some SDL functionality and launch some requests against the rmr xapp
 
     def entry(self):
 
@@ -68,14 +68,25 @@ def test_flow():
         val = json.dumps({"test send 60001": 2}).encode()
         self.rmr_send(val, 60001)
 
+        # test default healthcheck handler
+        self.rmr_send(b"", RIC_HEALTH_CHECK_REQ)
+
+        # make sure we got a healthcheck response and that it's good
+        time.sleep(2)
+        all_msgs = list(self.rmr_get_messages())  # list blows through python generators; should only be 1 here though
+        assert len(all_msgs) == 1
+        summary, sbuf = all_msgs[0]
+        self.rmr_free(sbuf)
+        assert summary["payload"] == b"OK\n"
+
     global gen_xapp
     gen_xapp = Xapp(entrypoint=entry, rmr_wait_for_ready=False, use_fake_sdl=True)
     gen_xapp.run()
 
     time.sleep(1)
 
-    assert def_called == 1
-    assert sixty_called == 1
+    assert def_pay == {"test send 60001": 2}
+    assert sixty_pay == {"test send 60000": 1}
 
 
 def teardown_module():

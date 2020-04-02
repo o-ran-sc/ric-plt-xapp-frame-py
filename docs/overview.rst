@@ -40,6 +40,16 @@ So in this framework the client code is not in the same thread as the rmr reads,
 In the case of RMR Xapps, there are currently 3 potential threads; the thread that reads from rmr directly, and the user can optionally have the rmr queue read run in a thread, returning execution back to the user thread.
 The default is only two threads however, where `.run` does not return back execution and the user code is "finished" at that point.
 
+Healthchecks
+------------
+RMRXapps come with a default rmr healthcheck probe handler.
+When the RMRXapp is sent an rmr healthcheck, it will check to see if the rmr thread is healthy (well it can't even reply if it's not!), and that the SDL connection is healthy.
+The Xapp responds accordingly.
+THe user can override this default handler by registering a new callback to the appropriate message type.
+
+General Xapps must handle healthchecks when they read their rmr mailbox, since there is no notion of handlers.
+
+There is no http service (Currently) in the framework therefore there are no http healthchecks.
 
 Examples
 --------
@@ -48,10 +58,3 @@ Ping sends a message, pong receives the message and use rts to reply.
 Ping then reads it's own mailbox and demonstrates other functionality.
 The highlight to note is that `pong` is purely reactive, it only does anything when a message is received.
 Ping uses a general that also happens to read it's rmr mailbox inside.
-
-Current gaps
-------------
-The following are known gaps or potential enhancements at the time of writing.
-::
-
-    * a logger has to be provided to the xapp

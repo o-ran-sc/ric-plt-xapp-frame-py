@@ -120,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "f604c2ee_4ea9b891",
+        "filename": "tests/test_xapps.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-03T12:39:31Z",
+      "side": 1,
+      "message": "the failed test used the General Xapp. This test launches a third xapp of an rmr variety; totally different kind of test.\n\nThere is something wrong with general xapp timing on these VMs however that is **not** the focus of this healthcheck change. As I said yesterday, the bug was in the test code, not the healthcheck code, which is identical here.",
+      "parentUuid": "2994ca0b_3454bb0b",
+      "range": {
+        "startLine": 79,
+        "startChar": 4,
+        "endLine": 79,
+        "endChar": 24
+      },
+      "revId": "09894e3c7bdd6eeaae4a84467f5ea6af1a061204",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "76f7ed47_ce7e2381",
         "filename": "tests/test_xapps.py",
         "patchSetId": 4

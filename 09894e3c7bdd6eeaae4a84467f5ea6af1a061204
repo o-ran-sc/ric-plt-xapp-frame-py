@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "3841fc66_cbbce270",
+        "filename": "tests/test_xapps.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-03T12:35:46Z",
+      "side": 1,
+      "message": "i am not going to comment on something that is no longer in the code. This code is a valid test. \n\nbut for your records, this test uses a second rmr xapp to test the first one",
+      "parentUuid": "26d629fb_99a3d6fc",
+      "range": {
+        "startLine": 79,
+        "startChar": 4,
+        "endLine": 79,
+        "endChar": 24
+      },
+      "revId": "09894e3c7bdd6eeaae4a84467f5ea6af1a061204",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "76f7ed47_ce7e2381",
         "filename": "tests/test_xapps.py",
         "patchSetId": 4

@@ -14,6 +14,13 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
    :depth: 3
    :local:
 
+[0.8.0] - 4/6/2020
+-------------------
+::
+
+    * Python rmr has been moved into this repo. It's module name has NOT changed in order to make the transition for repos very easy. The only transition needed should be prefixing rmr with ricxappframe in import statements, and to include this rather than rmr in setup.
+
+
 [0.7.0] - 4/2/2020
 -------------------
 ::

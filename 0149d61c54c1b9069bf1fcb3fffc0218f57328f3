@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "86d0294c_6d81e580",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-04-06T19:52:56Z",
+      "side": 1,
+      "message": "Its (or just \"The\")",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 4
+      },
+      "revId": "0149d61c54c1b9069bf1fcb3fffc0218f57328f3",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "03e09a23_4f969eee",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-04-06T19:52:56Z",
+      "side": 1,
+      "message": "Its",
+      "range": {
+        "startLine": 21,
+        "startChar": 48,
+        "endLine": 21,
+        "endChar": 52
+      },
+      "revId": "0149d61c54c1b9069bf1fcb3fffc0218f57328f3",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c3f3ef92_170cfd30",
         "filename": "tests/test_init.py",
         "patchSetId": 1

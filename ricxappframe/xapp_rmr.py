@@ -24,7 +24,7 @@ import time
 import queue
 from threading import Thread
 from mdclogpy import Logger
-from rmr import rmr, helpers
+from ricxappframe.rmr import rmr, helpers
 
 
 mdc_logger = Logger(name=__name__)

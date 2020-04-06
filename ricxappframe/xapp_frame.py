@@ -21,7 +21,7 @@ Framework here means Xapp classes that can be subclassed
 from threading import Thread
 from ricxappframe import xapp_rmr
 from ricxappframe.xapp_sdl import SDLWrapper
-from rmr import rmr
+from ricxappframe.rmr import rmr
 from mdclogpy import Logger
 
 # constants

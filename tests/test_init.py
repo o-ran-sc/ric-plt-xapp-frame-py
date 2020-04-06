@@ -16,7 +16,7 @@
 # ==================================================================================
 import time
 import pytest
-from rmr.exceptions import InitFailed
+from ricxappframe.rmr.exceptions import InitFailed
 from ricxappframe.xapp_frame import Xapp, RMRXapp
 
 

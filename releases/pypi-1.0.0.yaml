@@ -1,0 +1,6 @@
+---
+pypi_project: ricxappframe
+python_version: '3.7'
+version: 1.0.0
+# note to future releaser: these seem to jump by 2 because the merge of *this* file is also a merge.
+log_dir: ric-plt-xapp-frame-py-pypi-merge-master/23

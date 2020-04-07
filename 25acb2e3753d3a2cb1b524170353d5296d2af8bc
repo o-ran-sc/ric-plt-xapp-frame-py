@@ -1,0 +1,9 @@
+Verified+1: ORAN Jobbuilder <releng+oran-jobbuilder@linuxfoundation.org>
+Code-Review+1: Chris Lott <cl778h@att.com>
+Code-Review+1: Scott Daniels <daniels@research.att.com>
+Code-Review+2: Tommy Carpenter <tc677g@att.com>
+Submitted-by: Tommy Carpenter <tc677g@att.com>
+Submitted-at: Tue, 07 Apr 2020 11:54:41 +0000
+Reviewed-on: https://gerrit.o-ran-sc.org/r/c/ric-plt/xapp-frame-py/+/3177
+Project: ric-plt/xapp-frame-py
+Branch: refs/heads/master

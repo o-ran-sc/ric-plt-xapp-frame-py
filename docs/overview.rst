@@ -2,8 +2,8 @@
 .. SPDX-License-Identifier: CC-BY-4.0
 .. Copyright (C) 2020 AT&T Intellectual Property
 
-xapp-frame-py Overview
-======================
+Framework Overview
+==================
 
 This library is a framework for writing Xapps in python.
 There may or may not be many Xapps written in python; however rmr, sdl, and logging libraries all exist for python, and this framework brings them together.

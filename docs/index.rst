@@ -3,17 +3,17 @@
 .. Copyright (C) 2020 AT&T Intellectual Property
 
 
-Welcome to O-RAN SC xapp-frame-py Documentation
-===============================================
+xApp Python Framework
+=====================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   overview.rst
-   release-notes.rst
    installation-guide.rst
+   overview.rst
    rmr_api.rst
+   release-notes.rst
 
 * :ref:`genindex`
 * :ref:`modindex`

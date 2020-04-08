@@ -13,6 +13,7 @@ Welcome to O-RAN SC xapp-frame-py Documentation
    overview.rst
    release-notes.rst
    installation-guide.rst
+   rmr_api.rst
 
 * :ref:`genindex`
 * :ref:`modindex`

@@ -33,11 +33,161 @@ RMR API
 ..
     !! processed by numpydoc !!
 
+.. py:data:: RMR_MAX_RCV_BYTES
+   :module: ricxappframe.rmr.rmr
+   :value: 65536
+
+
+   Maximum size message to receive
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: RMRFL_MTCALL
+   :module: ricxappframe.rmr.rmr
+   :value: 2
+
+
+   Multi-threaded initialization flag
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: RMRFL_NONE
+   :module: ricxappframe.rmr.rmr
+   :value: 0
+
+
+   Empty flag
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: RMR_OK
+   :module: ricxappframe.rmr.rmr
+   :value: 0
+
+
+   State constant for OK
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: RMR_ERR_TIMEOUT
+   :module: ricxappframe.rmr.rmr
+   :value: 12
+
+
+   State constant for timeout
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:data:: RMR_ERR_RETRY
+   :module: ricxappframe.rmr.rmr
+   :value: 10
+
+
+   State constant for retry
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
 .. py:class:: rmr_mbuf_t
    :module: ricxappframe.rmr.rmr
 
 
-   Reimplementation of rmr_mbuf_t which is in an unaccessible header file (src/common/include/rmr.h)
+   Mirrors public members of type rmr_mbuf_t from RMR header file src/common/include/rmr.h
 
    | typedef struct {
    |    int     state;          // state of processing
@@ -57,11 +207,11 @@ RMR API
    |    int alloc_len;          // the length of the allocated space (hdr+payload)
    | } rmr_mbuf_t;
 
-   We do not include the fields we are not supposed to mess with
-
    RE PAYLOADs type below, see the documentation for c_char_p:
       class ctypes.c_char_p
-          Represents the C char * datatype when it points to a zero-terminated string. For a general character pointer that may also point to binary data, POINTER(c_char) must be used. The constructor accepts an integer address, or a bytes object.
+           Represents the C char * datatype when it points to a zero-terminated string.
+           For a general character pointer that may also point to binary data, POINTER(c_char)
+           must be used. The constructor accepts an integer address, or a bytes object.
 
 
 
@@ -102,17 +252,32 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_init(uproto_port, max_msg_size, flags)
+.. py:function:: rmr_init(uproto_port: ctypes.c_char_p, max_msg_size: int, flags: int) -> ctypes.c_void_p
    :module: ricxappframe.rmr.rmr
 
 
-   Refer to rmr C documentation for rmr_init
-   extern void* rmr_init(char* uproto_port, int max_msg_size, int flags)
+   Prepares the environment for sending and receiving messages.
+   Refer to RMR C documentation for method::
 
-   This python function checks that the context is not None and raises
-   an excption if it is.
+       extern void* rmr_init(char* uproto_port, int max_msg_size, int flags)
 
+   This function raises an exception if the returned context is None.
 
+   :Parameters:
+
+       **uproto_port: c_char_p**
+           Pointer to a buffer with the port number as a string; e.g., "4550"
+
+       **max_msg_size: integer**
+           Maximum message size to receive
+
+       **flags: integer**
+           RMR option flags
+
+   :Returns:
+
+       c_void_p:
+           Pointer to RMR context
 
 
 
@@ -129,15 +294,24 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_ready(vctx)
+.. py:function:: rmr_ready(vctx: ctypes.c_void_p) -> int
    :module: ricxappframe.rmr.rmr
 
 
-   Refer to rmr C documentation for rmr_ready
-   extern int rmr_ready(void* vctx)
+   Checks if a routing table has been received and installed.
+   Refer to RMR C documentation for method::
 
+       extern int rmr_ready(void* vctx)
 
+   :Parameters:
 
+       **vctx: ctypes c_void_p**
+           Pointer to RMR context
+
+   :Returns:
+
+       1 for yes, 0 for no
+           ..
 
 
 
@@ -154,15 +328,24 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_close(vctx)
+.. py:function:: rmr_close(vctx: ctypes.c_void_p)
    :module: ricxappframe.rmr.rmr
 
 
-   Refer to rmr C documentation for rmr_close
-   extern void rmr_close(void* vctx)
+   Closes the listen socket.
+   Refer to RMR C documentation for method::
 
+       extern void rmr_close(void* vctx)
 
+   :Parameters:
 
+       **vctx: ctypes c_void_p**
+           Pointer to RMR context
+
+   :Returns:
+
+       None
+           ..
 
 
 
@@ -179,15 +362,27 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_set_stimeout(vctx, time)
+.. py:function:: rmr_set_stimeout(vctx: ctypes.c_void_p, rloops: int) -> int
    :module: ricxappframe.rmr.rmr
 
 
-   Refer to the rmr C documentation for rmr_set_stimeout
-   extern int rmr_set_stimeout(void* vctx, int time)
+   Sets the configuration for how RMR will retry message send operations.
+   Refer to RMR C documentation for method::
 
+       extern int rmr_set_stimeout(void* vctx, int rloops)
 
+   :Parameters:
 
+       **vctx: ctypes c_void_p**
+           Pointer to RMR context
+
+       **rloops: int**
+           Number of retry loops
+
+   :Returns:
+
+       0 on success, -1 on failure
+           ..
 
 
 
@@ -204,72 +399,51 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_alloc_msg(vctx, size, payload=None, gen_transaction_id=False, mtype=None, meid=None, sub_id=None, fixed_transaction_id=None)
+.. py:function:: rmr_alloc_msg(vctx: ctypes.c_void_p, size: int, payload=None, gen_transaction_id: bool = False, mtype=None, meid=None, sub_id=None, fixed_transaction_id=None)
    :module: ricxappframe.rmr.rmr
 
 
-   Refer to the rmr C documentation for rmr_alloc_msg
-   extern rmr_mbuf_t* rmr_alloc_msg(void* vctx, int size)
+   Allocates and returns a buffer to write and send through the RMR library.
+   Refer to RMR C documentation for method::
+
+       extern rmr_mbuf_t* rmr_alloc_msg(void* vctx, int size)
+
+   Optionally populates the message from the remaining arguments.
+
    TODO: on next API break, clean up transaction_id ugliness. Kept for now to preserve API.
 
-   if payload is not None, attempts to set the payload
-   if gen_transaction_id is True, it generates and sets a transaction id. Note, fixed_transaction_id supersedes this option
-   if mtype is not None, sets the sbuf's message type
-   if meid is not None, sets the sbuf's meid
-   if sub_id is not None, sets the sbud's subscription id
-   if fixed_transaction_id is set, it deterministically sets the transaction_id. This overrides the option gen_transation_id
+   :Parameters:
 
+       **vctx: ctypes c_void_p**
+           Pointer to RMR context
 
+       **size: int**
+           How much space to allocate
 
+       **payload: bytes**
+           if not None, attempts to set the payload
 
+       **gen_transaction_id: bool**
+           if True, generates and sets a transaction ID.
+           Note, option fixed_transaction_id overrides this option
 
+       **mtype: bytes**
+           if not None, sets the sbuf's message type
 
+       **meid: bytes**
+           if not None, sets the sbuf's meid
 
+       **sub_id: bytes**
+           if not None, sets the sbuf's subscription id
 
+       **fixed_transaction_id: bytes**
+           if not None, used as the transaction ID.
+           Note, this overrides the option gen_transaction_id
 
+   :Returns:
 
-
-
-
-
-
-   ..
-       !! processed by numpydoc !!
-
-.. py:function:: rmr_realloc_payload(ptr_mbuf, new_len, copy=False, clone=False)
-   :module: ricxappframe.rmr.rmr
-
-
-   Refer to the rmr C documentation for rmr_realloc_payload().
-   extern rmr_mbuf_t* rmr_realloc_payload(rmr_mbuf_t*, int, int, int)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   ..
-       !! processed by numpydoc !!
-
-.. py:function:: rmr_free_msg(mbuf)
-   :module: ricxappframe.rmr.rmr
-
-
-   Refer to the rmr C documentation for rmr_free_msg
-   extern void rmr_free_msg(rmr_mbuf_t* mbuf )
-
-
-
+       c_void_p:
+           Pointer to rmr_mbuf structure
 
 
 
@@ -286,15 +460,33 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_payload_size(ptr_mbuf)
+.. py:function:: rmr_realloc_payload(ptr_mbuf: ctypes.c_void_p, new_len: int, copy: bool = False, clone: bool = False)
    :module: ricxappframe.rmr.rmr
 
 
-   Refer to the rmr C documentation for rmr_payload_size
-   extern int rmr_payload_size(rmr_mbuf_t* msg)
+   Allocates and returns a message buffer large enough for the new length.
+   Refer to RMR C documentation for method::
 
+       extern rmr_mbuf_t* rmr_realloc_payload(rmr_mbuf_t*, int, int, int)
 
+   :Parameters:
 
+       **ptr_mbuf: c_void_p**
+           Pointer to rmr_mbuf structure
+
+       **new_len: int**
+           Length
+
+       **copy: bool**
+           Whether to copy the original paylod
+
+       **clone: bool**
+           Whether to clone the original buffer
+
+   :Returns:
+
+       c_void_p:
+           Pointer to rmr_mbuf structure
 
 
 
@@ -311,15 +503,24 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_send_msg(vctx, ptr_mbuf)
+.. py:function:: rmr_free_msg(ptr_mbuf: ctypes.c_void_p)
    :module: ricxappframe.rmr.rmr
 
 
-   Refer to the rmr C documentation for rmr_send_msg
-   extern rmr_mbuf_t* rmr_send_msg(void* vctx, rmr_mbuf_t* msg)
+   Releases the message buffer.
+   Refer to RMR C documentation for method::
 
+       extern void rmr_free_msg(rmr_mbuf_t* mbuf )
 
+   :Parameters:
 
+       **ptr_mbuf: c_void_p**
+           Pointer to rmr_mbuf structure
+
+   :Returns:
+
+       None
+           ..
 
 
 
@@ -336,15 +537,24 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_rcv_msg(vctx, ptr_mbuf)
+.. py:function:: rmr_payload_size(ptr_mbuf: ctypes.c_void_p) -> int
    :module: ricxappframe.rmr.rmr
 
 
-   Refer to the rmr C documentation for rmr_rcv_msg
-   extern rmr_mbuf_t* rmr_rcv_msg(void* vctx, rmr_mbuf_t* old_msg)
+   Gets the number of bytes available in the payload.
+   Refer to RMR C documentation for method::
 
+       extern int rmr_payload_size(rmr_mbuf_t* msg)
 
+   :Parameters:
 
+       **ptr_mbuf: c_void_p**
+           Pointer to rmr_mbuf structure
+
+   :Returns:
+
+       int:
+           Number of bytes available
 
 
 
@@ -361,15 +571,27 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_torcv_msg(vctx, ptr_mbuf, ms_to)
+.. py:function:: rmr_send_msg(vctx: ctypes.c_void_p, ptr_mbuf: ricxappframe.rmr.rmr.LP_rmr_mbuf_t) -> ricxappframe.rmr.rmr.LP_rmr_mbuf_t
    :module: ricxappframe.rmr.rmr
 
 
-   Refer to the rmr C documentation for rmr_torcv_msg
-   extern rmr_mbuf_t* rmr_torcv_msg(void* vctx, rmr_mbuf_t* old_msg, int ms_to)
+   Sends the message according to the routing table and returns an empty buffer.
+   Refer to RMR C documentation for method::
 
+       extern rmr_mbuf_t* rmr_send_msg(void* vctx, rmr_mbuf_t* msg)
 
+   :Parameters:
 
+       **vctx: ctypes c_void_p**
+           Pointer to RMR context
+
+       **ptr_mbuf: c_void_p**
+           Pointer to rmr_mbuf structure
+
+   :Returns:
+
+       c_void_p:
+           Pointer to rmr_mbuf structure
 
 
 
@@ -386,18 +608,114 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_rts_msg(vctx, ptr_mbuf, payload=None, mtype=None)
+.. py:function:: rmr_rcv_msg(vctx: ctypes.c_void_p, ptr_mbuf: ricxappframe.rmr.rmr.LP_rmr_mbuf_t) -> ricxappframe.rmr.rmr.LP_rmr_mbuf_t
    :module: ricxappframe.rmr.rmr
 
 
-   Refer to the rmr C documentation for rmr_rts_msg
-   extern rmr_mbuf_t*  rmr_rts_msg(void* vctx, rmr_mbuf_t* msg)
+   Waits for a message to arrive, and returns it.
+   Refer to RMR C documentation for method::
+
+       extern rmr_mbuf_t* rmr_rcv_msg(void* vctx, rmr_mbuf_t* old_msg)
+
+   :Parameters:
+
+       **vctx: ctypes c_void_p**
+           Pointer to RMR context
+
+       **ptr_mbuf: c_void_p**
+           Pointer to rmr_mbuf structure
+
+   :Returns:
+
+       c_void_p:
+           Pointer to rmr_mbuf structure
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: rmr_torcv_msg(vctx: ctypes.c_void_p, ptr_mbuf: ricxappframe.rmr.rmr.LP_rmr_mbuf_t, ms_to: int) -> ricxappframe.rmr.rmr.LP_rmr_mbuf_t
+   :module: ricxappframe.rmr.rmr
+
+
+   Waits up to the timeout value for a message to arrive, and returns it.
+   Refer to RMR C documentation for method::
+
+       extern rmr_mbuf_t* rmr_torcv_msg(void* vctx, rmr_mbuf_t* old_msg, int ms_to)
+
+   :Parameters:
+
+       **vctx: ctypes c_void_p**
+           Pointer to RMR context
+
+       **ptr_mbuf: c_void_p**
+           Pointer to rmr_mbuf structure
+
+       **ms_to: int**
+           Time out value in milliseconds
+
+   :Returns:
+
+       c_void_p:
+           Pointer to rmr_mbuf structure
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: rmr_rts_msg(vctx: ctypes.c_void_p, ptr_mbuf: ricxappframe.rmr.rmr.LP_rmr_mbuf_t, payload=None, mtype=None) -> ricxappframe.rmr.rmr.LP_rmr_mbuf_t
+   :module: ricxappframe.rmr.rmr
+
+
+   Sends a message to the originating endpoint and returns an empty buffer.
+   Refer to RMR C documentation for method::
+
+       extern rmr_mbuf_t* rmr_rts_msg(void* vctx, rmr_mbuf_t* msg)
 
    additional features beyond c-rmr:
        if payload is not None, attempts to set the payload
        if mtype is not None, sets the sbuf's message type
 
+   :Parameters:
 
+       **vctx: ctypes c_void_p**
+           Pointer to an RMR context
+
+       **ptr_mbuf: ctypes c_void_p**
+           Pointer to an RMR message buffer
+
+       **payload: bytes**
+           Payload
+
+       **mtype: bytes**
+           Message type
+
+   :Returns:
+
+       c_void_p:
+           Pointer to rmr_mbuf structure
 
 
 
@@ -414,15 +732,24 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_call(vctx, ptr_mbuf)
+.. py:function:: rmr_call(vctx: ctypes.c_void_p, ptr_mbuf: ricxappframe.rmr.rmr.LP_rmr_mbuf_t) -> ricxappframe.rmr.rmr.LP_rmr_mbuf_t
    :module: ricxappframe.rmr.rmr
 
 
-   Refer to the rmr C documentation for rmr_call
-   extern rmr_mbuf_t* rmr_call(void* vctx, rmr_mbuf_t* msg)
+   Sends a message, waits for a response and returns it.
+   Refer to RMR C documentation for method::
 
+       extern rmr_mbuf_t* rmr_call(void* vctx, rmr_mbuf_t* msg)
 
+   :Parameters:
 
+       **ptr_mbuf: ctypes c_void_p**
+           Pointer to an RMR message buffer
+
+   :Returns:
+
+       c_void_p:
+           Pointer to rmr_mbuf structure
 
 
 
@@ -439,19 +766,32 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_set_meid(ptr_mbuf, byte_str)
+.. py:function:: rmr_set_meid(ptr_mbuf: ricxappframe.rmr.rmr.LP_rmr_mbuf_t, byte_str: bytes) -> int
    :module: ricxappframe.rmr.rmr
 
 
-   Refer to the rmr C documentation for rmr_bytes2meid
-   extern int rmr_bytes2meid(rmr_mbuf_t* mbuf, unsigned char const* src, int len);
+   Sets the managed entity field in the message and returns the number of bytes copied.
+   Refer to RMR C documentation for method::
+
+       extern int rmr_bytes2meid(rmr_mbuf_t* mbuf, unsigned char const* src, int len);
 
    Caution:  the meid length supported in an RMR message is 32 bytes, but C applications
    expect this to be a nil terminated string and thus only 31 bytes are actually available.
 
    Raises: exceptions.MeidSizeOutOfRang
 
+   :Parameters:
 
+       **ptr_mbuf: ctypes c_void_p**
+           Pointer to an RMR message buffer
+
+       **byte_tr: bytes**
+           Managed entity ID value
+
+   :Returns:
+
+       int:
+           number of bytes copied
 
 
 
@@ -468,22 +808,61 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_get_meid(ptr_mbuf)
+.. py:function:: rmr_get_meid(ptr_mbuf: ricxappframe.rmr.rmr.LP_rmr_mbuf_t) -> bytes
    :module: ricxappframe.rmr.rmr
 
 
-   Get the managed equipment ID (meid) from the message header.
+   Gets the managed entity ID (meid) from the message header.
+   This is a python-friendly version of RMR C method::
 
+       extern unsigned char* rmr_get_meid(rmr_mbuf_t* mbuf, unsigned char* dest);
 
    :Parameters:
 
        **ptr_mbuf: ctypes c_void_p**
-           Pointer to an rmr message buffer
+           Pointer to an RMR message buffer
+
+   :Returns:
+
+       bytes:
+           Managed entity ID
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: rmr_get_src(ptr_mbuf: ricxappframe.rmr.rmr.LP_rmr_mbuf_t, dest: ctypes.c_char_p) -> ctypes.c_char_p
+   :module: ricxappframe.rmr.rmr
+
+
+   Copies the message-source information to the buffer.
+   Refer to RMR C documentation for method::
+
+       extern unsigned char* rmr_get_src(rmr_mbuf_t* mbuf, unsigned char* dest);
+
+   :Parameters:
+
+       **ptr_mbuf: ctypes POINTER(rmr_mbuf_t)**
+           Pointer to an RMR message buffer
+
+       **dest: ctypes c_char_p**
+           Pointer to a buffer to receive the message source
 
    :Returns:
 
        string:
-           meid
+           message-source information
 
 
 
@@ -500,36 +879,11 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: rmr_get_src(ptr_mbuf, dest)
+.. py:function:: get_payload(ptr_mbuf: ctypes.c_void_p) -> bytes
    :module: ricxappframe.rmr.rmr
 
 
-   Refer to the rmr C documentation for rmr_get_src
-   extern unsigned char*  rmr_get_src(rmr_mbuf_t* mbuf, unsigned char* dest);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   ..
-       !! processed by numpydoc !!
-
-.. py:function:: get_payload(ptr_mbuf)
-   :module: ricxappframe.rmr.rmr
-
-
-   Given a rmr_buf_t*, get it's binary payload as a bytes object
+   Gets the binary payload from the rmr_buf_t*.
 
 
    :Parameters:
@@ -557,11 +911,11 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: get_xaction(ptr_mbuf)
+.. py:function:: get_xaction(ptr_mbuf: ctypes.c_void_p) -> bytes
    :module: ricxappframe.rmr.rmr
 
 
-   given a rmr_buf_t*, get it's transaction id
+   Gets the transaction ID from the rmr_buf_t*.
 
 
    :Parameters:
@@ -589,11 +943,11 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: message_summary(ptr_mbuf)
+.. py:function:: message_summary(ptr_mbuf: ctypes.c_void_p) -> dict
    :module: ricxappframe.rmr.rmr
 
 
-   Returns a dict that contains the fields of a message
+   Returns a dict with the fields of an RMR message.
 
 
    :Parameters:
@@ -621,12 +975,12 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: set_payload_and_length(byte_str, ptr_mbuf)
+.. py:function:: set_payload_and_length(byte_str: bytes, ptr_mbuf: ctypes.c_void_p)
    :module: ricxappframe.rmr.rmr
 
 
-   | Set an rmr payload and content length
-   | In place method, no return
+   Sets an rmr payload and content length.
+   In place method, no return.
 
 
    :Parameters:
@@ -653,11 +1007,11 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: generate_and_set_transaction_id(ptr_mbuf)
+.. py:function:: generate_and_set_transaction_id(ptr_mbuf: ctypes.c_void_p)
    :module: ricxappframe.rmr.rmr
 
 
-   Generate a UUID and Set an rmr transaction id to it
+   Generates a UUID and sets the RMR transaction id to it
 
 
    :Parameters:
@@ -681,11 +1035,11 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: set_transaction_id(ptr_mbuf, tid_bytes)
+.. py:function:: set_transaction_id(ptr_mbuf: ctypes.c_void_p, tid_bytes: bytes)
    :module: ricxappframe.rmr.rmr
 
 
-   Set an rmr transaction id
+   Sets an RMR transaction id
    TODO: on next API break, merge these two functions. Not done now to preserve API.
 
 
@@ -713,11 +1067,11 @@ RMR API
    ..
        !! processed by numpydoc !!
 
-.. py:function:: get_src(ptr_mbuf)
+.. py:function:: get_src(ptr_mbuf: ctypes.c_void_p) -> str
    :module: ricxappframe.rmr.rmr
 
 
-   Get the message source (likely host:port)
+   Gets the message source (likely host:port)
 
 
    :Parameters:
@@ -744,3 +1098,4 @@ RMR API
 
    ..
        !! processed by numpydoc !!
+

@@ -122,6 +122,24 @@
     },
     {
       "key": {
+        "uuid": "2affa4f5_d9aaf495",
+        "filename": "docs/rmr_api.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-04-09T21:00:02Z",
+      "side": 1,
+      "message": "docstrings in the code",
+      "parentUuid": "52c2efdc_2c4d3aa2",
+      "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b3411d58_d1dd9fba",
         "filename": "ricxappframe/rmr/rmr.py",
         "patchSetId": 3
@@ -139,6 +157,24 @@
     },
     {
       "key": {
+        "uuid": "16b9d98b_3235a164",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-04-09T21:00:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b3411d58_d1dd9fba",
+      "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a396405c_70f07581",
         "filename": "ricxappframe/rmr/rmr.py",
         "patchSetId": 3
@@ -153,6 +189,24 @@
       "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eedbc563_d0ef6a4f",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-04-09T21:00:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a396405c_70f07581",
+      "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
     },
     {
       "key": {
@@ -190,6 +244,24 @@
     },
     {
       "key": {
+        "uuid": "75fe9afb_1ce3b81f",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-04-09T21:00:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ca570ae7_09dcf213",
+      "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "01df60b7_e6c60c54",
         "filename": "ricxappframe/rmr/rmr.py",
         "patchSetId": 3
@@ -204,6 +276,24 @@
       "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b03c3dac_db4bfd05",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 754,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-04-09T21:00:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "01df60b7_e6c60c54",
+      "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
     }
   ]
 }

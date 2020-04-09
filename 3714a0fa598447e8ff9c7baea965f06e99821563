@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "f0a5dcbc_f0507df1",
+        "filename": "docs/conf.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-09T20:44:54Z",
+      "side": 1,
+      "message": "this can probably be commented out too, my bad, since autodoc is not even running, same as the sys statement",
+      "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "fad3a284_5fd2cca2",
         "filename": "docs/rmr_api.rst",
         "patchSetId": 3

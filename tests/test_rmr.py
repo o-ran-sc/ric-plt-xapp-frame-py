@@ -18,6 +18,7 @@
 import time
 import pytest
 from ricxappframe.rmr import rmr, helpers, exceptions
+from ricxappframe.rmrclib import rmrclib
 
 
 SIZE = 256
@@ -30,17 +31,17 @@ def setup_module():
     test_rmr module setup
     """
     global MRC_SEND
-    MRC_SEND = rmr.rmr_init(b"3562", rmr.RMR_MAX_RCV_BYTES, 0x00)
+    MRC_SEND = rmr.rmr_init(b"3562", rmrclib.RMR_MAX_RCV_BYTES, 0x00)
     while rmr.rmr_ready(MRC_SEND) == 0:
         time.sleep(1)
 
     global MRC_RCV
-    MRC_RCV = rmr.rmr_init(b"3563", rmr.RMR_MAX_RCV_BYTES, 0x00)
+    MRC_RCV = rmr.rmr_init(b"3563", rmrclib.RMR_MAX_RCV_BYTES, 0x00)
     while rmr.rmr_ready(MRC_RCV) == 0:
         time.sleep(1)
 
     global MRC_BUF_RCV
-    MRC_BUF_RCV = rmr.rmr_init(b"3564", rmr.RMR_MAX_RCV_BYTES, 0x02)
+    MRC_BUF_RCV = rmr.rmr_init(b"3564", rmrclib.RMR_MAX_RCV_BYTES, 0x02)
     while rmr.rmr_ready(MRC_BUF_RCV) == 0:
         time.sleep(1)
 
@@ -66,38 +67,6 @@ def _assert_new_sbuf(sbuf):
     assert summary["message status"] == "RMR_OK"
     assert summary["meid"] == b""
     assert summary["errno"] == 0
-
-
-def test_get_constants(expected_constants):
-    """
-    test getting constants. We don't care what values are returned as those
-    should be meaningful only to RMR. We do care that all of the constants
-    which are defined in expected_contents are returned.  Further, we don't
-    consider it to be an error if the returned list has more constants than
-    what are in our list.
-
-    To avoid frustration, this should list all missing keys, not fail on the
-    first missing key.
-    """
-    errors = 0
-    econst = expected_constants
-    rconst = rmr._get_constants()
-    for key in econst:  # test all expected constants
-        if key not in rconst:  # expected value not listed by rmr
-            errors += 1
-            print("did not find required constant in list from RMR: %s" % key)
-
-    assert errors == 0
-
-
-def test_get_mapping_dict(expected_states):
-    """
-    test getting mapping string
-    """
-    assert rmr._get_mapping_dict() == expected_states
-    assert rmr._state_to_status(0) == "RMR_OK"
-    assert rmr._state_to_status(12) == "RMR_ERR_TIMEOUT"
-    assert rmr._state_to_status(666) == "UNKNOWN STATE"
 
 
 def test_meid():

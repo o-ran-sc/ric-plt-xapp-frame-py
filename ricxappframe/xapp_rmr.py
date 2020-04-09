@@ -25,7 +25,7 @@ import queue
 from threading import Thread
 from mdclogpy import Logger
 from ricxappframe.rmr import rmr, helpers
-
+from ricxappframe.rmrclib import rmrclib
 
 mdc_logger = Logger(name=__name__)
 
@@ -58,7 +58,7 @@ class RmrLoop:
         self.rcv_queue = queue.Queue()
 
         # rmr context; RMRFL_MTCALL puts RMR into a multithreaded mode, where a thread populates a ring of messages that receive calls read from
-        self.mrc = rmr.rmr_init(str(port).encode(), rmr.RMR_MAX_RCV_BYTES, rmr.RMRFL_MTCALL)
+        self.mrc = rmr.rmr_init(str(port).encode(), rmrclib.RMR_MAX_RCV_BYTES, rmrclib.RMRFL_MTCALL)
 
         if wait_for_ready:
             mdc_logger.debug("Waiting for rmr to init on port {}..".format(port))

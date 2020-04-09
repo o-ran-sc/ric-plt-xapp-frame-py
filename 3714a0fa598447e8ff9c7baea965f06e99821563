@@ -67,6 +67,108 @@
       "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "52c2efdc_2c4d3aa2",
+        "filename": "docs/rmr_api.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-09T20:43:16Z",
+      "side": 1,
+      "message": "are these descriptive sentences generated from the code, or you added these?",
+      "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b3411d58_d1dd9fba",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-09T20:43:16Z",
+      "side": 1,
+      "message": "\"answers\" is not the right word here.",
+      "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a396405c_70f07581",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-09T20:43:16Z",
+      "side": 1,
+      "message": "Fake news, it is bytes",
+      "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9137903d_afa52525",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-09T20:43:16Z",
+      "side": 1,
+      "message": "what does installed mean?",
+      "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ca570ae7_09dcf213",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-09T20:43:16Z",
+      "side": 1,
+      "message": "why would you delete a helpful comment here?",
+      "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "01df60b7_e6c60c54",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 754,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-09T20:43:16Z",
+      "side": 1,
+      "message": "i guess this comment was technically wrong since all python functions return at least None",
+      "revId": "3714a0fa598447e8ff9c7baea965f06e99821563",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
     }
   ]
 }

@@ -15,3 +15,14 @@ nitpick_ignore = [
             ('py:class', 'ctypes.c_void_p'),
             ('py:class', 'ricxappframe.rmr.rmr.LP_rmr_mbuf_t'),
             ]
+
+# RMR c library is not available in ReadTheDocs
+autodoc_mock_imports = ['ricxappframe.rmr.rmrclib']
+
+# from mock import Mock as MagicMock
+#class Mock(MagicMock):
+#    @classmethod
+#    def __getattr__(cls, name):
+#        return MagicMock()
+#MOCK_MODULES = ['ricxappframe.rmr.rmrclib']
+#sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)

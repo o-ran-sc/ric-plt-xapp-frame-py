@@ -15,107 +15,46 @@
 #   limitations under the License.
 # ==================================================================================
 import uuid
-import json
-from ctypes import CDLL, POINTER, RTLD_GLOBAL, Structure
-from ctypes import c_char, c_char_p, c_int, c_void_p, cast, create_string_buffer, memmove
+from ctypes import POINTER, Structure
+from ctypes import c_int, c_char, c_char_p, c_void_p, memmove, cast, create_string_buffer
 
 from ricxappframe.rmr.exceptions import BadBufferAllocation, MeidSizeOutOfRange, InitFailed
+from ricxappframe.rmr.rmrclib.rmrclib import rmr_c_lib, get_constants, state_to_status
 
-# https://docs.python.org/3.7/library/ctypes.html
-# https://stackoverflow.com/questions/2327344/ctypes-loading-a-c-shared-library-that-has-dependencies/30845750#30845750
-# make sure you do a set -x LD_LIBRARY_PATH /usr/local/lib/;
-rmr_c_lib = CDLL("librmr_si.so", mode=RTLD_GLOBAL)
-
-
-# Internal Helpers (not a part of public api)
+##############
+# PRIVATE API
+##############
 
 
-_rmr_const = rmr_c_lib.rmr_get_consts
-_rmr_const.argtypes = []
-_rmr_const.restype = c_char_p
-
-
-def _get_constants(cache={}) -> dict:
+def _get_rmr_constant(key: str, default=None):
     """
-    Gets constants published by RMR and caches for subsequent calls.
-    TODO: are there constants that end user applications need?
+    Gets the constant with the named key from the RMR C library.
+    Returns None if the value is not a simple type. This happens
+    during sphinx autodoc document generation, which mocks the
+    rmrclib package to work without the RMR shared object file.
     """
-    if cache:
-        return cache
-
-    js = _rmr_const()  # read json string
-    cache = json.loads(str(js.decode()))  # create constants value object as a hash
-    return cache
-
-
-def _get_mapping_dict(cache={}) -> dict:
-    """
-    Builds a state mapping dict from constants and caches for subsequent calls.
-    Relevant constants at this writing include:
-
-    RMR_OK              0   state is good
-    RMR_ERR_BADARG      1   argument passd to function was unusable
-    RMR_ERR_NOENDPT     2   send/call could not find an endpoint based on msg type
-    RMR_ERR_EMPTY       3   msg received had no payload; attempt to send an empty message
-    RMR_ERR_NOHDR       4   message didn't contain a valid header
-    RMR_ERR_SENDFAILED  5   send failed; errno has nano reason
-    RMR_ERR_CALLFAILED  6   unable to send call() message
-    RMR_ERR_NOWHOPEN    7   no wormholes are open
-    RMR_ERR_WHID        8   wormhole id was invalid
-    RMR_ERR_OVERFLOW    9   operation would have busted through a buffer/field size
-    RMR_ERR_RETRY       10  request (send/call/rts) failed, but caller should retry (EAGAIN for wrappers)
-    RMR_ERR_RCVFAILED   11  receive failed (hard error)
-    RMR_ERR_TIMEOUT     12  message processing call timed out
-    RMR_ERR_UNSET       13  the message hasn't been populated with a transport buffer
-    RMR_ERR_TRUNC       14  received message likely truncated
-    RMR_ERR_INITFAILED  15  initialization of something (probably message) failed
-
-    """
-    if cache:
-        return cache
-
-    rmr_consts = _get_constants()
-    for key in rmr_consts:  # build the state mapping dict
-        if key[:7] in ["RMR_ERR", "RMR_OK"]:
-            en = int(rmr_consts[key])
-            cache[en] = key
-
-    return cache
-
-
-def _state_to_status(stateno: int) -> str:
-    """
-    Converts a msg state integer to a status string.
-    Returns "UNKNOWN STATE" if the int value is not known.
-
-    """
-    sdict = _get_mapping_dict()
-    return sdict.get(stateno, "UNKNOWN STATE")
-
-
-_RCONST = _get_constants()
+    val = get_constants().get(key, default)
+    return val if isinstance(val, (type(None), str, int, float, bool)) else None
 
 
 ##############
 # PUBLIC API
 ##############
 
-
-# These constants are directly usable by importers of this library
+# Publish constants from RMR C-language header files for use by importers of this library.
 # TODO: Are there others that will be useful?
-
-#: Maximum size message to receive
-RMR_MAX_RCV_BYTES = _RCONST["RMR_MAX_RCV_BYTES"]
+#: Typical size message to receive; size is not limited
+RMR_MAX_RCV_BYTES = _get_rmr_constant('RMR_MAX_RCV_BYTES')
 #: Multi-threaded initialization flag
-RMRFL_MTCALL = _RCONST.get("RMRFL_MTCALL", 0x02)  # initialization flags
+RMRFL_MTCALL = _get_rmr_constant('RMRFL_MTCALL', 0x02)  # initialization flags
 #: Empty flag
-RMRFL_NONE = _RCONST.get("RMRFL_NONE", 0x0)
+RMRFL_NONE = _get_rmr_constant('RMRFL_NONE', 0x0)
 #: State constant for OK
-RMR_OK = _RCONST["RMR_OK"]
+RMR_OK = _get_rmr_constant('RMR_OK', 0x00)
 #: State constant for timeout
-RMR_ERR_TIMEOUT = _RCONST["RMR_ERR_TIMEOUT"]
+RMR_ERR_TIMEOUT = _get_rmr_constant('RMR_ERR_TIMEOUT')
 #: State constant for retry
-RMR_ERR_RETRY = _RCONST["RMR_ERR_RETRY"]
+RMR_ERR_RETRY = _get_rmr_constant('RMR_ERR_RETRY')
 
 
 class rmr_mbuf_t(Structure):
@@ -160,8 +99,6 @@ class rmr_mbuf_t(Structure):
 
 
 # argtypes and restype are important: https://stackoverflow.com/questions/24377845/ctype-why-specify-argtypes
-
-
 _rmr_init = rmr_c_lib.rmr_init
 _rmr_init.argtypes = [c_char_p, c_int, c_int]
 _rmr_init.restype = c_void_p
@@ -607,7 +544,7 @@ def rmr_set_meid(ptr_mbuf: POINTER(rmr_mbuf_t), byte_str: bytes) -> int:
     int:
         number of bytes copied
     """
-    max = _get_constants().get("RMR_MAX_MEID", 32)
+    max = _get_rmr_constant("RMR_MAX_MEID", 32)
     if len(byte_str) >= max:
         raise MeidSizeOutOfRange
 
@@ -643,7 +580,7 @@ def rmr_get_meid(ptr_mbuf: POINTER(rmr_mbuf_t)) -> bytes:
     bytes:
         Managed entity ID
     """
-    sz = _get_constants().get("RMR_MAX_MEID", 32)  # size for buffer to fill
+    sz = _get_rmr_constant("RMR_MAX_MEID", 32)  # size for buffer to fill
     buf = create_string_buffer(sz)
     _rmr_get_meid(ptr_mbuf, buf)
     return buf.value
@@ -715,7 +652,7 @@ def get_xaction(ptr_mbuf: c_void_p) -> bytes:
         the transaction id
     """
     val = cast(ptr_mbuf.contents.xaction, c_char_p).value
-    sz = _get_constants().get("RMR_MAX_XID", 0)
+    sz = _get_rmr_constant("RMR_MAX_XID", 0)
     return val[:sz]
 
 
@@ -740,7 +677,7 @@ def message_summary(ptr_mbuf: c_void_p) -> dict:
         "subscription id": ptr_mbuf.contents.sub_id,
         "transaction id": get_xaction(ptr_mbuf),
         "message state": ptr_mbuf.contents.state,
-        "message status": _state_to_status(ptr_mbuf.contents.state),
+        "message status": state_to_status(ptr_mbuf.contents.state),
         "payload max size": rmr_payload_size(ptr_mbuf),
         "meid": rmr_get_meid(ptr_mbuf),
         "message source": get_src(ptr_mbuf),
@@ -794,7 +731,7 @@ def set_transaction_id(ptr_mbuf: c_void_p, tid_bytes: bytes):
     tid_bytes: bytes
         bytes of the desired transaction id
     """
-    sz = _get_constants().get("RMR_MAX_XID", 0)
+    sz = _get_rmr_constant("RMR_MAX_XID", 0)
     memmove(ptr_mbuf.contents.xaction, tid_bytes, sz)
 
 
@@ -812,7 +749,7 @@ def get_src(ptr_mbuf: c_void_p) -> str:
     string:
         message source
     """
-    sz = _get_constants().get("RMR_MAX_SRC", 64)  # size to fill
+    sz = _get_rmr_constant("RMR_MAX_SRC", 64)  # size to fill
     buf = create_string_buffer(sz)
     rmr_get_src(ptr_mbuf, buf)
     return buf.value.decode()

@@ -15,20 +15,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 # ==================================================================================
-import uuid
 import json
-from ctypes import RTLD_GLOBAL, Structure, c_int, POINTER, c_char, c_char_p, c_void_p, memmove, cast
-from ctypes import CDLL
+import uuid
+from ctypes import Structure, c_int, POINTER, c_char, c_char_p, c_void_p, memmove, cast
 from ctypes import create_string_buffer
+
 from ricxappframe.rmr.exceptions import BadBufferAllocation, MeidSizeOutOfRange, InitFailed
-
-# https://docs.python.org/3.7/library/ctypes.html
-# https://stackoverflow.com/questions/2327344/ctypes-loading-a-c-shared-library-that-has-dependencies/30845750#30845750
-# make sure you do a set -x LD_LIBRARY_PATH /usr/local/lib/;
-
-# even though we don't use these directly, they contain symbols we need
-rmr_c_lib = CDLL("librmr_si.so", mode=RTLD_GLOBAL)
-
+from ricxappframe.rmrclib.rmrclib import rmr_c_lib
 
 # Internal Helpers (not a part of public api)
 
@@ -94,9 +87,6 @@ def _state_to_status(stateno):
     return sdict.get(stateno, "UNKNOWN STATE")
 
 
-_RCONST = _get_constants()
-
-
 ##############
 # PUBLIC API
 ##############
@@ -105,12 +95,18 @@ _RCONST = _get_constants()
 # These constants are directly usable by importers of this library
 # TODO: Are there others that will be useful?
 
-RMR_MAX_RCV_BYTES = _RCONST["RMR_MAX_RCV_BYTES"]
-RMRFL_MTCALL = _RCONST.get("RMRFL_MTCALL", 0x02)  # initialization flags
-RMRFL_NONE = _RCONST.get("RMRFL_NONE", 0x0)
-RMR_OK = _RCONST["RMR_OK"]  # useful state constants
-RMR_ERR_TIMEOUT = _RCONST["RMR_ERR_TIMEOUT"]
-RMR_ERR_RETRY = _RCONST["RMR_ERR_RETRY"]
+#: Maximum size message to receive
+RMR_MAX_RCV_BYTES = 4096  # _get_constants().get("RMR_MAX_RCV_BYTES")
+#: Multi-threaded initialization flag
+RMRFL_MTCALL = 0x02  # _get_constants().get("RMRFL_MTCALL", 0x02)  # initialization flags
+#: Empty flag
+# RMRFL_NONE = _get_constants().get("RMRFL_NONE", 0x0)
+#: State constant for OK
+RMR_OK = 0  # _get_constants().get("RMR_OK")
+#: State constant for timeout
+# RMR_ERR_TIMEOUT = _get_constants().get("RMR_ERR_TIMEOUT")
+#: State constant for retry
+# RMR_ERR_RETRY = _get_constants().get("RMR_ERR_RETRY")
 
 
 class rmr_mbuf_t(Structure):

@@ -26,7 +26,6 @@ from threading import Thread
 from mdclogpy import Logger
 from ricxappframe.rmr import rmr, helpers
 
-
 mdc_logger = Logger(name=__name__)
 
 

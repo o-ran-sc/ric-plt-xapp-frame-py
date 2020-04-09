@@ -15,3 +15,6 @@ nitpick_ignore = [
             ('py:class', 'ctypes.c_void_p'),
             ('py:class', 'ricxappframe.rmr.rmr.LP_rmr_mbuf_t'),
             ]
+
+# RMR c library is not available in ReadTheDocs
+autodoc_mock_imports = ['ricxappframe.rmr.rmrclib']

@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5c7d7d89_1fa0a539",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-10T19:02:56Z",
+      "side": 1,
+      "message": "why this typecheck here? bytes? what is the intention of this typecheck?",
+      "revId": "97b18417ef503828d0636756c9f1cc330578869c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

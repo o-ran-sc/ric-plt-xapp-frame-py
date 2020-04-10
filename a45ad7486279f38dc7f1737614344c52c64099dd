@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "41bc9d63_55e4a736",
+        "filename": "ricxappframe/rmrclib/rmrclib.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-10T12:22:03Z",
+      "side": 1,
+      "message": "this is fine",
+      "revId": "a45ad7486279f38dc7f1737614344c52c64099dd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38f506de_1505d5ae",
+        "filename": "ricxappframe/rmrclib/rmrclib.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-10T12:22:03Z",
+      "side": 1,
+      "message": "why does this have to be moved?",
+      "revId": "a45ad7486279f38dc7f1737614344c52c64099dd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2f281565_e8fecc69",
+        "filename": "ricxappframe/rmrclib/rmrclib.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-10T12:22:03Z",
+      "side": 1,
+      "message": "moving out the rmr c lib was fine, but I do not consent to putting these here unless you at least re-export them in the old module as lots of code will break with this change",
+      "revId": "a45ad7486279f38dc7f1737614344c52c64099dd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

@@ -34,6 +34,24 @@
       "revId": "97b18417ef503828d0636756c9f1cc330578869c",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "215eebe7_25cfd756",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-10T19:27:52Z",
+      "side": 1,
+      "message": "what happened when this type check was not here?",
+      "parentUuid": "b33f124f_f6b01a1e",
+      "revId": "97b18417ef503828d0636756c9f1cc330578869c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
     }
   ]
 }

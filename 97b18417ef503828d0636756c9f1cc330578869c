@@ -16,6 +16,24 @@
       "revId": "97b18417ef503828d0636756c9f1cc330578869c",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b33f124f_f6b01a1e",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-04-10T19:05:34Z",
+      "side": 1,
+      "message": "Please read the comment lines 31..34 that explains why this type check is here.\n\nI can add bytes.",
+      "parentUuid": "5c7d7d89_1fa0a539",
+      "revId": "97b18417ef503828d0636756c9f1cc330578869c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
     }
   ]
 }

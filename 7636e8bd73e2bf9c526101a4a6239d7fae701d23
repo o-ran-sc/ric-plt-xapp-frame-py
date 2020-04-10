@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "53fe0aeb_03153c2e",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000037
+      },
+      "writtenOn": "2020-04-10T14:14:32Z",
+      "side": 1,
+      "message": "Right!  These should never be hard coded values.  That is why we added the read constants function.   The strings are likely baked forever, but the values are not.\nThe most recent change to RMR removes the upper limit on inbound messages, and this value will be used as the \"normally expected\" message size.  In general the value passed to rmr_init() should NOT be RMR_MAX_RCV_BYTES, but what the application believes to be the buffer size that can be used to receive 9x% of the messages without a realloc.   The constant in RMR is now 64K, and probably should be set to something much smaller than that (like 1500 or so).",
+      "parentUuid": "d73d16a1_f9da9949",
+      "revId": "7636e8bd73e2bf9c526101a4a6239d7fae701d23",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "31e3833b_4fc4ef6e",
         "filename": "ricxappframe/rmr/rmr.py",
         "patchSetId": 5
@@ -30,6 +48,24 @@
       "writtenOn": "2020-04-10T14:07:57Z",
       "side": 1,
       "message": "there is no need to hardcode these. just call get_constants from the other module. These are NOT baked in and they DO change in RMR and the RCV did change recently. Strong oppose this change.",
+      "revId": "7636e8bd73e2bf9c526101a4a6239d7fae701d23",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7248c824_5b93c1eb",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1000037
+      },
+      "writtenOn": "2020-04-10T14:14:32Z",
+      "side": 1,
+      "message": "Right.  The values are likely not to change, but they CAN and they need not to be hard coded here.",
+      "parentUuid": "31e3833b_4fc4ef6e",
       "revId": "7636e8bd73e2bf9c526101a4a6239d7fae701d23",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true

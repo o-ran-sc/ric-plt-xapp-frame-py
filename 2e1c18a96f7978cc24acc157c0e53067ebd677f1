@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b5c0ad54_814b7862",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-10T12:20:51Z",
+      "side": 0,
+      "message": "no you can\u0027t do this; there is a *lot* of python code that directly relies on these being here in this module. You will break all that code with this change.",
+      "revId": "2e1c18a96f7978cc24acc157c0e53067ebd677f1",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

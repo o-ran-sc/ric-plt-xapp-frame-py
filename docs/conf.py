@@ -5,7 +5,7 @@ from docs_conf.conf import *
 # autodoc needs this to find the code
 sys.path.insert(0, os.path.abspath("../"))
 
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.viewcode", "numpydoc"]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.intersphinx", "sphinx.ext.viewcode", "numpydoc"]
 
 # don't alphabetically order
 autodoc_member_order = "bysource"
@@ -21,3 +21,7 @@ nitpick_ignore = [
 
 # RMR c library is not available in ReadTheDocs
 autodoc_mock_imports = ['ricxappframe.rmr.rmrclib']
+
+# Supports links to RMR man pages
+branch = 'latest'
+intersphinx_mapping['ric-plt-lib-rmr'] = ('https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-lib-rmr/en/%s' % branch, None)

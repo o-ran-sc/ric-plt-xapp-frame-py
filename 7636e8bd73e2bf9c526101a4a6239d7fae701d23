@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d73d16a1_f9da9949",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-10T14:06:39Z",
+      "side": 1,
+      "message": "no no no \n\nscott, isn\u0027t this very wrong? this is the bug that we had fixed. why is 4k back?",
+      "revId": "7636e8bd73e2bf9c526101a4a6239d7fae701d23",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

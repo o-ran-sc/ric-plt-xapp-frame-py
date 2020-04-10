@@ -34,9 +34,36 @@ def _get_rmr_constant(key: str, default=None):
     rmrclib package to work without the RMR shared object file,
     and the response is something like this:
     <class 'ricxappframe.rmr.rmrclib.rmrclib.get_constants.get'>
+    Workaround for https://github.com/sphinx-doc/sphinx/issues/7422
     """
     val = get_constants().get(key, default)
     return val if isinstance(val, (type(None), bool, bytes, float, int, str)) else None
+
+
+# argtypes and restype are important:
+# https://stackoverflow.com/questions/24377845/ctype-why-specify-argtypes
+def _wrap_rmr_function(funcname, restype, argtypes):
+    """
+    Simplify wrapping ctypes functions
+    
+    Parameters
+    ----------
+    funcname: str
+        Name of library method
+    restype: class
+        Name of ctypes class; e.g., c_char_p
+    argtypes: list
+        List of ctypes classes; e.g., [ c_char_p, int ]
+
+    Returns
+    -------
+    _FuncPointer:
+        Pointer to C library function
+"""
+    func = rmr_c_lib.__getattr__(funcname)
+    func.restype = restype
+    func.argtypes = argtypes
+    return func
 
 
 ##############
@@ -100,10 +127,7 @@ class rmr_mbuf_t(Structure):
     ]
 
 
-# argtypes and restype are important: https://stackoverflow.com/questions/24377845/ctype-why-specify-argtypes
-_rmr_init = rmr_c_lib.rmr_init
-_rmr_init.argtypes = [c_char_p, c_int, c_int]
-_rmr_init.restype = c_void_p
+_rmr_init = _wrap_rmr_function('rmr_init', c_void_p, [c_char_p, c_int, c_int])
 
 
 def rmr_init(uproto_port: c_char_p, max_msg_size: int, flags: int) -> c_void_p:
@@ -135,9 +159,7 @@ def rmr_init(uproto_port: c_char_p, max_msg_size: int, flags: int) -> c_void_p:
     return mrc
 
 
-_rmr_ready = rmr_c_lib.rmr_ready
-_rmr_ready.argtypes = [c_void_p]
-_rmr_ready.restype = c_int
+_rmr_ready = _wrap_rmr_function('rmr_ready', c_int, [c_void_p])
 
 
 def rmr_ready(vctx: c_void_p) -> int:
@@ -159,8 +181,7 @@ def rmr_ready(vctx: c_void_p) -> int:
     return _rmr_ready(vctx)
 
 
-_rmr_close = rmr_c_lib.rmr_close
-_rmr_close.argtypes = [c_void_p]
+_rmr_close = _wrap_rmr_function('rmr_close', None, [c_void_p])
 
 
 def rmr_close(vctx: c_void_p):
@@ -182,9 +203,7 @@ def rmr_close(vctx: c_void_p):
     _rmr_close(vctx)
 
 
-_rmr_set_stimeout = rmr_c_lib.rmr_set_stimeout
-_rmr_set_stimeout.argtypes = [c_void_p, c_int]
-_rmr_set_stimeout.restype = c_int
+_rmr_set_stimeout = _wrap_rmr_function('rmr_set_stimeout', c_int, [c_void_p, c_int])
 
 
 def rmr_set_stimeout(vctx: c_void_p, rloops: int) -> int:
@@ -208,9 +227,7 @@ def rmr_set_stimeout(vctx: c_void_p, rloops: int) -> int:
     return _rmr_set_stimeout(vctx, rloops)
 
 
-_rmr_alloc_msg = rmr_c_lib.rmr_alloc_msg
-_rmr_alloc_msg.argtypes = [c_void_p, c_int]
-_rmr_alloc_msg.restype = POINTER(rmr_mbuf_t)
+_rmr_alloc_msg = _wrap_rmr_function('rmr_alloc_msg', POINTER(rmr_mbuf_t), [c_void_p, c_int])
 
 
 def rmr_alloc_msg(vctx: c_void_p, size: int,
@@ -281,9 +298,7 @@ def rmr_alloc_msg(vctx: c_void_p, size: int,
         raise BadBufferAllocation
 
 
-_rmr_realloc_payload = rmr_c_lib.rmr_realloc_payload
-_rmr_realloc_payload.argtypes = [POINTER(rmr_mbuf_t), c_int, c_int, c_int]  # new_len, copy, clone
-_rmr_realloc_payload.restype = POINTER(rmr_mbuf_t)
+_rmr_realloc_payload = _wrap_rmr_function('rmr_realloc_payload', POINTER(rmr_mbuf_t), [POINTER(rmr_mbuf_t), c_int, c_int, c_int])  # new_len, copy, clone
 
 
 def rmr_realloc_payload(ptr_mbuf: c_void_p, new_len: int, copy=False, clone=False):
@@ -312,9 +327,7 @@ def rmr_realloc_payload(ptr_mbuf: c_void_p, new_len: int, copy=False, clone=Fals
     return _rmr_realloc_payload(ptr_mbuf, new_len, copy, clone)
 
 
-_rmr_free_msg = rmr_c_lib.rmr_free_msg
-_rmr_free_msg.argtypes = [POINTER(rmr_mbuf_t)]
-_rmr_free_msg.restype = None
+_rmr_free_msg = _wrap_rmr_function('rmr_free_msg', None, [POINTER(rmr_mbuf_t)])
 
 
 def rmr_free_msg(ptr_mbuf: c_void_p):
@@ -337,9 +350,7 @@ def rmr_free_msg(ptr_mbuf: c_void_p):
         _rmr_free_msg(ptr_mbuf)
 
 
-_rmr_payload_size = rmr_c_lib.rmr_payload_size
-_rmr_payload_size.argtypes = [POINTER(rmr_mbuf_t)]
-_rmr_payload_size.restype = c_int
+_rmr_payload_size = _wrap_rmr_function('rmr_payload_size', c_int, [POINTER(rmr_mbuf_t)])
 
 
 def rmr_payload_size(ptr_mbuf: c_void_p) -> int:
@@ -366,9 +377,7 @@ def rmr_payload_size(ptr_mbuf: c_void_p) -> int:
 The following functions all seem to have the same interface
 """
 
-_rmr_send_msg = rmr_c_lib.rmr_send_msg
-_rmr_send_msg.argtypes = [c_void_p, POINTER(rmr_mbuf_t)]
-_rmr_send_msg.restype = POINTER(rmr_mbuf_t)
+_rmr_send_msg = _wrap_rmr_function('rmr_send_msg', POINTER(rmr_mbuf_t), [c_void_p, POINTER(rmr_mbuf_t)])
 
 
 def rmr_send_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t)) -> POINTER(rmr_mbuf_t):
@@ -394,9 +403,7 @@ def rmr_send_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t)) -> POINTER(rmr_m
 
 
 # TODO: the old message (Send param) is actually optional, but I don't know how to specify that in Ctypes.
-_rmr_rcv_msg = rmr_c_lib.rmr_rcv_msg
-_rmr_rcv_msg.argtypes = [c_void_p, POINTER(rmr_mbuf_t)]
-_rmr_rcv_msg.restype = POINTER(rmr_mbuf_t)
+_rmr_rcv_msg = _wrap_rmr_function('rmr_rcv_msg', POINTER(rmr_mbuf_t), [c_void_p, POINTER(rmr_mbuf_t)])
 
 
 def rmr_rcv_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t)) -> POINTER(rmr_mbuf_t):
@@ -421,9 +428,7 @@ def rmr_rcv_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t)) -> POINTER(rmr_mb
     return _rmr_rcv_msg(vctx, ptr_mbuf)
 
 
-_rmr_torcv_msg = rmr_c_lib.rmr_torcv_msg
-_rmr_torcv_msg.argtypes = [c_void_p, POINTER(rmr_mbuf_t), c_int]
-_rmr_torcv_msg.restype = POINTER(rmr_mbuf_t)
+_rmr_torcv_msg = _wrap_rmr_function('rmr_torcv_msg', POINTER(rmr_mbuf_t), [c_void_p, POINTER(rmr_mbuf_t), c_int])
 
 
 def rmr_torcv_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t), ms_to: int) -> POINTER(rmr_mbuf_t):
@@ -450,9 +455,7 @@ def rmr_torcv_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t), ms_to: int) -> 
     return _rmr_torcv_msg(vctx, ptr_mbuf, ms_to)
 
 
-_rmr_rts_msg = rmr_c_lib.rmr_rts_msg
-_rmr_rts_msg.argtypes = [c_void_p, POINTER(rmr_mbuf_t)]
-_rmr_rts_msg.restype = POINTER(rmr_mbuf_t)
+_rmr_rts_msg = _wrap_rmr_function('rmr_rts_msg', POINTER(rmr_mbuf_t), [c_void_p, POINTER(rmr_mbuf_t)])
 
 
 def rmr_rts_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t), payload=None, mtype=None) -> POINTER(rmr_mbuf_t):
@@ -492,9 +495,7 @@ def rmr_rts_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t), payload=None, mty
     return _rmr_rts_msg(vctx, ptr_mbuf)
 
 
-_rmr_call = rmr_c_lib.rmr_call
-_rmr_call.argtypes = [c_void_p, POINTER(rmr_mbuf_t)]
-_rmr_call.restype = POINTER(rmr_mbuf_t)
+_rmr_call = _wrap_rmr_function('rmr_call', POINTER(rmr_mbuf_t), [c_void_p, POINTER(rmr_mbuf_t)])
 
 
 def rmr_call(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t)) -> POINTER(rmr_mbuf_t):
@@ -517,9 +518,7 @@ def rmr_call(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t)) -> POINTER(rmr_mbuf_
     return _rmr_call(vctx, ptr_mbuf)
 
 
-_rmr_bytes2meid = rmr_c_lib.rmr_bytes2meid
-_rmr_bytes2meid.argtypes = [POINTER(rmr_mbuf_t), c_char_p, c_int]
-_rmr_bytes2meid.restype = c_int
+_rmr_bytes2meid = _wrap_rmr_function('rmr_bytes2meid', c_int, [POINTER(rmr_mbuf_t), c_char_p, c_int])
 
 
 def rmr_set_meid(ptr_mbuf: POINTER(rmr_mbuf_t), byte_str: bytes) -> int:
@@ -560,9 +559,7 @@ def rmr_set_meid(ptr_mbuf: POINTER(rmr_mbuf_t), byte_str: bytes) -> int:
 # extern unsigned char*  rmr_get_meid(rmr_mbuf_t* mbuf, unsigned char* dest);
 # we don't provide direct access to this function (unless it is asked for) because it is not really useful to provide your own buffer.
 # Rather, rmr_get_meid does this for you, and just returns the string.
-_rmr_get_meid = rmr_c_lib.rmr_get_meid
-_rmr_get_meid.argtypes = [POINTER(rmr_mbuf_t), c_char_p]
-_rmr_get_meid.restype = c_char_p
+_rmr_get_meid = _wrap_rmr_function('rmr_get_meid', c_char_p, [POINTER(rmr_mbuf_t), c_char_p])
 
 
 def rmr_get_meid(ptr_mbuf: POINTER(rmr_mbuf_t)) -> bytes:
@@ -588,9 +585,7 @@ def rmr_get_meid(ptr_mbuf: POINTER(rmr_mbuf_t)) -> bytes:
     return buf.value
 
 
-_rmr_get_src = rmr_c_lib.rmr_get_src
-_rmr_get_src.argtypes = [POINTER(rmr_mbuf_t), c_char_p]
-_rmr_get_src.restype = c_char_p
+_rmr_get_src = _wrap_rmr_function('rmr_get_src', c_char_p, [POINTER(rmr_mbuf_t), c_char_p])
 
 
 def rmr_get_src(ptr_mbuf: POINTER(rmr_mbuf_t), dest: c_char_p) -> c_char_p:

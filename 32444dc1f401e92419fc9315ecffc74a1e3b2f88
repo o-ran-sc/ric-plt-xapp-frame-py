@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dfd3c1ab_c4cb2e64",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-13T12:15:39Z",
+      "side": 1,
+      "message": "adding this function is a good idea\n\nbut, this review is a bit of a trojan horse. The ask was to simply bump setup and release notes and a totally orthognal change was snuck in there. #unix",
+      "revId": "32444dc1f401e92419fc9315ecffc74a1e3b2f88",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "99ac3ac1_466dac80",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-13T12:15:39Z",
+      "side": 1,
+      "message": "why the inconsistent use of type annotations? please annotate all parameters or none\n\nrestype can be documented as : ctype (right of colon can be anything and doesn\u0027t need to be a valid type if only being used for documentation purposes)",
+      "revId": "32444dc1f401e92419fc9315ecffc74a1e3b2f88",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ff9c25c4_d260077e",
+        "filename": "ricxappframe/rmr/rmr.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-13T12:15:39Z",
+      "side": 1,
+      "message": "btw, these are defined here, outside of rmr_ready et al. for performance reasons. these will only get defined once but if moved inside the function it will happen on every function call.",
+      "revId": "32444dc1f401e92419fc9315ecffc74a1e3b2f88",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

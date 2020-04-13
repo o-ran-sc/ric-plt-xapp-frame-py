@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "16c8d113_2c031ec5",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-04-13T13:29:06Z",
+      "side": 1,
+      "message": "I am not a fan of this change as it renders differently. But alas, I no longer have a stake.",
+      "revId": "32444dc1f401e92419fc9315ecffc74a1e3b2f88",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "dfd3c1ab_c4cb2e64",
         "filename": "ricxappframe/rmr/rmr.py",
         "patchSetId": 1

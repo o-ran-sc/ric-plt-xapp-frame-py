@@ -1,0 +1,5 @@
+---
+pypi_project: ricxappframe
+python_version: '3.7'
+version: 1.0.1
+log_dir: ric-plt-xapp-frame-py-pypi-stage-master/1

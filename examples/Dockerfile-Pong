@@ -19,7 +19,8 @@ FROM python:3.8-alpine
 # RMR setup
 RUN mkdir -p /opt/route/
 COPY test_route.rt /opt/route/test_route.rt
-COPY --from=nexus3.o-ran-sc.org:10004/bldr-alpine3-go:3-rmr-si95-nng-3.6.1 /usr/local/lib64/librmr_si.so /usr/local/lib64/librmr_si.so
+# copy rmr .so from builder image in lieu of an Alpine package
+COPY --from=nexus3.o-ran-sc.org:10002/o-ran-sc/bldr-alpine3-rmr:3.8.0 /usr/local/lib64/librmr_si.so /usr/local/lib64/librmr_si.so
 ENV LD_LIBRARY_PATH /usr/local/lib/:/usr/local/lib64
 ENV RMR_SEED_RT /opt/route/test_route.rt
 

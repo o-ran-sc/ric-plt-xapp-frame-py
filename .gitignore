@@ -109,3 +109,7 @@ ENV/
 # Test report
 xunit-reports
 coverage-reports
+
+# Eclipse
+.project
+.settings/

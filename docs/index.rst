@@ -13,6 +13,7 @@ xApp Python Framework
    installation-guide.rst
    overview.rst
    rmr_api.rst
+   developer-guide.rst
    release-notes.rst
 
 * :ref:`genindex`

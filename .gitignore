@@ -112,4 +112,5 @@ coverage-reports
 
 # Eclipse
 .project
+.pydevproject
 .settings/

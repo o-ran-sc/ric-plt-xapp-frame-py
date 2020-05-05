@@ -14,6 +14,11 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
    :depth: 3
    :local:
 
+[1.0.4] - 2020-05-05
+--------------------
+* Use RMR timeout on receive to avoid 100% CPU usage (`RIC-354 <https://jira.o-ran-sc.org/browse/RIC-354>`_)
+
+
 [1.0.3] - 2020-04-29
 --------------------
 * Upgrade to RMR version 4.0.2

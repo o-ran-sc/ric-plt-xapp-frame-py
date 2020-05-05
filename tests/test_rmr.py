@@ -23,6 +23,7 @@ from ricxappframe.rmr import rmr, helpers, exceptions
 SIZE = 256
 MRC_SEND = None
 MRC_RCV = None
+MRC_BUF_RCV = None
 
 
 def setup_module():
@@ -40,7 +41,7 @@ def setup_module():
         time.sleep(1)
 
     global MRC_BUF_RCV
-    MRC_BUF_RCV = rmr.rmr_init(b"3564", rmr.RMR_MAX_RCV_BYTES, 0x02)
+    MRC_BUF_RCV = rmr.rmr_init(b"3564", rmr.RMR_MAX_RCV_BYTES, rmr.RMRFL_MTCALL)
     while rmr.rmr_ready(MRC_BUF_RCV) == 0:
         time.sleep(1)
 
@@ -156,10 +157,12 @@ def test_rcv_timeout():
     There is no unit test for rmr_rcv_msg; too dangerous, that is a blocking call that may never return.
     """
     sbuf_rcv = rmr.rmr_alloc_msg(MRC_RCV, SIZE)
-    sbuf_rcv = rmr.rmr_torcv_msg(MRC_RCV, sbuf_rcv, 50)  # should time out after 50ms
+    start_rcv_sec = time.time()
+    sbuf_rcv = rmr.rmr_torcv_msg(MRC_RCV, sbuf_rcv, 500)  # should wait a bit before returning
     summary = rmr.message_summary(sbuf_rcv)
     assert summary["message state"] == 12
     assert summary["message status"] == "RMR_ERR_TIMEOUT"
+    assert(time.time() - start_rcv_sec > 0.5)  # test duration should be longer than the timeout
 
 
 def test_send_rcv():
@@ -304,7 +307,7 @@ def test_rcv_all():
     time.sleep(1)  # ensure underlying transport gets cycles to send/receive
 
     bundle = helpers.rmr_rcvall_msgs_raw(MRC_BUF_RCV, [2])  # receive only message type 2 messages
-    assert len(bundle) == 12  # we should only get the second batch of 12 messages
+    assert len(bundle) == 12  # we should only get the type 2 batch of 12 messages
 
     for i, (ms, sbuf) in enumerate(bundle):  # test the raw version
         test_summary = rmr.message_summary(sbuf)
@@ -314,6 +317,12 @@ def test_rcv_all():
         expected_pay = bytes(pay_fmt % i, "UTF-8")  # ordering should still jive with the counter
         assert ms["payload"] == expected_pay
         rmr.rmr_free_msg(sbuf)
+
+    # check the timeout scenario
+    start_rcv_sec = time.time()
+    bundle = helpers.rmr_rcvall_msgs_raw(MRC_RCV, timeout=1234)  # non-zero timeout means wait
+    assert len(bundle) == 0  # we should get none
+    assert(time.time() - start_rcv_sec > 1)  # test duration should be longer than 1 second
 
 
 def test_bad_buffer():

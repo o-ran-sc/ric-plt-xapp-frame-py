@@ -32,7 +32,7 @@ def _long_descr():
 
 setup(
     name="ricxappframe",
-    version="1.0.3",
+    version="1.0.4",
     packages=find_packages(exclude=["tests.*", "tests"]),
     author="Tommy Carpenter, E. Scott Daniels",
     description="Xapp and RMR framework for python",

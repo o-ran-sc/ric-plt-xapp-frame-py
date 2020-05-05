@@ -76,7 +76,9 @@ class _BaseXapp:
 
     def rmr_get_messages(self):
         """
-        returns a generator iterable over all current messages in the queue that have not yet been read by the client xapp
+        Returns a generator iterable over all items in the queue that have not yet been read by the client xapp.
+        Each item is a tuple (S, sbuf) where S is a message summary dict and sbuf is the raw message.
+        The caller MUST call rmr.rmr_free_msg(sbuf) when finished with each sbuf to prevent memory leaks!
         """
         while not self._rmr_loop.rcv_queue.empty():
             (summary, sbuf) = self._rmr_loop.rcv_queue.get()

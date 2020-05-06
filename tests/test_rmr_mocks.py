@@ -41,15 +41,15 @@ def test_send_mock(monkeypatch):
     rmr.set_payload_and_length("testttt".encode("utf8"), sbuf)
 
     expected = {
-        "meid": None,
-        "message source": "localtest:80",
-        "message state": 0,
-        "message type": 0,
-        "message status": "RMR_OK",
-        "payload": b"testttt",
-        "payload length": 7,
-        "payload max size": 4096,
-        "subscription id": 0,
+        rmr.RMR_MS_MEID: None,
+        rmr.RMR_MS_MSG_SOURCE: "localtest:80",
+        rmr.RMR_MS_MSG_STATE: 0,
+        rmr.RMR_MS_MSG_TYPE: 0,
+        rmr.RMR_MS_MSG_STATUS: "RMR_OK",
+        rmr.RMR_MS_PAYLOAD: b"testttt",
+        rmr.RMR_MS_PAYLOAD_LEN: 7,
+        rmr.RMR_MS_PAYLOAD_MAX: 4096,
+        rmr.RMR_MS_SUB_ID: 0,
     }
     _partial_dict_comparison(expected, rmr.message_summary(sbuf))
 
@@ -60,15 +60,15 @@ def test_send_mock(monkeypatch):
     sbuf = rmr.rmr_send_msg(MRC, sbuf)
 
     expected = {
-        "meid": None,
-        "message source": "localtest:80",
-        "message state": 12,
-        "message type": 666,
-        "message status": "RMR_ERR_TIMEOUT",
-        "payload": None,
-        "payload length": 7,
-        "payload max size": 4096,
-        "subscription id": 0,
+        rmr.RMR_MS_MEID: None,
+        rmr.RMR_MS_MSG_SOURCE: "localtest:80",
+        rmr.RMR_MS_MSG_STATE: 12,
+        rmr.RMR_MS_MSG_TYPE: 666,
+        rmr.RMR_MS_MSG_STATUS: "RMR_ERR_TIMEOUT",
+        rmr.RMR_MS_PAYLOAD: None,
+        rmr.RMR_MS_PAYLOAD_LEN: 7,
+        rmr.RMR_MS_PAYLOAD_MAX: 4096,
+        rmr.RMR_MS_SUB_ID: 0,
     }
     _partial_dict_comparison(expected, rmr.message_summary(sbuf))
 
@@ -85,7 +85,7 @@ def test_rcv_mock(monkeypatch):
     sbuf = rmr.rmr_rcv_msg(MRC, sbuf)
     assert rmr.get_payload(sbuf) == b'{"foo": "bar"}'
     assert sbuf.contents.mtype == 666
-    assert sbuf.contents.state == 0
+    assert sbuf.contents.state == rmr.RMR_OK
     assert sbuf.contents.len == 14
 
     # test torcv, although the timeout portion is not currently mocked or tested
@@ -93,7 +93,7 @@ def test_rcv_mock(monkeypatch):
     sbuf = rmr.rmr_torcv_msg(MRC, sbuf, 5)
     assert rmr.get_payload(sbuf) == b'{"foo": "bar"}'
     assert sbuf.contents.mtype == 666
-    assert sbuf.contents.state == 0
+    assert sbuf.contents.state == rmr.RMR_OK
     assert sbuf.contents.len == 14
 
 
@@ -106,8 +106,8 @@ def test_alloc(monkeypatch):
         MRC, SIZE, payload=b"foo", gen_transaction_id=True, mtype=5, meid=b"mee", sub_id=234, fixed_transaction_id=b"t" * 32
     )
     summary = rmr.message_summary(sbuf)
-    assert summary["payload"] == b"foo"
-    assert summary["transaction id"] == b"t" * 32
-    assert summary["message type"] == 5
-    assert summary["meid"] == b"mee"
-    assert summary["subscription id"] == 234
+    assert summary[rmr.RMR_MS_PAYLOAD] == b"foo"
+    assert summary[rmr.RMR_MS_TRN_ID] == b"t" * 32
+    assert summary[rmr.RMR_MS_MSG_TYPE] == 5
+    assert summary[rmr.RMR_MS_MEID] == b"mee"
+    assert summary[rmr.RMR_MS_SUB_ID] == 234

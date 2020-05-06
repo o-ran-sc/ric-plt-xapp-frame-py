@@ -32,4 +32,4 @@ COPY setup.py tox.ini LICENSE.txt /tmp/
 WORKDIR /tmp
 
 # Run the unit tests
-RUN tox -e code,flake8
+RUN tox -e code -s -- tests/test_rmr.py::test_rcv_all

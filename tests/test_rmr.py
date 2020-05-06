@@ -321,12 +321,16 @@ def test_rcv_all():
 
     # check the timeout scenarios
     start_rcv_sec = time.time()
-    bundle = helpers.rmr_rcvall_msgs(MRC_RCV, timeout=1001)  # non-zero timeout means wait
+    print("rmr_rcvall_msgs 1 time {0}".format(time.time()))
+    bundle = helpers.rmr_rcvall_msgs(MRC_BUF_RCV, timeout=1001)  # non-zero timeout means wait
+    print("rmr_rcvall_msgs 2 time {0}".format(time.time()))
     assert len(bundle) == 0  # we should get none
     assert(time.time() - start_rcv_sec > 1)  # test duration should be longer than 1 second
 
     start_rcv_sec = time.time()
-    bundle = helpers.rmr_rcvall_msgs_raw(MRC_RCV, timeout=1002)  # non-zero timeout means wait
+    print("rmr_rcvall_msgs_raw 1 time {0}".format(time.time()))
+    bundle = helpers.rmr_rcvall_msgs_raw(MRC_BUF_RCV, timeout=1002)  # non-zero timeout means wait
+    print("rmr_rcvall_msgs_raw 2 time {0}".format(time.time()))
     assert len(bundle) == 0  # we should get none
     assert(time.time() - start_rcv_sec > 1)  # test duration should be longer than 1 second
 

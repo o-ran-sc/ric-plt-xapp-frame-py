@@ -85,6 +85,31 @@ RMR_ERR_TIMEOUT = _get_rmr_constant('RMR_ERR_TIMEOUT')
 #: State constant for retry
 RMR_ERR_RETRY = _get_rmr_constant('RMR_ERR_RETRY')
 
+# Publish keys used in the message summary dict as constants
+
+# message payload, bytes
+RMR_MS_PAYLOAD = "payload"
+# payload length, integer
+RMR_MS_PAYLOAD_LEN = "payload length"
+# message type, integer
+RMR_MS_MSG_TYPE = "message type"
+# subscription ID, integer
+RMR_MS_SUB_ID = "subscription id"
+# transaction ID, bytes
+RMR_MS_TRN_ID = "transaction id"
+# state of message processing, integer; e.g., 0
+RMR_MS_MSG_STATE = "message state"
+# state of message processing converted to string; e.g., RMR_OK
+RMR_MS_MSG_STATUS = "message status"
+# number of bytes usable in the payload, integer
+RMR_MS_PAYLOAD_MAX = "payload max size"
+# managed entity ID, bytes
+RMR_MS_MEID = "meid"
+# message source, string; e.g., host:port
+RMR_MS_MSG_SOURCE = "message source"
+# transport state, integer
+RMR_MS_ERRNO = "errno"
+
 
 class rmr_mbuf_t(Structure):
     """
@@ -101,7 +126,7 @@ class rmr_mbuf_t(Structure):
     |
     | these things are off limits to the user application
     |
-    |    void*   tp_buf;         // underlying transport allocated pointer (e.g. nng message)
+    |    void*   tp_buf;         // underlying transport allocated pointer
     |    void*   header;         // internal message header (whole buffer: header+payload)
     |    unsigned char* id;      // if we need an ID in the message separate from the xaction id
     |    int flags;              // various MFL (private) flags as needed
@@ -610,6 +635,24 @@ def rmr_get_src(ptr_mbuf: POINTER(rmr_mbuf_t), dest: c_char_p) -> c_char_p:
     return _rmr_get_src(ptr_mbuf, dest)
 
 
+_rmr_set_vlevel = _wrap_rmr_function('rmr_set_vlevel', None, [c_int])
+
+
+def rmr_set_vlevel(new_level: c_int):
+    """
+    Sets the verbosity level which determines the messages RMR writes to standard error.
+    Refer to RMR C documentation for method::
+
+        void rmr_set_vlevel( int new_level )
+
+    Parameters
+    ----------
+    new_level: int
+        New logging verbosity level, an integer in the range 0 (none) to 5 (debug).
+    """
+    _rmr_set_vlevel(new_level)
+
+
 # Methods that exist ONLY in rmr-python, and are not wrapped methods
 # In hindsight, I wish i put these in a separate module, but leaving this here to prevent api breakage.
 
@@ -655,30 +698,30 @@ def get_xaction(ptr_mbuf: c_void_p) -> bytes:
 
 def message_summary(ptr_mbuf: c_void_p) -> dict:
     """
-    Returns a dict with the fields of an RMR message.
+    Builds a dict with the contents of an RMR message.
 
     Parameters
     ----------
     ptr_mbuf: ctypes c_void_p
-        Pointer to an rmr message buffer
+        Pointer to an RMR message buffer
 
     Returns
     -------
     dict:
-        dict message summary
+        Message content as key-value pairs; keys are defined as RMR_MS_* constants.
     """
     return {
-        "payload": get_payload(ptr_mbuf) if ptr_mbuf.contents.state == RMR_OK else None,
-        "payload length": ptr_mbuf.contents.len,
-        "message type": ptr_mbuf.contents.mtype,
-        "subscription id": ptr_mbuf.contents.sub_id,
-        "transaction id": get_xaction(ptr_mbuf),
-        "message state": ptr_mbuf.contents.state,
-        "message status": state_to_status(ptr_mbuf.contents.state),
-        "payload max size": rmr_payload_size(ptr_mbuf),
-        "meid": rmr_get_meid(ptr_mbuf),
-        "message source": get_src(ptr_mbuf),
-        "errno": ptr_mbuf.contents.tp_state,
+        RMR_MS_PAYLOAD: get_payload(ptr_mbuf) if ptr_mbuf.contents.state == RMR_OK else None,
+        RMR_MS_PAYLOAD_LEN: ptr_mbuf.contents.len,
+        RMR_MS_MSG_TYPE: ptr_mbuf.contents.mtype,
+        RMR_MS_SUB_ID: ptr_mbuf.contents.sub_id,
+        RMR_MS_TRN_ID: get_xaction(ptr_mbuf),
+        RMR_MS_MSG_STATE: ptr_mbuf.contents.state,
+        RMR_MS_MSG_STATUS: state_to_status(ptr_mbuf.contents.state),
+        RMR_MS_PAYLOAD_MAX: rmr_payload_size(ptr_mbuf),
+        RMR_MS_MEID: rmr_get_meid(ptr_mbuf),
+        RMR_MS_MSG_SOURCE: get_src(ptr_mbuf),
+        RMR_MS_ERRNO: ptr_mbuf.contents.tp_state,
     }
 
 

@@ -1,6 +1,3 @@
-"""
-sdl functionality
-"""
 # ==================================================================================
 #       Copyright (c) 2020 Nokia
 #       Copyright (c) 2020 AT&T Intellectual Property.
@@ -18,6 +15,9 @@ sdl functionality
 #   limitations under the License.
 # ==================================================================================
 
+"""
+sdl functionality
+"""
 
 import msgpack
 from ricsdl.syncstorage import SyncStorage

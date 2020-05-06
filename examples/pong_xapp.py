@@ -18,7 +18,7 @@ Test xapp 2 that works with 1
 #   limitations under the License.
 # ==================================================================================
 import json
-from ricxappframe.xapp_frame import RMRXapp
+from ricxappframe.xapp_frame import RMRXapp, rmr
 
 
 def post_init(_self):
@@ -31,7 +31,7 @@ def sixtyh(self, summary, sbuf):
     self.logger.info("registered 60000 handler called!")
     # see comment in ping about this; bytes does not work with the ric mdc logger currently
     print(summary)
-    jpay = json.loads(summary["payload"])
+    jpay = json.loads(summary[rmr.RMR_MS_MSG_PAYLOAD])
     self.rmr_rts(sbuf, new_payload=json.dumps({"ACK": jpay["test_send"]}).encode(), new_mtype=60001, retries=100)
     self.rmr_free(sbuf)
 

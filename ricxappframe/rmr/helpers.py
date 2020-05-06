@@ -1,4 +1,3 @@
-# vim: ts=4 sw=4 expandtab:
 # ==================================================================================
 #       Copyright (c) 2019 Nokia
 #       Copyright (c) 2018-2019 AT&T Intellectual Property.
@@ -19,8 +18,6 @@
 #   Mnemonic:   helpers.py
 #   Abstract:   This is a collection of extensions to the RMR base package
 #               which are likely to be convenient for Python programs.
-#   Date:       26 September 2019
-# ---------------------------------------------------------------------------
 
 from ricxappframe.rmr import rmr
 
@@ -60,10 +57,10 @@ def rmr_rcvall_msgs(mrc, pass_filter=[], timeout=0):
         mbuf = rmr.rmr_torcv_msg(mrc, mbuf, timeout)  # first call may have non-zero timeout
         timeout = 0  # reset so subsequent calls do not wait
         summary = rmr.message_summary(mbuf)
-        if summary["message status"] != "RMR_OK":  # ok indicates msg received, stop on all other states; e.g., RMR_ERR_TIMEOUT
+        if summary[rmr.RMR_MS_MSG_STATUS] != "RMR_OK":  # ok indicates msg received, stop on all other states
             break
 
-        if len(pass_filter) == 0 or summary["message type"] in pass_filter:  # no filter, or passes; capture it
+        if len(pass_filter) == 0 or summary[rmr.RMR_MS_MSG_TYPE] in pass_filter:  # no filter, or passes; capture it
             new_messages.append(summary)
 
     rmr.rmr_free_msg(mbuf)  # free the single buffer to avoid leak
@@ -100,7 +97,7 @@ def rmr_rcvall_msgs_raw(mrc, pass_filter=[], timeout=0):
         mbuf = rmr.rmr_torcv_msg(mrc, mbuf, timeout)  # first call may have non-zero timeout
         timeout = 0  # reset so subsequent calls do not wait
         summary = rmr.message_summary(mbuf)
-        if summary["message status"] != "RMR_OK":  # e.g., RMR_ERR_TIMEOUT
+        if summary[rmr.RMR_MS_MSG_STATUS] != "RMR_OK":
             rmr.rmr_free_msg(mbuf)  # free the failed-to-receive buffer
             break
 

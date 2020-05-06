@@ -21,6 +21,7 @@ Provides mocks that are useful for end applications unit testing
 
 import json
 import uuid
+from ricxappframe.rmr import rmr
 
 
 def rcv_mock_generator(msg_payload, msg_type, msg_state, jsonb, timeout=0):
@@ -62,7 +63,7 @@ def send_mock_generator(msg_state):
 
 
 class _Sbuf_Contents:
-    """fake version of how pointers work (ctype pointer access is done by accessing a magical attrivute called "contents"""
+    """fake version of how pointers work (ctype pointer access is done by accessing a magical attribute called "contents"""
 
     def __init__(self):
         self.state = 0
@@ -77,14 +78,14 @@ class _Sbuf_Contents:
     def __str__(self):
         return str(
             {
-                "state": self.state,
-                "mtype": self.mtype,
-                "len": self.len,
-                "payload": self.payload,
-                "xaction": self.xaction,
-                "sub_id": self.sub_id,
-                "tp_state": self.tp_state,
-                "meid": self.meid,
+                rmr.RMR_MS_MSG_STATE: self.state,
+                rmr.RMR_MS_MSG_TYPE: self.mtype,
+                rmr.RMR_MS_PAYLOAD_LEN: self.len,
+                rmr.RMR_MS_PAYLOAD: self.payload,
+                rmr.RMR_MS_TRN_ID: self.xaction,
+                rmr.RMR_MS_SUB_ID: self.sub_id,
+                rmr.RMR_MS_ERRNO: self.tp_state,
+                rmr.RMR_MS_MEID: self.meid,
             }
         )
 

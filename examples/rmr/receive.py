@@ -44,7 +44,7 @@ while True:
     print("Waiting for a message, will timeout after 2000ms")
     sbuf = rmr.rmr_torcv_msg(mrc, sbuf, 2000)
     summary = rmr.message_summary(sbuf)
-    if summary["message state"] == 12:
+    if summary[rmr.RMR_MS_MSG_STATE] == 12:
         print("Nothing received =(")
     else:
         print("Message received!: {}".format(summary))

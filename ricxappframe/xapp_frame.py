@@ -1,7 +1,3 @@
-"""
-Framework for python xapps
-Framework here means Xapp classes that can be subclassed
-"""
 # ==================================================================================
 #       Copyright (c) 2020 Nokia
 #       Copyright (c) 2020 AT&T Intellectual Property.
@@ -18,10 +14,15 @@ Framework here means Xapp classes that can be subclassed
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 # ==================================================================================
+"""
+Framework for python xapps
+Framework here means Xapp classes that can be subclassed
+"""
+
 from threading import Thread
 from ricxappframe import xapp_rmr
-from ricxappframe.xapp_sdl import SDLWrapper
 from ricxappframe.rmr import rmr
+from ricxappframe.xapp_sdl import SDLWrapper
 from mdclogpy import Logger
 
 # constants
@@ -335,7 +336,7 @@ class RMRXapp(_BaseXapp):
                 if not self._rmr_loop.rcv_queue.empty():
                     (summary, sbuf) = self._rmr_loop.rcv_queue.get()
                     # dispatch
-                    func = self._dispatch.get(summary["message type"], None)
+                    func = self._dispatch.get(summary[rmr.RMR_MS_MSG_TYPE], None)
                     if not func:
                         func = self._default_handler
                     func(self, summary, sbuf)

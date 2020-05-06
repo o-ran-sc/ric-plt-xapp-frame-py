@@ -64,7 +64,7 @@ while True:
     else:
         print( "got %d messages" % len( mbunch ) )
         for mb in mbunch:
-            print( "type=%d payload=%s" % (mb["message type"], mb["payload"] ) )
+            print( "type=%d payload=%s" % (mb[rmr.RMR_MS_MSG_TYPE], mb[rmr.RMR_MS_PAYLOAD] ) )
 
     time.sleep( 1 )            # sleep to allow some to accumulate
 

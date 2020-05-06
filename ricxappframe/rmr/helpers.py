@@ -1,4 +1,3 @@
-# vim: ts=4 sw=4 expandtab:
 # ==================================================================================
 #       Copyright (c) 2019 Nokia
 #       Copyright (c) 2018-2019 AT&T Intellectual Property.
@@ -19,8 +18,6 @@
 #   Mnemonic:   helpers.py
 #   Abstract:   This is a colleciton of extensions to the RMR base package
 #               which are likely to be convenient for python programmes.
-#   Date:       26 September 2019
-# ---------------------------------------------------------------------------
 
 from ricxappframe.rmr import rmr
 
@@ -55,10 +52,10 @@ def rmr_rcvall_msgs(mrc, pass_filter=[]):
         mbuf = rmr.rmr_torcv_msg(mrc, mbuf, 0)  # set the timeout to 0 so this doesn't block!!
 
         summary = rmr.message_summary(mbuf)
-        if summary["message status"] != "RMR_OK":  # ok indicates msg received, stop on all other states
+        if summary[rmr.RMR_MS_MSG_STATUS] != "RMR_OK":  # ok indicates msg received, stop on all other states
             break
 
-        if len(pass_filter) == 0 or summary["message type"] in pass_filter:  # no filter, or passes; capture it
+        if len(pass_filter) == 0 or summary[rmr.RMR_MS_MSG_TYPE] in pass_filter:  # no filter, or passes; capture it
             new_messages.append(summary)
 
     rmr.rmr_free_msg(mbuf)  # must free message to avoid leak
@@ -91,7 +88,7 @@ def rmr_rcvall_msgs_raw(mrc, pass_filter=[]):
         mbuf = rmr.rmr_alloc_msg(mrc, 4096)  # allocate buffer to have something for a return status
         mbuf = rmr.rmr_torcv_msg(mrc, mbuf, 0)  # set the timeout to 0 so this doesn't block!!
         summary = rmr.message_summary(mbuf)
-        if summary["message status"] != "RMR_OK":
+        if summary[rmr.RMR_MS_MSG_STATUS] != "RMR_OK":
             break
 
         if len(pass_filter) == 0 or mbuf.contents.mtype in pass_filter:  # no filter, or passes; capture it

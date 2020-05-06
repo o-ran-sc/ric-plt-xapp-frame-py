@@ -10,9 +10,12 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
-.. contents::
-   :depth: 3
-   :local:
+
+[1.0.4] - 2020-05-06
+--------------------
+* Publish message-summary dict keys as constants to avoid hardcoding strings
+* Add wrapper and test for RMR method rmr_set_vlevel(int)
+
 
 [1.0.3] - 2020-04-29
 --------------------
@@ -65,7 +68,6 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 * Switch to SI95 for rmr
 
 
-
 [0.5.0] - 3/18/2020
 -------------------
 
@@ -105,6 +107,7 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
   and call stop() when they want.
 * Raises tox coverage minimum to 70 from 50 (currently at 86)
 
+
 [0.2.0] - 3/3/2020
 ------------------
 
@@ -123,6 +126,7 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 * Adds more fields to setup like long_desc and classifiers so the pypi
   page looks nicer
 * Removes a bad release file (will be added back in subseq. commit)
+
 
 [0.1.0] - 2/27/2020
 -------------------

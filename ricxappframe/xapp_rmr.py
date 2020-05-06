@@ -1,7 +1,3 @@
-"""
-Contains rmr functionality specific to the xapp
-The general rmr API is via "rmr"
-"""
 # ==================================================================================
 #       Copyright (c) 2020 Nokia
 #       Copyright (c) 2020 AT&T Intellectual Property.
@@ -19,6 +15,10 @@ The general rmr API is via "rmr"
 #   limitations under the License.
 # ==================================================================================
 
+"""
+Contains RMR functionality specific to the xapp.
+The general rmr API is via "rmr"
+"""
 
 import time
 import queue

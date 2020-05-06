@@ -1,4 +1,3 @@
-# vim: ts=4 sw=4 expandtab:
 # ==================================================================================
 #       Copyright (c) 2019 Nokia
 #       Copyright (c) 2018-2019 AT&T Intellectual Property.
@@ -27,10 +26,6 @@
 #               Because this programme does not send messages, there is no reason
 #               to wait for RMR to initialise a route table (no call to rmr_ready
 #               is needed.
-#
-#   Date:       26 September 2019
-#
-# ---------------------------------------------------------------------------------
 
 from rmr import rmr
 from rmr import helpers
@@ -64,7 +59,7 @@ while True:
     else:
         print( "got %d messages" % len( mbunch ) )
         for mb in mbunch:
-            print( "type=%d payload=%s" % (mb["message type"], mb["payload"] ) )
+            print( "type=%d payload=%s" % (mb[rmr.RMR_MS_MSG_TYPE], mb[rmr.RMR_MS_PAYLOAD] ) )
 
     time.sleep( 1 )            # sleep to allow some to accumulate
 

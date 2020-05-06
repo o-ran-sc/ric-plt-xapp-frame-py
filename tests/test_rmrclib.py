@@ -45,5 +45,7 @@ def test_get_mapping_dict(expected_states):
     """
     assert rmrclib.get_mapping_dict() == expected_states
     assert rmrclib.state_to_status(0) == "RMR_OK"
+    assert rmrclib.state_to_status(2) == "RMR_ERR_NOENDPT"
+    assert rmrclib.state_to_status(10) == "RMR_ERR_RETRY"
     assert rmrclib.state_to_status(12) == "RMR_ERR_TIMEOUT"
     assert rmrclib.state_to_status(666) == "UNKNOWN STATE"

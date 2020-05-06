@@ -1,6 +1,3 @@
-"""
-tests data functions
-"""
 # ==================================================================================
 #       Copyright (c) 2019-2020 Nokia
 #       Copyright (c) 2018-2020 AT&T Intellectual Property.
@@ -17,6 +14,10 @@ tests data functions
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 # ==================================================================================
+"""
+tests data functions
+"""
+
 from ricxappframe.xapp_sdl import SDLWrapper
 
 

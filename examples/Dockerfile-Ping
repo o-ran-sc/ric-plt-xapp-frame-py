@@ -28,7 +28,7 @@ ENV RMR_SEED_RT /opt/route/test_route.rt
 RUN apk update && apk add gcc musl-dev bash
 
 # Install
-RUN pip install ricxappframe==0.6.0
+RUN pip install ricxappframe
 COPY ping_xapp.py .
 
 # Run

@@ -288,40 +288,43 @@ def test_rcv_all():
     test the ability to receive a batch of queued messages.
     """
     pay_fmt = "send to ring msg: %d"  # dynamic message format with counter
-
-    send_burst(MRC_SEND, pay_fmt)  # send a bunch of 13 messages that should queue
-    time.sleep(1)  # ensure underlying transport gets cycles to send/receive
-
-    bundle = helpers.rmr_rcvall_msgs(MRC_BUF_RCV)  # use the buffered receiver to read all with a single call
-    assert len(bundle) == 13
-
-    for i, ms in enumerate(bundle):
-        ms = bundle[i]  # validate each summary returned, and ordering preserved
-        assert ms["message state"] == 0
-        expected_pay = bytes(pay_fmt % i, "UTF-8")
-        assert ms["payload"] == expected_pay
-
-    send_burst(MRC_SEND, pay_fmt, mtype=1, num=10)  # send a second round with msg types 1 and 2 to test filter
-    send_burst(MRC_SEND, pay_fmt, mtype=2, num=8)
-    send_burst(MRC_SEND, pay_fmt, mtype=1, num=5)
-    send_burst(MRC_SEND, pay_fmt, mtype=2, num=4, counter=8)  # total of 12 messages with type 2 should be queued
-    time.sleep(1)  # ensure underlying transport gets cycles to send/receive
-
-    bundle = helpers.rmr_rcvall_msgs_raw(MRC_BUF_RCV, [2])  # receive only message type 2 messages
-    assert len(bundle) == 12  # we should only get the type 2 batch of 12 messages
-
-    for i, (ms, sbuf) in enumerate(bundle):  # test the raw version
-        test_summary = rmr.message_summary(sbuf)
-        assert test_summary == ms
-        assert ms["message state"] == 0  # all should be OK
-        assert ms["message type"] == 2  # only mtype 2 should have been received
-        expected_pay = bytes(pay_fmt % i, "UTF-8")  # ordering should still jive with the counter
-        assert ms["payload"] == expected_pay
-        rmr.rmr_free_msg(sbuf)
+    
+    if 1 > 0:
+        send_burst(MRC_SEND, pay_fmt)  # send a bunch of 13 messages that should queue
+        time.sleep(1)  # ensure underlying transport gets cycles to send/receive
+    
+        bundle = helpers.rmr_rcvall_msgs(MRC_BUF_RCV)  # use the buffered receiver to read all with a single call
+        assert len(bundle) == 13
+    
+        for i, ms in enumerate(bundle):
+            ms = bundle[i]  # validate each summary returned, and ordering preserved
+            assert ms["message state"] == 0
+            expected_pay = bytes(pay_fmt % i, "UTF-8")
+            assert ms["payload"] == expected_pay
+    
+        send_burst(MRC_SEND, pay_fmt, mtype=1, num=10)  # send a second round with msg types 1 and 2 to test filter
+        send_burst(MRC_SEND, pay_fmt, mtype=2, num=8)
+        send_burst(MRC_SEND, pay_fmt, mtype=1, num=5)
+        send_burst(MRC_SEND, pay_fmt, mtype=2, num=4, counter=8)  # total of 12 messages with type 2 should be queued
+        time.sleep(1)  # ensure underlying transport gets cycles to send/receive
+    
+        bundle = helpers.rmr_rcvall_msgs_raw(MRC_BUF_RCV, [2])  # receive only message type 2 messages
+        assert len(bundle) == 12  # we should only get the type 2 batch of 12 messages
+    
+        for i, (ms, sbuf) in enumerate(bundle):  # test the raw version
+            test_summary = rmr.message_summary(sbuf)
+            assert test_summary == ms
+            assert ms["message state"] == 0  # all should be OK
+            assert ms["message type"] == 2  # only mtype 2 should have been received
+            expected_pay = bytes(pay_fmt % i, "UTF-8")  # ordering should still jive with the counter
+            assert ms["payload"] == expected_pay
+            rmr.rmr_free_msg(sbuf)
 
     # check the timeout scenarios
     start_rcv_sec = time.time()
-    bundle = helpers.rmr_rcvall_msgs(MRC_RCV, timeout=1001)  # non-zero timeout means wait
+    print("test_rcv_all 1 time {0}".format(time.time()))
+    bundle = helpers.rmr_rcvall_msgs(MRC_BUF_RCV, timeout=1001)  # non-zero timeout means wait
+    print("test_rcv_all 2 time {0}".format(time.time()))
     assert len(bundle) == 0  # we should get none
     assert(time.time() - start_rcv_sec > 1)  # test duration should be longer than 1 second
 

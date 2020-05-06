@@ -22,6 +22,7 @@
 #   Date:       26 September 2019
 # ---------------------------------------------------------------------------
 
+import time
 from ricxappframe.rmr import rmr
 
 
@@ -56,8 +57,11 @@ def rmr_rcvall_msgs(mrc, pass_filter=[], timeout=0):
     new_messages = []
     mbuf = rmr.rmr_alloc_msg(mrc, 4096)  # allocate and reuse a single buffer for RMR
 
+    print("rmr_rcvall_msgs timeout {0}".format(timeout))
     while True:
+        print("rmr_rcvall_msgs 1 time {0}".format(time.time()))
         mbuf = rmr.rmr_torcv_msg(mrc, mbuf, timeout)  # first call may have non-zero timeout
+        print("rmr_rcvall_msgs 2 time {0}".format(time.time()))
         timeout = 0  # reset so subsequent calls do not wait
         summary = rmr.message_summary(mbuf)
         if summary["message status"] != "RMR_OK":  # ok indicates msg received, stop on all other states; e.g., RMR_ERR_TIMEOUT

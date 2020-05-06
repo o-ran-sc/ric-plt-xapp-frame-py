@@ -63,6 +63,24 @@
       "revId": "666e8319bd0e618576be79a14208d7eaf0de99f2",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c20b09ff_df14ee4d",
+        "filename": "ricxappframe/xapp_rmr.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-05-06T14:38:03Z",
+      "side": 1,
+      "message": "I prefer to leave this for now, I don\u0027t understand all the implications of changing it, and for now it lets me demonstrate an odd behavior for you",
+      "parentUuid": "cd47b2ef_18e41acc",
+      "revId": "666e8319bd0e618576be79a14208d7eaf0de99f2",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
     }
   ]
 }

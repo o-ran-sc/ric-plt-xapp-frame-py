@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3b959b5e_83e1914e",
+        "filename": "ricxappframe/xapp_rmr.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1000037
+      },
+      "writtenOn": "2020-05-06T12:45:52Z",
+      "side": 0,
+      "message": "Finally an \"it\u0027s\" that I didn\u0027t write :)",
+      "revId": "aa29841d6c673640fb395663be0e07f470682e2f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
+    }
+  ]
+}

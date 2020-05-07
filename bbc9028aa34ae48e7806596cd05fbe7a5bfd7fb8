@@ -1,0 +1,9 @@
+Code-Review+1: Guy Jacobson <gj2418@att.com>
+Code-Review+1: Scott Daniels <daniels@research.att.com>
+Code-Review+2: Jack Lucas <jflucas@research.att.com>
+Verified+1: ORAN Jobbuilder <releng+oran-jobbuilder@linuxfoundation.org>
+Submitted-by: Jack Lucas <jflucas@research.att.com>
+Submitted-at: Thu, 07 May 2020 20:36:36 +0000
+Reviewed-on: https://gerrit.o-ran-sc.org/r/c/ric-plt/xapp-frame-py/+/3617
+Project: ric-plt/xapp-frame-py
+Branch: refs/heads/master

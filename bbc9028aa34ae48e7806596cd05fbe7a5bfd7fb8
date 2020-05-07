@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f772840a_297a2b2b",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 1000263
+      },
+      "writtenOn": "2020-05-07T19:02:35Z",
+      "side": 1,
+      "message": "Ah--so here is the code change, amid all the comment reformatting!",
+      "range": {
+        "startLine": 361,
+        "startChar": 0,
+        "endLine": 361,
+        "endChar": 89
+      },
+      "revId": "bbc9028aa34ae48e7806596cd05fbe7a5bfd7fb8",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

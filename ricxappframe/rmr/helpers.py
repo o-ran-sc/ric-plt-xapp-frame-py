@@ -22,17 +22,17 @@
 from ricxappframe.rmr import rmr
 
 
-def rmr_rcvall_msgs(mrc, pass_filter=[], timeout=0):
+def rmr_rcvall_msgs(mrc, pass_filter=None, timeout=0):
     """
     Assembles an array of all messages which can be received without blocking
     (but see the timeout parameter).  Effectively drains the message queue if
     RMR is started in mt-call mode, or draining any waiting TCP buffers.  If
     the pass_filter parameter is supplied, it is treated as one or more
     message types to accept (pass through). Using the default, an empty list,
-    results in capturing all messages. if the timeout parameter is supplied,
-    this call may block up to that number of milliseconds waiting for a
-    message to arrive. Using the default, zero, results in non-blocking
-    no-wait behavior.
+    results in capturing all messages. If the timeout parameter is supplied
+    and is not zero, this call may block up to that number of milliseconds
+    waiting for a message to arrive. Using the default, zero, results in
+    non-blocking no-wait behavior.
 
     Parameters
     ----------
@@ -60,14 +60,14 @@ def rmr_rcvall_msgs(mrc, pass_filter=[], timeout=0):
         if summary[rmr.RMR_MS_MSG_STATUS] != "RMR_OK":  # ok indicates msg received, stop on all other states
             break
 
-        if len(pass_filter) == 0 or summary[rmr.RMR_MS_MSG_TYPE] in pass_filter:  # no filter, or passes; capture it
+        if pass_filter is None or len(pass_filter) == 0 or summary[rmr.RMR_MS_MSG_TYPE] in pass_filter:  # no filter, or passes; capture it
             new_messages.append(summary)
 
     rmr.rmr_free_msg(mbuf)  # free the single buffer to avoid leak
     return new_messages
 
 
-def rmr_rcvall_msgs_raw(mrc, pass_filter=[], timeout=0):
+def rmr_rcvall_msgs_raw(mrc, pass_filter=None, timeout=0):
     """
     Same as rmr_rcvall_msgs, but answers tuples with the raw sbuf.
     Useful if return-to-sender (rts) functions are required.
@@ -101,7 +101,7 @@ def rmr_rcvall_msgs_raw(mrc, pass_filter=[], timeout=0):
             rmr.rmr_free_msg(mbuf)  # free the failed-to-receive buffer
             break
 
-        if len(pass_filter) == 0 or mbuf.contents.mtype in pass_filter:  # no filter, or passes; capture it
+        if pass_filter is None or len(pass_filter) == 0 or mbuf.contents.mtype in pass_filter:  # no filter, or passes; capture it
             new_messages.append((summary, mbuf))  # caller is responsible for freeing the buffer
         else:
             rmr.rmr_free_msg(mbuf)  # free the filtered-out message buffer

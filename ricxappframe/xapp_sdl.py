@@ -27,11 +27,14 @@ class SDLWrapper:
     """
     This is a wrapper around the SDL Python interface.
 
-    We do not embed the below directly in the Xapp classes because this SDL wrapper is useful for other python apps, for example A1 Mediator uses this verbatim.
-    Therefore, we leave this here as a seperate instantiable object so it can be used outside of xapps too
-    One could argue this get moved into *sdl itself*.
+    We do not embed the below directly in the Xapp classes because
+    this SDL wrapper is useful for other python apps, for example A1
+    Mediator uses this verbatim. Therefore, we leave this here as a
+    seperate instantiable object so it can be used outside of xapps
+    too.  One could argue this get moved into *sdl itself*.
 
-    We currently use msgpack for binary (de)serialization: https://msgpack.org/index.html
+    We currently use msgpack for binary (de)serialization:
+    https://msgpack.org/index.html
     """
 
     def __init__(self, use_fake_sdl=False):
@@ -41,8 +44,12 @@ class SDLWrapper:
         Parameters
         ----------
         use_fake_sdl: bool
-            if this is True (default: False), then SDLs "fake dict backend" is used, which is very useful for testing since it allows you to use SDL without any SDL or Redis deployed at all.
-            This can be used while developing your xapp, and also for monkeypatching during unit testing (e.g., the xapp framework unit tests do this)
+            if this is True (default: False), then SDLs "fake dict
+            backend" is used, which is very useful for testing since
+            it allows you to use SDL without any SDL or Redis deployed at
+            all. This can be used while developing your xapp, and also
+            for monkeypatching during unit testing (e.g., the xapp
+            framework unit tests do this).
         """
         if use_fake_sdl:
             self._sdl = SyncStorage(fake_db_backend="dict")
@@ -51,21 +58,28 @@ class SDLWrapper:
 
     def set(self, ns, key, value, usemsgpack=True):
         """
-        set a key
+        sets a key
 
-       NOTE: I am down for a discussion about whether usemsgpack should *default* to True or False here. This seems like a usage statistic question (that we don't have enough data for yet). Are more uses for an xapp to write/read their own data, or will more xapps end up reading data written by some other thing? I think it's too early to know this. So we go with True as the very first user of this, a1, does this. I'm open to changing this default to False later with evidence.
+        TODO: discuss whether usemsgpack should *default* to True or
+        False here. This seems like a usage statistic question (that we
+        don't have enough data for yet). Are more uses for an xapp to
+        write/read their own data, or will more xapps end up reading data
+        written by some other thing? I think it's too early to know
+        this. So we go with True as the very first user of this, a1, does
+        this. I'm open to changing this default to False later with
+        evidence.
 
         Parameters
         ----------
         ns: string
-           the sdl namespace
+        the sdl namespace
         key: string
-            the sdl key
+        the sdl key
         value:
-            if usemsgpack is True, value can be anything serializable by msgpack
-            if usemsgpack is False, value must be bytes
+        if usemsgpack is True, value can be anything serializable by msgpack
+        if usemsgpack is False, value must be bytes
         usemsgpack: boolean (optional)
-            determines whether the value is serialized using msgpack
+        determines whether the value is serialized using msgpack
         """
         if usemsgpack:
             self._sdl.set(ns, {key: msgpack.packb(value, use_bin_type=True)})

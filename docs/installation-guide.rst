@@ -6,12 +6,8 @@
 Installation Guide
 ==================
 
-.. contents::
-   :depth: 3
-   :local:
-
-The `ricxappframe` is available in `PyPi <https://pypi.org/project/ricxappframe>`_ .
-Use pip to install the version you want.
+The `ricxappframe` is available in `PyPI <https://pypi.org/project/ricxappframe>`_ .
+Use pip to install the version required.
 
 Installing the ricxappframe package does NOT install the required RMR system library,
 a shared object written in C and available for most Linux systems.

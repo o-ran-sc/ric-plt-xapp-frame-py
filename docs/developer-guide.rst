@@ -4,34 +4,56 @@
 Developer Guide
 ===============
 
-.. contents::
-   :depth: 3
-   :local:
+Tech Stack
+----------
+
+The framework requires Python version 3.7 or later, and depends on
+these packages provided by the O-RAN-SC project and third parties:
+
+* msgpack
+* mdclogpy
+* ricsdl
+
 
 Version bumping the framework
 -----------------------------
 
 This project follows semver. When changes are made, the versions are in:
 
-1) ``docs/release-notes.rst``
-
-2) ``setup.py``
+#. ``docs/release-notes.rst``
+#. ``setup.py``
 
 Version bumping RMR
 -------------------
 
-These items in this repo must be kept in sync:
-* Dockerfile-Unit-Test
-* examples/Dockerfile-Ping
-* examples/Dockerfile-Pong
-* ``rmr-version.yaml`` controls what rmr gets installed for unit testing in Jenkins
+These items in this repo must be kept in sync with the RMR version:
+
+#. Dockerfile-Unit-Test
+#. examples/Dockerfile-Ping
+#. examples/Dockerfile-Pong
+#. ``rmr-version.yaml`` controls what version of RMR is installed for
+   unit testing in Jenkins CI
 
 
 Unit Testing
 ------------
 
-You can run the unit tests in Docker to avoid installing RMR locally:
+Running the unit tests requires the python packages ``tox`` and ``pytest``.
+
+The RMR library is also required during unit tests. If running directly from tox
+(outside a Docker container), install RMR according to its instructions.
+
+Upon completion, view the test coverage like this:
 
 ::
 
-   docker build -f Dockerfile-Unit-Test .
+   tox
+   open htmlcov/index.html
+
+Alternatively, if you cannot install RMR locally, you can run the unit
+tests in Docker. This is somewhat less nice because you don't get the
+pretty HTML report on coverage.
+
+::
+
+   docker build  --no-cache -f Dockerfile-Unit-Test .

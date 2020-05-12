@@ -169,81 +169,97 @@ class _BaseXapp:
         rmr.rmr_free_msg(sbuf)
 
     # SDL
-    # NOTE, even though these are passthroughs, the seperate SDL wrapper
+    # NOTE, even though these are passthroughs, the separate SDL wrapper
     # is useful for other applications like A1. Therefore, we don't
     # embed that SDLWrapper functionality here so that it can be
     # instantiated on its own.
 
     def sdl_set(self, ns, key, value, usemsgpack=True):
         """
-        set a key
+        Stores a key-value pair,
+        optionally serializing the value to bytes using msgpack.
 
         Parameters
         ----------
         ns: string
-           the sdl namespace
+            SDL namespace
         key: string
-            the sdl key
+            SDL key
         value:
-            if usemsgpack is True, value can be anything serializable by msgpack
-            if usemsgpack is False, value must be bytes
-        usemsgpack: boolean (optional)
-            determines whether the value is serialized using msgpack
+            Object or byte array to store.  See the `usemsgpack` parameter.
+        usemsgpack: boolean (optional, default is True)
+            Determines whether the value is serialized using msgpack before storing.
+            If usemsgpack is True, the msgpack function `packb` is invoked
+            on the value to yield a byte array that is then sent to SDL.
+            Stated differently, if usemsgpack is True, the value can be anything
+            that is serializable by msgpack.
+            If usemsgpack is False, the value must be bytes.
         """
         self._sdl.set(ns, key, value, usemsgpack)
 
     def sdl_get(self, ns, key, usemsgpack=True):
         """
-        get a key
+        Gets the value for the specified namespace and key,
+        optionally deserializing stored bytes using msgpack.
 
         Parameters
         ----------
         ns: string
-           the sdl namespace
+            SDL namespace
         key: string
-            the sdl key
-        usemsgpack: boolean (optional)
-            if usemsgpack is True, the value is deserialized using msgpack
-            if usemsgpack is False, the value is returned as raw bytes
+            SDL key
+        usemsgpack: boolean (optional, default is True)
+            If usemsgpack is True, the byte array stored by SDL is deserialized
+            using msgpack to yield the original object that was stored.
+            If usemsgpack is False, the byte array stored by SDL is returned
+            without further processing.
 
         Returns
         -------
-        None (if not exist) or see above; depends on usemsgpack
+        Value
+            See the usemsgpack parameter for an explanation of the returned value type.
+            Answers None if the key is not found.
         """
         return self._sdl.get(ns, key, usemsgpack)
 
     def sdl_find_and_get(self, ns, prefix, usemsgpack=True):
         """
-        get all k v pairs that start with prefix
+        Gets all key-value pairs in the specified namespace
+        with keys that start with the specified prefix,
+        optionally deserializing stored bytes using msgpack.
 
         Parameters
         ----------
         ns: string
-           the sdl namespace
-        key: string
-            the sdl key
+           SDL namespace
         prefix: string
-            the prefix
-        usemsgpack: boolean (optional)
-            if usemsgpack is True, the value returned is a dict where each value has been deserialized using msgpack
-            if usemsgpack is False, the value returned is as a dict mapping keys to raw bytes
+            the key prefix
+        usemsgpack: boolean (optional, default is True)
+            If usemsgpack is True, the byte array stored by SDL is deserialized
+            using msgpack to yield the original value that was stored.
+            If usemsgpack is False, the byte array stored by SDL is returned
+            without further processing.
 
         Returns
         -------
-        {} (if no keys match) or see above; depends on usemsgpack
+        Dictionary of key-value pairs
+            Each key has the specified prefix.
+            The value object (its type) depends on the usemsgpack parameter,
+            but is either a Python object or raw bytes as discussed above.
+            Answers an empty dictionary if no keys matched the prefix.
         """
         return self._sdl.find_and_get(ns, prefix, usemsgpack)
 
     def sdl_delete(self, ns, key):
         """
-        delete a key
+        Deletes the key-value pair with the specified key in the specified namespace.
 
         Parameters
         ----------
         ns: string
-           the sdl namespace
+           SDL namespace
         key: string
-            the sdl key
+            SDL key
         """
         self._sdl.delete(ns, key)
 
@@ -272,29 +288,34 @@ class _BaseXapp:
 
 class RMRXapp(_BaseXapp):
     """
-    Represents an xapp that is purely driven by RMR messages; i.e., when
-    messages are received, the xapp does something. When run is called,
-    the xapp framework waits for rmr messages, and calls the
-    client-provided consume callback on every one.
+    Represents an Xapp that reacts only to RMR messages; i.e., when
+    messages are received, the Xapp does something. When run is called,
+    the xapp framework waits for RMR messages, and calls the appropriate
+    client-registered consume callback on each.
+
+    Parameters
+    ----------
+    default_handler: function
+        A function with the signature (summary, sbuf) to be called
+        when a message type is received for which no other handler is registered.
+    default_handler argument summary: dict
+        The RMR message summary, a dict of key-value pairs
+    default_handler argument sbuf: ctypes c_void_p
+        Pointer to an RMR message buffer. The user must call free on this when done.
+    rmr_port: integer (optional, default is 4562)
+        Initialize RMR to listen on this port
+    rmr_wait_for_ready: boolean (optional, default is True)
+        Wait for RMR to signal ready before starting the dispatch loop
+    use_fake_sdl: boolean (optional, default is False)
+        Use an in-memory store instead of the real SDL service
+    post_init: function (optional, default None)
+        Run this function after the app initializes and before the dispatch loop starts;
+        its signature should be post_init(self)
     """
 
     def __init__(self, default_handler, rmr_port=4562, rmr_wait_for_ready=True, use_fake_sdl=False, post_init=None):
         """
-        Parameters
-        ----------
-        default_handler: function
-            a function with the signature (summary, sbuf) to be called
-            when a message of type message_type is received.
-        summary: dict
-            the rmr message summary
-        sbuf: ctypes c_void_p
-            Pointer to an rmr message buffer. The user must call free on
-            this when done.
-        post_init: function (optional)
-            optionally runs this function after the app initializes and
-        before the run loop; its signature should be post_init(self)
-
-        For the other parameters, see _BaseXapp
+        Also see _BaseXapp
         """
         # init base
         super().__init__(
@@ -343,16 +364,16 @@ class RMRXapp(_BaseXapp):
 
     def run(self, thread=False):
         """
-        This function should be called when the client xapp is ready to
-        wait for its handlers to be called on received messages.
+        This function should be called when the reactive Xapp is ready to start.
+        After start, the Xapp's handlers will be called on received messages.
 
         Parameters
         ----------
-        thread: bool (optional)
+        thread: bool (optional, default is False)
+            If False, execution is not returned and the framework loops forever.
             If True, a thread is started to run the queue read/dispatch loop
             and execution is returned to caller; the thread can be stopped
-            by calling .stop(). If False (the default), execution is not
-            returned and the framework loops forever.
+            by calling the .stop() method.
         """
 
         def loop():
@@ -384,19 +405,28 @@ class RMRXapp(_BaseXapp):
 
 class Xapp(_BaseXapp):
     """
-    Represents an xapp where the client provides a generic function to
-    call, which is mostly likely a loop-forever loop.
+    Represents a generic Xapp where the client provides a function for the framework to call,
+    which usually contains a loop-forever construct.
+
+    Parameters
+    ----------
+    entrypoint: function
+        This function is called when the Xapp class's run method is invoked.
+        The function signature must be just function(self)
+    rmr_port: integer (optional, default is 4562)
+        Initialize RMR to listen on this port
+    rmr_wait_for_ready: boolean (optional, default is True)
+        Wait for RMR to signal ready before starting the dispatch loop
+    use_fake_sdl: boolean (optional, default is False)
+        Use an in-memory store instead of the real SDL service
     """
 
     def __init__(self, entrypoint, rmr_port=4562, rmr_wait_for_ready=True, use_fake_sdl=False):
         """
         Parameters
         ----------
-        entrypoint: function
-            this function is called when the xapp runs; this is the user code.
-            its signature should be function(self)
 
-        For the other parameters, see _BaseXapp
+        For the other parameters, see class _BaseXapp.
         """
         # init base
         super().__init__(rmr_port=rmr_port, rmr_wait_for_ready=rmr_wait_for_ready, use_fake_sdl=use_fake_sdl)
@@ -404,8 +434,7 @@ class Xapp(_BaseXapp):
 
     def run(self):
         """
-        This function should be called when the client xapp is ready to
-        start their code.
+        This function should be called when the general Xapp is ready to start.
         """
         self._entrypoint(self)
 

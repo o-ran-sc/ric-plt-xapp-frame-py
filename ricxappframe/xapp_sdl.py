@@ -30,11 +30,10 @@ class SDLWrapper:
     We do not embed the below directly in the Xapp classes because
     this SDL wrapper is useful for other python apps, for example A1
     Mediator uses this verbatim. Therefore, we leave this here as a
-    seperate instantiable object so it can be used outside of xapps
-    too.  One could argue this get moved into *sdl itself*.
+    separate object so it can be used outside of xapps.
 
-    We currently use msgpack for binary (de)serialization:
-    https://msgpack.org/index.html
+    This class optionally uses msgpack for binary (de)serialization:
+    see https://msgpack.org/index.html
     """
 
     def __init__(self, use_fake_sdl=False):
@@ -43,13 +42,13 @@ class SDLWrapper:
 
         Parameters
         ----------
-        use_fake_sdl: bool
-            if this is True (default: False), then SDLs "fake dict
-            backend" is used, which is very useful for testing since
-            it allows you to use SDL without any SDL or Redis deployed at
-            all. This can be used while developing your xapp, and also
-            for monkeypatching during unit testing (e.g., the xapp
-            framework unit tests do this).
+        use_fake_sdl: bool (optional, default False)
+            if this is True, then use SDL's in-memory backend,
+            which is very useful for testing since it allows use
+            of SDL without a running SDL or Redis instance.
+            This can be used while developing an xapp and also
+            for monkeypatching during unit testing; e.g., the xapp
+            framework unit tests do this.
         """
         if use_fake_sdl:
             self._sdl = SyncStorage(fake_db_backend="dict")
@@ -58,51 +57,59 @@ class SDLWrapper:
 
     def set(self, ns, key, value, usemsgpack=True):
         """
-        sets a key
+        Stores a key-value pair,
+        optionally serializing the value to bytes using msgpack.
 
         TODO: discuss whether usemsgpack should *default* to True or
         False here. This seems like a usage statistic question (that we
         don't have enough data for yet). Are more uses for an xapp to
         write/read their own data, or will more xapps end up reading data
-        written by some other thing? I think it's too early to know
-        this. So we go with True as the very first user of this, a1, does
-        this. I'm open to changing this default to False later with
-        evidence.
+        written by some other thing? I think it's too early to know.
 
         Parameters
         ----------
         ns: string
-        the sdl namespace
+            SDL namespace
         key: string
-        the sdl key
+            SDL key
         value:
-        if usemsgpack is True, value can be anything serializable by msgpack
-        if usemsgpack is False, value must be bytes
-        usemsgpack: boolean (optional)
-        determines whether the value is serialized using msgpack
+            Object or byte array to store.  See the `usemsgpack` parameter.
+        usemsgpack: boolean (optional, default is True)
+            Determines whether the value is serialized using msgpack before storing.
+            If usemsgpack is True, the msgpack function `packb` is invoked
+            on the value to yield a byte array that is then sent to SDL.
+            Stated differently, if usemsgpack is True, the value can be anything
+            that is serializable by msgpack.
+            If usemsgpack is False, the value must be bytes.
         """
         if usemsgpack:
-            self._sdl.set(ns, {key: msgpack.packb(value, use_bin_type=True)})
-        else:
-            self._sdl.set(ns, {key: value})
+            value = msgpack.packb(value, use_bin_type=True)
+        if not isinstance(value, bytes):
+            raise ValueError("Value is not bytes")
+        self._sdl.set(ns, {key: value})
 
     def get(self, ns, key, usemsgpack=True):
         """
-        get a key
+        Gets the value for the specified namespace and key,
+        optionally deserializing stored bytes using msgpack.
 
         Parameters
         ----------
         ns: string
-           the sdl namespace
+            SDL namespace
         key: string
-            the sdl key
-        usemsgpack: boolean (optional)
-            if usemsgpack is True, the value is deserialized using msgpack
-            if usemsgpack is False, the value is returned as raw bytes
+            SDL key
+        usemsgpack: boolean (optional, default is True)
+            If usemsgpack is True, the byte array stored by SDL is deserialized
+            using msgpack to yield the original object that was stored.
+            If usemsgpack is False, the byte array stored by SDL is returned
+            without further processing.
 
         Returns
         -------
-        None (if not exist) or see above; depends on usemsgpack
+        Value
+            See the usemsgpack parameter for an explanation of the returned value type.
+            Answers None if the key is not found.
         """
         ret_dict = self._sdl.get(ns, {key})
         if key in ret_dict:
@@ -114,23 +121,29 @@ class SDLWrapper:
 
     def find_and_get(self, ns, prefix, usemsgpack=True):
         """
-        get all k v pairs that start with prefix
+        Gets all key-value pairs in the specified namespace
+        with keys that start with the specified prefix,
+        optionally deserializing stored bytes using msgpack.
 
         Parameters
         ----------
         ns: string
-           the sdl namespace
-        key: string
-            the sdl key
+           SDL namespace
         prefix: string
-            the prefix
-        usemsgpack: boolean (optional)
-            if usemsgpack is True, the value returned is a dict where each value has been deserialized using msgpack
-            if usemsgpack is False, the value returned is as a dict mapping keys to raw bytes
+            the key prefix
+        usemsgpack: boolean (optional, default is True)
+            If usemsgpack is True, the byte array stored by SDL is deserialized
+            using msgpack to yield the original value that was stored.
+            If usemsgpack is False, the byte array stored by SDL is returned
+            without further processing.
 
         Returns
         -------
-        {} (if no keys match) or see above; depends on usemsgpack
+        Dictionary of key-value pairs
+            Each key has the specified prefix.
+            The value object (its type) depends on the usemsgpack parameter,
+            but is either a Python object or raw bytes as controlled by usemsgpack.
+            Answers an empty dictionary if no keys matched the prefix.
         """
 
         # note: SDL "*" usage is inconsistent with real python regex, where it would be ".*"
@@ -141,20 +154,20 @@ class SDLWrapper:
 
     def delete(self, ns, key):
         """
-        delete a key
+        Deletes the key-value pair with the specified key in the specified namespace.
 
         Parameters
         ----------
         ns: string
-           the sdl namespace
+           SDL namespace
         key: string
-            the sdl key
+            SDL key
         """
         self._sdl.remove(ns, {key})
 
     def healthcheck(self):
         """
-        checks if the sdl connection is healthy
+        Checks if the sdl connection is healthy.
 
         Returns
         -------

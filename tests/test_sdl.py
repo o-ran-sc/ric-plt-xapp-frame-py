@@ -51,3 +51,10 @@ def test_sdl():
 
     assert sdl.find_and_get(NS, "as.df") == {}
     assert sdl.find_and_get(NS, "") == {}
+
+    # verify the SDL set method rejects non-byte value when not packing
+    try:
+        sdl.set(NS, "somedict", {"key": "value"}, usemsgpack=False)
+        assert False
+    except ValueError:
+        pass

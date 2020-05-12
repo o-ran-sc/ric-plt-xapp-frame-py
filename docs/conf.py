@@ -9,6 +9,9 @@ extensions = ["sphinx.ext.autodoc", "sphinx.ext.intersphinx", "sphinx.ext.viewco
 
 # don't alphabetically order
 autodoc_member_order = "bysource"
+# Tell numpydoc NOT to generate a list of class members to silence sphinx warnings like this:
+# simple.py:docstring of simple.simple.Simple.rst:20:autosummary: stub file not found 'simple.simple.Simple.hello'. Check your autosummary_generate setting.
+numpydoc_show_class_members = False
 
 linkcheck_ignore = ["http://localhost.*", "http://127.0.0.1.*", "https://gerrit.o-ran-sc.org.*"]
 

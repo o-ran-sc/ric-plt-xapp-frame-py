@@ -11,6 +11,12 @@ The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 
+[1.1.2] - 2020-05-12
+--------------------
+* Check for value type bytes in SDL set function (`RICAPP-104 <https://jira.o-ran-sc.org/browse/RICAPP-104>`_)
+* Extend and publish class and method documentation as user guide in RST
+
+
 [1.1.1] - 2020-05-07
 --------------------
 * Use timeout on queue get method to avoid 100% CPU usage (`RIC-354 <https://jira.o-ran-sc.org/browse/RIC-354>`_)

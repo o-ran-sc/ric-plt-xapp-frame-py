@@ -4,6 +4,9 @@
 Developer Guide
 ===============
 
+This document explains how to maintain the RIC Xapp framework.
+Information for users of this framework (i.e., Xapp developers) is in the User Guide.
+
 Tech Stack
 ----------
 

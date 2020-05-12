@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8dc75fe8_dacfbcc5",
+        "filename": "ricxappframe/xapp_sdl.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-05-12T22:47:20Z",
+      "side": 1,
+      "message": "this doesn\u0027t seem super valuable to me, as the python sdl framework will do this. the harm in doing this is if the python sdl framework is extended to accept other value types which they were discussing. I think you should just let the sdl framework reject invalid values.",
+      "revId": "9bb3265102906536b1db9c8c7641235f96880df5",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

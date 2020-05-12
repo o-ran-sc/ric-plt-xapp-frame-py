@@ -18,6 +18,7 @@
 tests data functions
 """
 
+import pytest
 from ricxappframe.xapp_sdl import SDLWrapper
 
 
@@ -51,3 +52,7 @@ def test_sdl():
 
     assert sdl.find_and_get(NS, "as.df") == {}
     assert sdl.find_and_get(NS, "") == {}
+
+    # verify the SDL set method rejects non-byte value when not packing
+    with pytest.raises(ValueError):
+        sdl.set(NS, "somedict", {"key": "value"}, usemsgpack=False)

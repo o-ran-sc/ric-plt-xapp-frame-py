@@ -1,8 +1,12 @@
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
-.. http://creativecommons.org/licenses/by/4.0
+.. SPDX-License-Identifier: CC-BY-4.0
+.. Copyright (C) 2020 AT&T Intellectual Property
 
 Developer Guide
 ===============
+
+This document explains how to maintain the RIC Xapp framework.
+Information for users of this framework (i.e., Xapp developers) is in the User Guide.
 
 Tech Stack
 ----------

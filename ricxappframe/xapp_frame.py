@@ -272,29 +272,34 @@ class _BaseXapp:
 
 class RMRXapp(_BaseXapp):
     """
-    Represents an xapp that is purely driven by RMR messages; i.e., when
-    messages are received, the xapp does something. When run is called,
-    the xapp framework waits for rmr messages, and calls the
-    client-provided consume callback on every one.
+    Represents an Xapp that reacts only to RMR messages; i.e., when
+    messages are received, the Xapp does something. When run is called,
+    the xapp framework waits for RMR messages, and calls the appropriate
+    client-registered consume callback on each.
+
+    Parameters
+    ----------
+    default_handler: function
+        A function with the signature (summary, sbuf) to be called
+        when a message type is received for which no other handler is registered.
+    default_handler argument summary: dict
+        The RMR message summary, a dict of key-value pairs
+    default_handler argument sbuf: ctypes c_void_p
+        Pointer to an RMR message buffer. The user must call free on this when done.
+    rmr_port: integer (optional, default is 4562)
+        Initialize RMR to listen on this port
+    rmr_wait_for_ready: boolean (optional, default is True)
+        Wait for RMR to signal ready before starting the dispatch loop
+    use_fake_sdl: boolean (optional, default is False)
+        Use an in-memory store instead of the real SDL service
+    post_init: function (optional, default None)
+        Run this function after the app initializes and before the dispatch loop starts;
+        its signature should be post_init(self)
     """
 
     def __init__(self, default_handler, rmr_port=4562, rmr_wait_for_ready=True, use_fake_sdl=False, post_init=None):
         """
-        Parameters
-        ----------
-        default_handler: function
-            a function with the signature (summary, sbuf) to be called
-            when a message of type message_type is received.
-        summary: dict
-            the rmr message summary
-        sbuf: ctypes c_void_p
-            Pointer to an rmr message buffer. The user must call free on
-            this when done.
-        post_init: function (optional)
-            optionally runs this function after the app initializes and
-        before the run loop; its signature should be post_init(self)
-
-        For the other parameters, see _BaseXapp
+        Also see _BaseXapp
         """
         # init base
         super().__init__(
@@ -343,16 +348,16 @@ class RMRXapp(_BaseXapp):
 
     def run(self, thread=False):
         """
-        This function should be called when the client xapp is ready to
-        wait for its handlers to be called on received messages.
+        This function should be called when the reactive Xapp is ready to start.
+        After start, the Xapp's handlers will be called on received messages.
 
         Parameters
         ----------
-        thread: bool (optional)
+        thread: bool (optional, default is False)
+            If False, execution is not returned and the framework loops forever.
             If True, a thread is started to run the queue read/dispatch loop
             and execution is returned to caller; the thread can be stopped
-            by calling .stop(). If False (the default), execution is not
-            returned and the framework loops forever.
+            by calling the .stop() method.
         """
 
         def loop():
@@ -384,19 +389,28 @@ class RMRXapp(_BaseXapp):
 
 class Xapp(_BaseXapp):
     """
-    Represents an xapp where the client provides a generic function to
-    call, which is mostly likely a loop-forever loop.
+    Represents a generic Xapp where the client provides a function for the framework to call,
+    which usually contains a loop-forever construct.
+
+    Parameters
+    ----------
+    entrypoint: function
+        This function is called when the Xapp class's run method is invoked.
+        The function signature must be just function(self)
+    rmr_port: integer (optional, default is 4562)
+        Initialize RMR to listen on this port
+    rmr_wait_for_ready: boolean (optional, default is True)
+        Wait for RMR to signal ready before starting the dispatch loop
+    use_fake_sdl: boolean (optional, default is False)
+        Use an in-memory store instead of the real SDL service
     """
 
     def __init__(self, entrypoint, rmr_port=4562, rmr_wait_for_ready=True, use_fake_sdl=False):
         """
         Parameters
         ----------
-        entrypoint: function
-            this function is called when the xapp runs; this is the user code.
-            its signature should be function(self)
 
-        For the other parameters, see _BaseXapp
+        For the other parameters, see class _BaseXapp.
         """
         # init base
         super().__init__(rmr_port=rmr_port, rmr_wait_for_ready=rmr_wait_for_ready, use_fake_sdl=use_fake_sdl)
@@ -404,8 +418,7 @@ class Xapp(_BaseXapp):
 
     def run(self):
         """
-        This function should be called when the client xapp is ready to
-        start their code.
+        This function should be called when the general Xapp is ready to start.
         """
         self._entrypoint(self)
 

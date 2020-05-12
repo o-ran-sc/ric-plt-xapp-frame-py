@@ -12,6 +12,7 @@ xApp Python Framework
 
    installation-guide.rst
    overview.rst
+   user-guide.rst
    rmr_api.rst
    developer-guide.rst
    release-notes.rst

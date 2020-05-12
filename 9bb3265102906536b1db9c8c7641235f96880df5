@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "20496535_8d9bad66",
+        "filename": "ricxappframe/xapp_sdl.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-05-12T22:58:14Z",
+      "side": 1,
+      "message": "Right. But much of the usage right now sets use_fake_sdl\u003dTrue, and this code will reject a non-bytes value in that case.",
+      "parentUuid": "8dc75fe8_dacfbcc5",
+      "revId": "9bb3265102906536b1db9c8c7641235f96880df5",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "962722b9_dcdf4e4f",
         "filename": "tests/test_sdl.py",
         "patchSetId": 7
@@ -33,6 +51,24 @@
       "revId": "9bb3265102906536b1db9c8c7641235f96880df5",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "974920df_7d03bc8f",
+        "filename": "tests/test_sdl.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-05-12T22:58:14Z",
+      "side": 1,
+      "message": "Thanks for the pointer",
+      "parentUuid": "962722b9_dcdf4e4f",
+      "revId": "9bb3265102906536b1db9c8c7641235f96880df5",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
     }
   ]
 }

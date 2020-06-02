@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "68c0606c_2225c519",
+        "filename": "ricxappframe/alarm/alarm.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-06-02T15:25:20Z",
+      "side": 1,
+      "message": "I added these setters (with bad names to boot) bcos I was blindly mimicing the alarm-go module.  But explicit setter methods are totally superfluous in Python, where fields (attributes) are not hidden or protected in any way.  Nuking these methods.",
+      "range": {
+        "startLine": 152,
+        "startChar": 4,
+        "endLine": 168,
+        "endChar": 44
+      },
+      "revId": "6e9aa01c930138ac3170ee7f842fb0dd4a162e72",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

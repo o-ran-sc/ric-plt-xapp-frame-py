@@ -16,6 +16,58 @@
       "revId": "06bf05e0478a2400e1a8a1e76fd871124ed76cdb",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7276bcbf_d60a3094",
+        "filename": "ricxappframe/alarm/alarm.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-06-02T14:03:52Z",
+      "side": 1,
+      "message": "pylint should have flipped lid on this",
+      "parentUuid": "ca42621b_10a9799d",
+      "revId": "06bf05e0478a2400e1a8a1e76fd871124ed76cdb",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "afe999d9_b40d09ca",
+        "filename": "ricxappframe/alarm/alarm.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-06-02T14:03:52Z",
+      "side": 1,
+      "message": "could clean this up with\n\nreturn {\"alarm\" :...\n     \n       }",
+      "revId": "06bf05e0478a2400e1a8a1e76fd871124ed76cdb",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "706ac482_ad897b31",
+        "filename": "ricxappframe/alarm/alarm.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1000074
+      },
+      "writtenOn": "2020-06-02T14:03:52Z",
+      "side": 1,
+      "message": "i dont see any glaring logic problems however i dont have all the context",
+      "revId": "06bf05e0478a2400e1a8a1e76fd871124ed76cdb",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
     }
   ]
 }

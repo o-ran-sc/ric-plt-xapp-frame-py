@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://gerrit.o-ran-sc.org/r/admin/repos/ric-plt/alarm-go.json",
+  "type": "object",
+  "title": "Alarm schema",
+  "description": "Schema for RIC alarm messages.",
+  "default": {},
+  "examples": [
+    {
+      "managedObjectId": "my-pod-lib",
+      "applicationId": "my-app",
+      "specificProblem": 1234,
+      "perceivedSeverity": "MAJOR",
+      "additionalInfo": "Some App data",
+      "identifyingInfo": "eth 0 1",
+      "AlarmAction": "RAISE",
+      "AlarmTime": 1591188407505707
+    }
+  ],
+  "required": [
+    "managedObjectId",
+    "applicationId",
+    "specificProblem",
+    "perceivedSeverity",
+    "identifyingInfo",
+    "AlarmAction",
+    "AlarmTime"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "managedObjectId": {
+      "type": "string",
+      "title": "The managedObjectId schema",
+      "description": "The name of the managed object that is the cause of the fault.",
+      "default": ""
+    },
+    "applicationId": {
+      "type": "string",
+      "title": "The applicationId schema",
+      "description": "The name of the process that raised the alarm.",
+      "default": ""
+    },
+    "specificProblem": {
+      "type": "integer",
+      "title": "The specificProblem schema",
+      "description": "The problem that is the cause of the alarm.",
+      "default": 0
+    },
+    "perceivedSeverity": {
+      "type": "string",
+      "enum": [
+        "UNSPECIFIED",
+        "CRITICAL",
+        "MAJOR",
+        "MINOR",
+        "WARNING",
+        "CLEARED",
+        "DEFAULT"
+      ],
+      "title": "The perceivedSeverity schema",
+      "description": "The severity of the alarm.",
+      "default": ""
+    },
+    "additionalInfo": {
+      "type": "string",
+      "title": "The additionalInfo schema",
+      "description": "Additional information given by the application (optional).",
+      "default": ""
+    },
+    "identifyingInfo": {
+      "type": "string",
+      "title": "The identifyingInfo schema",
+      "description": "Identifying additional information, which is part of alarm identity.",
+      "default": ""
+    },
+    "AlarmAction": {
+      "type": "string",
+      "enum": [
+        "RAISE",
+        "CLEAR",
+        "CLEARALL"
+      ],
+      "title": "The AlarmAction schema",
+      "description": "Action to perform on the alarm.",
+      "default": ""
+    },
+    "AlarmTime": {
+      "type": "integer",
+      "title": "The AlarmTime schema",
+      "description": "Current system time in milliseconds since the Epoch.",
+      "default": 0
+    }
+  }
+}

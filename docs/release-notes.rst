@@ -11,6 +11,11 @@ The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 
+[1.2.0] - 2020-06-01
+--------------------
+* Add alarm API (`RIC-380 <https://jira.o-ran-sc.org/browse/RIC-380>`_)
+
+
 [1.1.2] - 2020-05-13
 --------------------
 * Extend and publish class and method documentation as user guide in RST
@@ -41,7 +46,6 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 [1.0.1] - 2020-04-10
 --------------------
-
 * Publish API documentation using Sphinx autodoc, which required
   changes so Sphinx can run when the RMR .so file is not available,
   such as during a ReadTheDocs build.
@@ -57,7 +61,6 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 [1.0.0] - 4/6/2020
 ------------------
-
 * Python rmr has been moved into this repo. The module name has NOT
   changed in order to make the transition for repos very easy. The
   only transition needed should be prefixing rmr with ricxappframe in
@@ -66,7 +69,6 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 [0.7.0] - 4/2/2020
 ------------------
-
 * RMRXapps by default now implement the rmr healthcheck probe;
   users can also override it with a more complex handler if they
   wish
@@ -76,13 +78,11 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 [0.6.0] - 3/23/2020
 -------------------
-
 * Switch to SI95 for rmr
 
 
 [0.5.0] - 3/18/2020
 -------------------
-
 * All xapps (via the base class) now have a logger attribute that can
   be invoked to provide mdc logging. It is a passthrough to the RIC
   mdc logger for python (untouched, no value in an API on top at the
@@ -91,14 +91,12 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 [0.4.1] - 3/17/2020
 -------------------
-
 * Switch tox to use py38
 * switch to latest builders
 
 
 [0.4.0] - 3/13/2020
 -------------------
-
 * Minor breaking change; switches the default behavior RE
   threading for RMRXapps. The default is not to return execution,
   but the caller (in `run`) can choose to loop in a thread.
@@ -107,7 +105,6 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 [0.3.0] - 3/10/2020
 -------------------
-
 * Large change to the "feel" of this framework: rather than subclass
   instantiation, xapps now use initialization and registration
   functions to register handlers
@@ -122,7 +119,6 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 [0.2.0] - 3/3/2020
 ------------------
-
 * now allows for RMRXapps to call code before entering the infinite
   loop
 * stop is now called before throwing NotImplemented in the case where
@@ -142,5 +138,4 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 [0.1.0] - 2/27/2020
 -------------------
-
 * Initial commit

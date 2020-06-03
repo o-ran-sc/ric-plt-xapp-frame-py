@@ -14,6 +14,9 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 # ==================================================================================
+"""
+Wraps all RMR functions, but does not have a reference to the shared library.
+"""
 import uuid
 from ctypes import POINTER, Structure
 from ctypes import c_int, c_char, c_char_p, c_void_p, memmove, cast, create_string_buffer
@@ -141,13 +144,13 @@ class rmr_mbuf_t(Structure):
             For a general character pointer that may also point to binary data, POINTER(c_char)
             must be used. The constructor accepts an integer address, or a bytes object.
     """
-
+    # re payload, according to the following the python bytes are already unsigned:
+    # https://bytes.com/topic/python/answers/695078-ctypes-unsigned-char
     _fields_ = [
         ("state", c_int),
         ("mtype", c_int),
         ("len", c_int),
-        ("payload", POINTER(c_char)),  # according to the following the python bytes are already unsigned
-                                       # https://bytes.com/topic/python/answers/695078-ctypes-unsigned-char
+        ("payload", POINTER(c_char)),
         ("xaction", POINTER(c_char)),
         ("sub_id", c_int),
         ("tp_state", c_int),
@@ -325,7 +328,7 @@ def rmr_alloc_msg(vctx: c_void_p, size: int,
         raise BadBufferAllocation
 
 
-_rmr_realloc_payload = _wrap_rmr_function('rmr_realloc_payload', POINTER(rmr_mbuf_t), [POINTER(rmr_mbuf_t), c_int, c_int, c_int])  # new_len, copy, clone
+_rmr_realloc_payload = _wrap_rmr_function('rmr_realloc_payload', POINTER(rmr_mbuf_t), [POINTER(rmr_mbuf_t), c_int, c_int, c_int])
 
 
 def rmr_realloc_payload(ptr_mbuf: c_void_p, new_len: int, copy=False, clone=False):
@@ -385,7 +388,7 @@ def rmr_payload_size(ptr_mbuf: c_void_p) -> int:
     Gets the number of bytes available in the payload.
     Refer to RMR C documentation for method::
 
-        extern int rmr_payload_size(rmr_mbuf_t* msg)
+        extern int rmr_payload_size(rmr_mbuf_t* mbuf)
 
     Parameters
     ----------
@@ -400,10 +403,6 @@ def rmr_payload_size(ptr_mbuf: c_void_p) -> int:
     return _rmr_payload_size(ptr_mbuf)
 
 
-"""
-The following functions all seem to have the same interface
-"""
-
 _rmr_send_msg = _wrap_rmr_function('rmr_send_msg', POINTER(rmr_mbuf_t), [c_void_p, POINTER(rmr_mbuf_t)])
 
 
@@ -412,7 +411,7 @@ def rmr_send_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t)) -> POINTER(rmr_m
     Sends the message according to the routing table and returns an empty buffer.
     Refer to RMR C documentation for method::
 
-        extern rmr_mbuf_t* rmr_send_msg(void* vctx, rmr_mbuf_t* msg)
+        extern rmr_mbuf_t* rmr_send_msg(void* vctx, rmr_mbuf_t* mbuf)
 
     Parameters
     ----------
@@ -423,7 +422,7 @@ def rmr_send_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t)) -> POINTER(rmr_m
 
     Returns
     -------
-    c_void_p:
+    ctypes c_void_p:
         Pointer to rmr_mbuf structure
     """
     return _rmr_send_msg(vctx, ptr_mbuf)
@@ -438,7 +437,7 @@ def rmr_rcv_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t)) -> POINTER(rmr_mb
     Waits for a message to arrive, and returns it.
     Refer to RMR C documentation for method::
 
-        extern rmr_mbuf_t* rmr_rcv_msg(void* vctx, rmr_mbuf_t* old_msg)
+        extern rmr_mbuf_t* rmr_rcv_msg(void* vctx, rmr_mbuf_t* old_mbuf)
 
     Parameters
     ----------
@@ -449,7 +448,7 @@ def rmr_rcv_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t)) -> POINTER(rmr_mb
 
     Returns
     -------
-    c_void_p:
+    ctypes c_void_p:
         Pointer to rmr_mbuf structure
     """
     return _rmr_rcv_msg(vctx, ptr_mbuf)
@@ -463,7 +462,7 @@ def rmr_torcv_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t), ms_to: int) -> 
     Waits up to the timeout value for a message to arrive, and returns it.
     Refer to RMR C documentation for method::
 
-        extern rmr_mbuf_t* rmr_torcv_msg(void* vctx, rmr_mbuf_t* old_msg, int ms_to)
+        extern rmr_mbuf_t* rmr_torcv_msg(void* vctx, rmr_mbuf_t* old_mbuf, int ms_to)
 
     Parameters
     ----------
@@ -476,7 +475,7 @@ def rmr_torcv_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t), ms_to: int) -> 
 
     Returns
     -------
-    c_void_p:
+    ctypes c_void_p:
         Pointer to rmr_mbuf structure
     """
     return _rmr_torcv_msg(vctx, ptr_mbuf, ms_to)
@@ -490,7 +489,7 @@ def rmr_rts_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t), payload=None, mty
     Sends a message to the originating endpoint and returns an empty buffer.
     Refer to RMR C documentation for method::
 
-        extern rmr_mbuf_t* rmr_rts_msg(void* vctx, rmr_mbuf_t* msg)
+        extern rmr_mbuf_t* rmr_rts_msg(void* vctx, rmr_mbuf_t* mbuf)
 
     additional features beyond c-rmr:
         if payload is not None, attempts to set the payload
@@ -509,7 +508,7 @@ def rmr_rts_msg(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t), payload=None, mty
 
     Returns
     -------
-    c_void_p:
+    ctypes c_void_p:
         Pointer to rmr_mbuf structure
     """
 
@@ -530,7 +529,7 @@ def rmr_call(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t)) -> POINTER(rmr_mbuf_
     Sends a message, waits for a response and returns it.
     Refer to RMR C documentation for method::
 
-        extern rmr_mbuf_t* rmr_call(void* vctx, rmr_mbuf_t* msg)
+        extern rmr_mbuf_t* rmr_call(void* vctx, rmr_mbuf_t* mbuf)
 
     Parameters
     ----------
@@ -539,7 +538,7 @@ def rmr_call(vctx: c_void_p, ptr_mbuf: POINTER(rmr_mbuf_t)) -> POINTER(rmr_mbuf_
 
     Returns
     -------
-    c_void_p:
+    ctypes c_void_p:
         Pointer to rmr_mbuf structure
     """
     return _rmr_call(vctx, ptr_mbuf)
@@ -563,7 +562,7 @@ def rmr_set_meid(ptr_mbuf: POINTER(rmr_mbuf_t), byte_str: bytes) -> int:
     Parameters
     ----------
     ptr_mbuf: ctypes c_void_p
-        Pointer to an RMR message buffer
+        Pointer to rmr_mbuf structure
     byte_tr: bytes
         Managed entity ID value
 
@@ -572,8 +571,8 @@ def rmr_set_meid(ptr_mbuf: POINTER(rmr_mbuf_t), byte_str: bytes) -> int:
     int:
         number of bytes copied
     """
-    max = _get_rmr_constant("RMR_MAX_MEID", 32)
-    if len(byte_str) >= max:
+    max_meid = _get_rmr_constant("RMR_MAX_MEID", 32)
+    if len(byte_str) >= max_meid:
         raise MeidSizeOutOfRange
 
     return _rmr_bytes2meid(ptr_mbuf, byte_str, len(byte_str))
@@ -599,15 +598,15 @@ def rmr_get_meid(ptr_mbuf: POINTER(rmr_mbuf_t)) -> bytes:
     Parameters
     ----------
     ptr_mbuf: ctypes c_void_p
-        Pointer to an RMR message buffer
+        Pointer to rmr_mbuf structure
 
     Returns
     -------
     bytes:
         Managed entity ID
     """
-    sz = _get_rmr_constant("RMR_MAX_MEID", 32)  # size for buffer to fill
-    buf = create_string_buffer(sz)
+    max_meid = _get_rmr_constant("RMR_MAX_MEID", 32)  # size for buffer to fill
+    buf = create_string_buffer(max_meid)
     _rmr_get_meid(ptr_mbuf, buf)
     return buf.value
 
@@ -625,7 +624,7 @@ def rmr_get_src(ptr_mbuf: POINTER(rmr_mbuf_t), dest: c_char_p) -> c_char_p:
     Parameters
     ----------
     ptr_mbuf: ctypes POINTER(rmr_mbuf_t)
-        Pointer to an RMR message buffer
+        Pointer to rmr_mbuf structure
     dest: ctypes c_char_p
         Pointer to a buffer to receive the message source
 
@@ -655,8 +654,138 @@ def rmr_set_vlevel(new_level: c_int):
     _rmr_set_vlevel(new_level)
 
 
-# Methods that exist ONLY in rmr-python, and are not wrapped methods
-# In hindsight, I wish i put these in a separate module, but leaving this here to prevent api breakage.
+_rmr_wh_call = _wrap_rmr_function('rmr_wh_call', POINTER(rmr_mbuf_t), [c_void_p, c_int, POINTER(rmr_mbuf_t), c_int, c_int])
+
+
+def rmr_wh_call(vctx: c_void_p, whid: c_int, ptr_mbuf: POINTER(rmr_mbuf_t), call_id: c_int, max_wait: c_int) -> POINTER(rmr_mbuf_t):
+    """
+    Sends a message buffer (msg) using a wormhole ID (whid) and waits for a response.
+    Refer to RMR C documentation for method::
+
+        rmr_mbuf_t* rmr_wh_call( void* vctx, rmr_whid_t whid, rmr_mbuf_t* mbuf, int call_id, int max_wait )
+
+    Parameters
+    ----------
+    vctx: ctypes c_void_p
+        Pointer to RMR context
+    whid: c_int
+        Wormhole ID returned by rmr_wh_open
+    ptr_mbuf: ctypes POINTER(rmr_mbuf_t)
+        Pointer to rmr_mbuf structure
+    call_id: c_int
+        number in the range of 2..255 to identify the caller
+    max_wait: c_int
+        number of milliseconds to wait for a reply
+
+    Returns
+    -------
+    ctypes c_void_p:
+        Pointer to rmr_mbuf structure
+    """
+    return _rmr_wh_call(vctx, whid, ptr_mbuf, call_id, max_wait)
+
+
+_rmr_wh_close = _wrap_rmr_function('rmr_close', None, [c_void_p, c_int])
+
+
+def rmr_wh_close(vctx: c_void_p, whid: c_int):
+    """
+    Closes the wormhole associated with the wormhole id.
+    Refer to RMR C documentation for method::
+
+        void rmr_close( void* vctx, rmr_whid_t whid )
+
+    Parameters
+    ----------
+    vctx: ctypes c_void_p
+        Pointer to RMR context
+    whid: c_int
+        Wormhole ID returned by rmr_wh_open
+    """
+    _rmr_wh_close(vctx, whid)
+
+
+_rmr_wh_open = _wrap_rmr_function('rmr_wh_open', c_int, [c_void_p, c_char_p])
+
+
+def rmr_wh_open(vctx: c_void_p, target: c_char_p) -> c_int:
+    """
+    Creates a direct link for sending to another RMR based process.
+    Refer to RMR C documentation for method::
+
+        rmr_whid_t rmr_wh_open( void* vctx, char* target )
+
+    Parameters
+    ----------
+    vctx: ctypes c_void_p
+        Pointer to RMR context
+    target: str
+        name/IP and port combination of the target process; e.g., "localhost:6123"
+
+    Returns
+    -------
+    c_int:
+        Wormhole ID
+    """
+    return _rmr_wh_open(vctx, target)
+
+
+_rmr_wh_send_msg = _wrap_rmr_function('rmr_wh_send_msg', POINTER(rmr_mbuf_t), [c_void_p, c_int, POINTER(rmr_mbuf_t)])
+
+
+def rmr_wh_send_msg(vctx: c_void_p, whid: c_int, ptr_mbuf: POINTER(rmr_mbuf_t)) -> POINTER(rmr_mbuf_t):
+    """
+    Sends a message buffer (msg) using a wormhole ID (whid).
+    Refer to RMR C documentation for method::
+
+        rmr_mbuf_t* rmr_wh_send_msg( void* vctx, rmr_whid_t id, rmr_mbuf_t* msg )
+
+    Parameters
+    ----------
+    vctx: ctypes c_void_p
+        Pointer to RMR context
+    whid: c_int
+        Wormhole ID returned by rmr_wh_open
+    ptr_mbuf: ctypes POINTER(rmr_mbuf_t)
+        Pointer to rmr_mbuf structure
+
+    Returns
+    -------
+    ctypes POINTER(rmr_mbuf_t):
+        Pointer to rmr_mbuf structure
+    """
+    return _rmr_wh_send_msg(vctx, whid, ptr_mbuf)
+
+
+_rmr_wh_state = _wrap_rmr_function('rmr_wh_state', c_int, [c_void_p, c_int])
+
+
+def rmr_wh_state(vctx: c_void_p, whid: c_int) -> c_int:
+    """
+    Gets the state of the connection associated with the given wormhole (whid).
+    Refer to RMR C documentation for method::
+
+        int rmr_wh_state( void* vctx, rmr_whid_t whid )
+
+    Parameters
+    ----------
+    vctx: ctypes c_void_p
+        Pointer to RMR context
+    whid: c_int
+        Wormhole ID returned by rmr_wh_open
+
+    Returns
+    -------
+    c_int:
+        State of the connection
+    """
+    return _rmr_wh_state(vctx, whid, whid)
+
+
+########################################################################################
+# Methods that exist ONLY in rmr-python, and are not wrapped methods.
+# These should have been in a separate module, but leaving here to prevent api breakage.
+########################################################################################
 
 
 def get_payload(ptr_mbuf: c_void_p) -> bytes:
@@ -673,10 +802,11 @@ def get_payload(ptr_mbuf: c_void_p) -> bytes:
     bytes:
         the message payload
     """
-    # Logic came from the answer here: https://stackoverflow.com/questions/55103298/python-ctypes-read-pointerc-char-in-python
-    sz = ptr_mbuf.contents.len
-    CharArr = c_char * sz
-    return CharArr(*ptr_mbuf.contents.payload[:sz]).raw
+    # Logic came from the answer here:
+    # https://stackoverflow.com/questions/55103298/python-ctypes-read-pointerc-char-in-python
+    length = ptr_mbuf.contents.len
+    char_arr = c_char * length
+    return char_arr(*ptr_mbuf.contents.payload[:length]).raw
 
 
 def get_xaction(ptr_mbuf: c_void_p) -> bytes:
@@ -694,8 +824,8 @@ def get_xaction(ptr_mbuf: c_void_p) -> bytes:
         the transaction id
     """
     val = cast(ptr_mbuf.contents.xaction, c_char_p).value
-    sz = _get_rmr_constant("RMR_MAX_XID", 0)
-    return val[:sz]
+    max_xid = _get_rmr_constant("RMR_MAX_XID", 0)
+    return val[:max_xid]
 
 
 def message_summary(ptr_mbuf: c_void_p) -> dict:
@@ -773,8 +903,8 @@ def set_transaction_id(ptr_mbuf: c_void_p, tid_bytes: bytes):
     tid_bytes: bytes
         bytes of the desired transaction id
     """
-    sz = _get_rmr_constant("RMR_MAX_XID", 0)
-    memmove(ptr_mbuf.contents.xaction, tid_bytes, sz)
+    max_xid = _get_rmr_constant("RMR_MAX_XID", 0)
+    memmove(ptr_mbuf.contents.xaction, tid_bytes, max_xid)
 
 
 def get_src(ptr_mbuf: c_void_p) -> str:
@@ -791,7 +921,7 @@ def get_src(ptr_mbuf: c_void_p) -> str:
     string:
         message source
     """
-    sz = _get_rmr_constant("RMR_MAX_SRC", 64)  # size to fill
-    buf = create_string_buffer(sz)
+    max_src = _get_rmr_constant("RMR_MAX_SRC", 64)  # size to fill
+    buf = create_string_buffer(max_src)
     rmr_get_src(ptr_mbuf, buf)
     return buf.value.decode()

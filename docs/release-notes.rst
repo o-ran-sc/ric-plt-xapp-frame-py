@@ -11,6 +11,11 @@ The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 
+[1.2.0] - 2020-06-03
+--------------------
+* Extend RMR module to support wormhole methods
+
+
 [1.1.2] - 2020-05-13
 --------------------
 * Extend and publish class and method documentation as user guide in RST

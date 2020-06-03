@@ -355,3 +355,51 @@ def test_resize_payload():
     assert summary[rmr.RMR_MS_PAYLOAD_LEN] == len(long_payload)  # however, the length must be exactly the same
     assert summary[rmr.RMR_MS_MSG_TYPE] == mtype  # both mtype and sub-id should be preserved in new
     assert summary[rmr.RMR_MS_SUB_ID] == subid
+
+
+def test_wh():
+    """test the ability to send a message directly, without routing, via a wormhole"""
+    state = rmr.rmr_wh_state(MRC_SEND, 1)
+    assert state != rmr.RMR_OK
+    whid = rmr.rmr_wh_open(MRC_SEND, b"127.0.0.1:3563")
+    assert whid >= 0
+    state = rmr.rmr_wh_state(MRC_SEND, whid)
+    assert state == rmr.RMR_OK
+
+    sbuf_send = rmr.rmr_alloc_msg(MRC_SEND, SIZE)
+    _assert_new_sbuf(sbuf_send)
+    mtype = 1
+    sbuf_send.contents.mtype = mtype
+    payload = b"Birds like worms"
+    rmr.set_payload_and_length(payload, sbuf_send)
+    send_summary = rmr.message_summary(sbuf_send)
+
+    # send via call, but don't wait long for a response
+    rmr.rmr_wh_call(MRC_SEND, whid, sbuf_send, 1, 100)
+
+    # receive message in other context
+    time.sleep(0.5)
+    sbuf_rcv = rmr.rmr_alloc_msg(MRC_RCV, SIZE)
+    sbuf_rcv = rmr.rmr_torcv_msg(MRC_RCV, sbuf_rcv, 2000)
+    rcv_summary = rmr.message_summary(sbuf_rcv)
+
+    # asserts
+    assert send_summary[rmr.RMR_MS_MSG_STATE] == rcv_summary[rmr.RMR_MS_MSG_STATE] == rmr.RMR_OK
+    assert send_summary[rmr.RMR_MS_MSG_TYPE] == rcv_summary[rmr.RMR_MS_MSG_TYPE] == mtype
+    assert send_summary[rmr.RMR_MS_PAYLOAD] == rcv_summary[rmr.RMR_MS_PAYLOAD] == payload
+
+    # send without waiting for a response
+    rmr.rmr_wh_send_msg(MRC_SEND, whid, sbuf_send)
+
+    # receive message in other context
+    time.sleep(0.5)
+    sbuf_rcv = rmr.rmr_torcv_msg(MRC_RCV, sbuf_rcv, 2000)
+    rcv_summary = rmr.message_summary(sbuf_rcv)
+
+    # asserts
+    assert send_summary[rmr.RMR_MS_MSG_STATE] == rcv_summary[rmr.RMR_MS_MSG_STATE] == rmr.RMR_OK
+    assert send_summary[rmr.RMR_MS_MSG_TYPE] == rcv_summary[rmr.RMR_MS_MSG_TYPE] == mtype
+    assert send_summary[rmr.RMR_MS_PAYLOAD] == rcv_summary[rmr.RMR_MS_PAYLOAD] == payload
+
+    rmr.rmr_wh_close(MRC_SEND, whid)
+    # don't check state after close, connection is always reported as open

@@ -34,10 +34,10 @@ repositories:
     - ric-plt/xapp-frame-py
 committers:
     - <<: *oran_ric_plt_xapp_frame_py_ptl
-    - name: Tommy Carpenter
-      email: 'c677g@att.com'
-      company: AT&T
-      id: tommycarpenter
+    - name: Chris Lott 
+      email: 'clott@research.att.com'
+      company: 'AT&T'
+      id: 'cl778h'
       timezone: America/New_York
     - name: Jack Lucas
       email: jflucas@research.att.com
@@ -53,6 +53,9 @@ tsc:
     # yamllint disable rule:line-length
     approval: https://lists.o-ran-sc.org/g/main/topic/71383459#488
     changes:
-        - type: ''
-          name: ''
-          link: ''
+        - type: 'Removal'
+          name: 'Tommy Carpenter'
+          link: 'https://lists.o-ran-sc.org/g/toc/topic/oran_sc_replacing_committer/74802142?p=,,,100,0,0,0::recentpostdate%2Fsticky,,,100,2,0,74802142'
+        - type: 'Promotion'
+          name: 'Chris Lott'
+          link: 'https://lists.o-ran-sc.org/g/toc/topic/oran_sc_replacing_committer/74802142?p=,,,100,0,0,0::recentpostdate%2Fsticky,,,100,2,0,74802142'

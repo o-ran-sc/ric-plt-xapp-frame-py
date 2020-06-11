@@ -6,3 +6,4 @@ lfdocs-conf
 numpydoc
 mdclogpy
 msgpack
+ricsdl

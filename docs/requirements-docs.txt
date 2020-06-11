@@ -4,3 +4,5 @@ sphinxcontrib-httpdomain
 recommonmark
 lfdocs-conf
 numpydoc
+mdclogpy
+msgpack

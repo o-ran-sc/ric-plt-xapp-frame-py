@@ -8,22 +8,52 @@ RIC Alarm API
 Overview
 --------
 
-The xapp python framework package includes a python subpackage called
-`Alarm`.  This subpackage (`ricxappframe.alarm`) provides objects and
-methods for defining and raising alarms, which are transmitted using
-the RMR shared library.
+The xapp python framework provides an alarm feature in the python
+subpackage `ricxappframe.alarm`.  This subpackage defines objects and
+methods for creating, raising and clearing alarms.
 
-Usage of this python package requires that the RMR shared-object
-library is installed in a system library that is included in the
-directories found by default, usually something like /usr/local/lib.
+The alarm feature reuses the `ricxappframe.rmr` subpackage for
+transporting alarm messages. That in turn requires the RMR
+shared-object library to be available in a system library that is
+searched by default, usually something like /usr/local/lib.
 
-Alarm messages conform to the following JSON schema.
+The alarm feature sends messages using RMR message type
+`RIC_ALARM_UPDATE` in the `ricxappframe.alarm.alarm` module, currently
+value 13111. The Xapp's routing table must have one (or more) entries
+for that message type.
 
-.. literalinclude:: ../ricxappframe/alarm/alarm-schema.json
-  :language: JSON
+The complete API for the Alarm feature appears below.
+
+
+Example Usage
+-------------
+
+Alarms are created, raised and cleared using an `AlarmManager` as
+shown below. The manager requires an RMR context at creation time.
+
+.. code-block:: python
+
+    from ricxappframe.alarm import alarm
+    from ricxappframe.rmr import rmr
+
+    rmr_context = rmr.rmr_init(b"4562", rmr.RMR_MAX_RCV_BYTES, 0x00)
+    alarm_mgr = alarm.AlarmManager(rmr_context, "managed-object-id", "application-id")
+    alarm3 = alarm_mgr.create_alarm(3, alarm.AlarmSeverity.DEFAULT, "identifying", "additional")
+    success = alarm_mgr.raise_alarm(alarm3)
+
+
 
 Alarm API
 ---------
 
 .. automodule:: ricxappframe.alarm.alarm
     :members:
+
+
+Alarm Messages
+--------------
+
+Alarm messages conform to the following JSON schema.
+
+.. literalinclude:: ../ricxappframe/alarm/alarm-schema.json
+  :language: JSON

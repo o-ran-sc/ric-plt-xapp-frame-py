@@ -11,6 +11,11 @@ The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 
+[1.3.0] - 2020-06-24
+--------------------
+* Add configuration-change API (`RIC-425 <https://jira.o-ran-sc.org/browse/RIC-425>`_)
+
+
 [1.2.1] - 2020-06-22
 --------------------
 * Revise alarm message type (`RIC-514 <https://jira.o-ran-sc.org/browse/RIC-514>`_)

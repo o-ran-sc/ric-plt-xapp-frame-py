@@ -10,8 +10,8 @@ xApp Python Framework
    :maxdepth: 2
    :caption: Contents:
 
-   installation-guide.rst
    overview.rst
+   installation-guide.rst
    user-guide.rst
    rmr_api.rst
    alarm_api.rst

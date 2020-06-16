@@ -25,15 +25,12 @@ from ricsdl.syncstorage import SyncStorage
 
 class SDLWrapper:
     """
-    This is a wrapper around the SDL Python interface.
-
-    We do not embed the below directly in the Xapp classes because
-    this SDL wrapper is useful for other python apps, for example A1
-    Mediator uses this verbatim. Therefore, we leave this here as a
-    separate object so it can be used outside of xapps.
-
-    This class optionally uses msgpack for binary (de)serialization:
+    Provides convenient wrapper methods for using the SDL Python interface.
+    Optionally uses msgpack for binary (de)serialization:
     see https://msgpack.org/index.html
+
+    Published as a standalone module (and kept separate from the Xapp
+    framework classes) so these features can be used outside Xapps.
     """
 
     def __init__(self, use_fake_sdl=False):

@@ -11,6 +11,11 @@ The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 
+[1.3.0] - 2020-06-15
+--------------------
+* Add configuration-change API (`RIC-425 <https://jira.o-ran-sc.org/browse/RIC-425>`_)
+
+
 [1.2.0] - 2020-06-04
 --------------------
 * Extend RMR module to support wormhole methods

@@ -15,21 +15,26 @@
 #   limitations under the License.
 # ==================================================================================
 """
-Framework for python xapps
-Framework here means Xapp classes that can be subclassed
+This framework for Python Xapps provides classes that Xapp writers should
+instantiate and/or subclass depending on their needs.
 """
 
+import json
+import os
 import queue
 from threading import Thread
+import inotify_simple
+from mdclogpy import Logger
 from ricxappframe import xapp_rmr
 from ricxappframe.rmr import rmr
 from ricxappframe.xapp_sdl import SDLWrapper
-from mdclogpy import Logger
 
-# constants
+# message-type constants
 RIC_HEALTH_CHECK_REQ = 100
 RIC_HEALTH_CHECK_RESP = 101
 
+# environment variable name
+XAPP_DESCRIPTOR_ENV = "XAPP_DESCRIPTOR_PATH"
 
 # Private base class; not for direct client use
 
@@ -41,7 +46,14 @@ class _BaseXapp:
 
     def __init__(self, rmr_port=4562, rmr_wait_for_ready=True, use_fake_sdl=False, post_init=None):
         """
-        Init
+        Initializes RMR by starting a thread that checks for incoming messages,
+        and provisions an SDL object which might be an in-memory store.
+
+        If environment variable XAPP_DESCRIPTOR_PATH is defined with a path to a
+        configuration file, and the configuration file exists, a watcher is defined
+        to monitor modifications (writes) to that file using the Linux kernel's
+        inotify feature, and the configuration-change handler function is invoked.
+        Poll the watcher by calling method config_check().
 
         Parameters
         ----------
@@ -49,19 +61,17 @@ class _BaseXapp:
             port to listen on
 
         rmr_wait_for_ready: bool (optional)
-
-            if this is True, then init waits until rmr is ready to send, which
+            If this is True, then init waits until rmr is ready to send, which
             includes having a valid routing file. This can be set to
             False if the client only wants to *receive only*.
 
         use_fake_sdl: bool (optional)
-            if this is True, it uses dbaas' "fake dict backend" instead
+            if this is True, it uses the dbaas "fake dict backend" instead
             of Redis or other backends. Set this to true when developing
-            your xapp or during unit testing to completely avoid needing
-            a dbaas running or any network at all.
+            an xapp or during unit testing to eliminate the need for DBAAS.
 
         post_init: function (optional)
-            runs this user provided function after the base xapp is
+            Runs this user-provided function after the base xapp is
             initialized; its signature should be post_init(self)
         """
         # PUBLIC, can be used by xapps using self.(name):
@@ -73,6 +83,17 @@ class _BaseXapp:
 
         # SDL
         self._sdl = SDLWrapper(use_fake_sdl)
+
+        # Config
+        # The environment variable specifies the path to the Xapp descriptor
+        self._config_path = os.environ.get(XAPP_DESCRIPTOR_ENV, None)
+        if self._config_path and os.path.isfile(self._config_path):
+            self._inotify = inotify_simple.INotify()
+            self._inotify.add_watch(self._config_path, inotify_simple.flags.MODIFY)
+            self.logger.debug("__init__: watching config file {}".format(self._config_path))
+        else:
+            self._inotify = None
+            self.logger.warning("__init__: NOT watching any config file")
 
         # run the optionally provided user post init
         if post_init:
@@ -150,7 +171,7 @@ class _BaseXapp:
             if sbuf.contents.state == 0:
                 return True
 
-        self.logger.info("RTS Failed! Summary: {}".format(rmr.message_summary(sbuf)))
+        self.logger.warning("RTS Failed! Summary: {}".format(rmr.message_summary(sbuf)))
         return False
 
     def rmr_free(self, sbuf):
@@ -168,16 +189,12 @@ class _BaseXapp:
         """
         rmr.rmr_free_msg(sbuf)
 
-    # SDL
-    # NOTE, even though these are passthroughs, the separate SDL wrapper
-    # is useful for other applications like A1. Therefore, we don't
-    # embed that SDLWrapper functionality here so that it can be
-    # instantiated on its own.
+    # Convenience (pass-thru) function for invoking SDL.
 
     def sdl_set(self, ns, key, value, usemsgpack=True):
         """
-        Stores a key-value pair,
-        optionally serializing the value to bytes using msgpack.
+        Stores a key-value pair to SDL, optionally serializing the value
+        to bytes using msgpack.
 
         Parameters
         ----------
@@ -199,7 +216,7 @@ class _BaseXapp:
 
     def sdl_get(self, ns, key, usemsgpack=True):
         """
-        Gets the value for the specified namespace and key,
+        Gets the value for the specified namespace and key from SDL,
         optionally deserializing stored bytes using msgpack.
 
         Parameters
@@ -271,6 +288,32 @@ class _BaseXapp:
         """
         return self._rmr_loop.healthcheck() and self._sdl.healthcheck()
 
+    # Convenience function for discovering config change events
+
+    def config_check(self, timeout=0):
+        """
+        Checks the watcher for configuration-file events. The watcher
+        prerequisites and event mask are documented in __init__().
+
+        Parameters
+        ----------
+        timeout: int (optional)
+            Number of seconds to wait for a configuration-file event, default 0.
+
+        Returns
+        -------
+        List of Events, possibly empty
+            An event is a tuple with objects wd, mask, cookie and name.
+            For example::
+
+                Event(wd=1, mask=1073742080, cookie=0, name='foo')
+
+        """
+        if not self._inotify:
+            return []
+        events = self._inotify.read(timeout=timeout)
+        return list(events)
+
     def stop(self):
         """
         cleans up and stops the xapp rmr thread (currently). This is
@@ -283,7 +326,8 @@ class _BaseXapp:
         self._rmr_loop.stop()
 
 
-# Public Classes to subclass (these subclass _BaseXapp)
+# Public classes that Xapp writers should instantiate or subclass
+# to implement an Xapp.
 
 
 class RMRXapp(_BaseXapp):
@@ -292,6 +336,12 @@ class RMRXapp(_BaseXapp):
     messages are received, the Xapp does something. When run is called,
     the xapp framework waits for RMR messages, and calls the appropriate
     client-registered consume callback on each.
+
+    If environment variable XAPP_DESCRIPTOR_PATH is defined with a path to a
+    configuration file, and the configuration file exists, the configuration-change
+    handler is invoked at startup and on each configuration-file write event.
+    If no configuration-change handler is supplied, this class defines a default
+    handler method that logs each invocation.
 
     Parameters
     ----------
@@ -302,6 +352,12 @@ class RMRXapp(_BaseXapp):
         The RMR message summary, a dict of key-value pairs
     default_handler argument sbuf: ctypes c_void_p
         Pointer to an RMR message buffer. The user must call free on this when done.
+    config_handler: function (optional, default is documented above)
+        A function with the signature (json) to be called at startup and each time
+        a configuration-file change event is detected. The JSON object is read from
+        the configuration file, if the prerequisites are met.
+    config_handler argument json: dict
+        The contents of the configuration file, parsed as JSON.
     rmr_port: integer (optional, default is 4562)
         Initialize RMR to listen on this port
     rmr_wait_for_ready: boolean (optional, default is True)
@@ -313,7 +369,7 @@ class RMRXapp(_BaseXapp):
         its signature should be post_init(self)
     """
 
-    def __init__(self, default_handler, rmr_port=4562, rmr_wait_for_ready=True, use_fake_sdl=False, post_init=None):
+    def __init__(self, default_handler, config_handler=None, rmr_port=4562, rmr_wait_for_ready=True, use_fake_sdl=False, post_init=None):
         """
         Also see _BaseXapp
         """
@@ -324,6 +380,7 @@ class RMRXapp(_BaseXapp):
 
         # setup callbacks
         self._default_handler = default_handler
+        self._config_handler = config_handler
         self._dispatch = {}
 
         # used for thread control
@@ -340,6 +397,19 @@ class RMRXapp(_BaseXapp):
             self.rmr_free(sbuf)
 
         self.register_callback(handle_healthcheck, RIC_HEALTH_CHECK_REQ)
+
+        # define a default configuration-change handler if none was provided.
+        if not config_handler:
+            def handle_config_change(self, config):
+                self.logger.debug("xapp_frame: default config handler invoked")
+            self._config_handler = handle_config_change
+
+        # call the config handler at startup if prereqs were met
+        if self._inotify:
+            with open(self._config_path) as json_file:
+                data = json.load(json_file)
+            self.logger.debug("run: invoking config handler at start")
+            self._config_handler(self, data)
 
     def register_callback(self, handler, message_type):
         """
@@ -362,7 +432,7 @@ class RMRXapp(_BaseXapp):
         """
         self._dispatch[message_type] = handler
 
-    def run(self, thread=False):
+    def run(self, thread=False, rmr_timeout=5, inotify_timeout=0):
         """
         This function should be called when the reactive Xapp is ready to start.
         After start, the Xapp's handlers will be called on received messages.
@@ -374,20 +444,40 @@ class RMRXapp(_BaseXapp):
             If True, a thread is started to run the queue read/dispatch loop
             and execution is returned to caller; the thread can be stopped
             by calling the .stop() method.
+
+        rmr_timeout: integer (optional, default is 5 seconds)
+            Length of time to wait for an RMR message to arrive.
+
+        inotify_timeout: integer (optional, default is 0 seconds)
+            Length of time to wait for an inotify event to arrive.
         """
 
         def loop():
             while self._keep_going:
+
+                # poll RMR
                 try:
-                    (summary, sbuf) = self._rmr_loop.rcv_queue.get(block=True, timeout=5)
+                    (summary, sbuf) = self._rmr_loop.rcv_queue.get(block=True, timeout=rmr_timeout)
                     # dispatch
                     func = self._dispatch.get(summary[rmr.RMR_MS_MSG_TYPE], None)
                     if not func:
                         func = self._default_handler
+                    self.logger.debug("run: invoking msg handler on type {}".format(summary[rmr.RMR_MS_MSG_TYPE]))
                     func(self, summary, sbuf)
                 except queue.Empty:
                     # the get timed out
                     pass
+
+                # poll configuration file watcher
+                try:
+                    events = self.config_check(timeout=inotify_timeout)
+                    for event in events:
+                        with open(self._config_path) as json_file:
+                            data = json.load(json_file)
+                        self.logger.debug("run: invoking config handler on change event {}".format(event))
+                        self._config_handler(self, data)
+                except Exception as error:
+                    self.logger.error("run: configuration handler failed: {}".format(error))
 
         if thread:
             Thread(target=loop).start()
@@ -405,8 +495,12 @@ class RMRXapp(_BaseXapp):
 
 class Xapp(_BaseXapp):
     """
-    Represents a generic Xapp where the client provides a function for the framework to call,
-    which usually contains a loop-forever construct.
+    Represents a generic Xapp where the client provides a single function
+    for the framework to call at startup time (instead of providing callback
+    functions by message type). The Xapp writer must implement and provide a
+    function with a loop-forever construct similar to the `run` function in
+    the `RMRXapp` class.  That function should poll to retrieve RMR messages
+    and dispatch them appropriately, poll for configuration changes, etc.
 
     Parameters
     ----------

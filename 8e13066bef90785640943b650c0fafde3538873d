@@ -16,6 +16,24 @@
       "revId": "8e13066bef90785640943b650c0fafde3538873d",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a80f58ec_e4ae3991",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 456,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2020-06-18T14:31:39Z",
+      "side": 1,
+      "message": "Thanks for reading this closely.  I am reluctant to move code into a function that is only called from one place.  But yes, if the loop grows too large, then there is probably value in reconsidering my opinion and creating functions.",
+      "parentUuid": "3e663a90_614548b1",
+      "revId": "8e13066bef90785640943b650c0fafde3538873d",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
     }
   ]
 }

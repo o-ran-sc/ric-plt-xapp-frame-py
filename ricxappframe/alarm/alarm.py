@@ -39,8 +39,7 @@ RETRIES = 4
 ##############
 
 # constants
-RIC_ALARM_UPDATE = 13111
-# RIC_ALARM_QUERY = 13112 # TBD
+RIC_ALARM_UPDATE = 110
 
 # Publish dict keys as constants for convenience of client code.
 # Mixed lower/upper casing to comply with the Adapter JSON requirements.

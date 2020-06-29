@@ -66,6 +66,8 @@ def test_rmr_init():
         val = json.dumps({"test send 60001": 2}).encode()
         self.rmr_send(val, 60001)
 
+        self.sdl_delete("testns", "bogus")
+
     global gen_xapp
     gen_xapp = Xapp(entrypoint=entry, use_fake_sdl=True)
     gen_xapp.run()

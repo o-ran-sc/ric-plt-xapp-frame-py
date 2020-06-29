@@ -12,6 +12,17 @@ Xapp writers should use the public classes and methods from the Xapp Python
 framework package as documented below.
 
 
+Class _BaseXapp
+---------------
+
+Although this base class should not be used directly, it is inherited by
+the public classes shown below and all of this class's public methods are
+available for use by application writers.
+
+.. autoclass:: ricxappframe.xapp_frame._BaseXapp
+    :members:
+
+
 Class RMRXapp
 -------------
 

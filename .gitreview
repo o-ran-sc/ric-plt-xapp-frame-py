@@ -3,3 +3,4 @@ host=gerrit.o-ran-sc.org
 port=29418
 project=ric-plt/xapp-frame-py
 defaultbranch=master
+defaultremote=origin

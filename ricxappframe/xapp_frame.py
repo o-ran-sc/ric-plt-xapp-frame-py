@@ -15,8 +15,8 @@
 #   limitations under the License.
 # ==================================================================================
 """
-This framework for Python Xapps provides classes that Xapp writers should
-instantiate and/or subclass depending on their needs.
+This framework for Python Xapps provides classes that Xapp writers
+should instantiate and/or subclass depending on their needs.
 """
 
 import json
@@ -36,38 +36,39 @@ RIC_HEALTH_CHECK_RESP = 101
 # environment variable with path to configuration file
 CONFIG_FILE_ENV = "CONFIG_FILE"
 
-# Private base class; not for direct client use
-
 
 class _BaseXapp:
     """
-    This base class initializes RMR by starting a thread that checks for
-    incoming messages, and provisions an SDL object.
+    This class initializes RMR, starts a thread that checks for incoming
+    messages, provisions an SDL object and optionally creates a
+    config-file watcher.  This private base class should not be
+    instantiated by clients directly, but it defines many public methods
+    that may be used by clients.
 
-    If environment variable CONFIG_FILE_ENV is defined, and that value is a
-    path to an existing file, a watcher is defined to monitor modifications
-    (writes) to that file using the Linux kernel's inotify feature, and the
-    configuration-change handler function is invoked.  The watcher can be
-    polled by calling method config_check().
+    If environment variable CONFIG_FILE is defined, and that variable
+    contains a path to an existing file, a watcher is defined to monitor
+    modifications (writes) to that file using the Linux kernel's inotify
+    feature. The watcher must be polled by calling method
+    config_check().
 
     Parameters
     ----------
-    rmr_port: int
-        port to listen on
+    rmr_port: int (optional, default is 4562)
+        Port on which the RMR library listens for incoming messages.
 
-    rmr_wait_for_ready: bool (optional)
-        If this is True, then init waits until rmr is ready to send, which
-        includes having a valid routing file. This can be set to
-        False if the client only wants to *receive only*.
+    rmr_wait_for_ready: bool (optional, default is True)
+        If this is True, then init waits until RMR is ready to send,
+        which includes having a valid routing file. This can be set
+        to False if the client wants to *receive only*.
 
-    use_fake_sdl: bool (optional)
-        if this is True, it uses the dbaas "fake dict backend" instead
-        of Redis or other backends. Set this to true when developing
-        an xapp or during unit testing to eliminate the need for DBAAS.
+    use_fake_sdl: bool (optional, default is False)
+        if this is True, it uses the DBaaS "fake dict backend" instead
+        of Redis or other backends. Set this to True when developing
+        an xapp or during unit testing to eliminate the need for DBaaS.
 
-    post_init: function (optional)
-        Runs this user-provided function after the base xapp is
-        initialized; its signature should be post_init(self)
+    post_init: function (optional, default is None)
+        Runs this user-provided function at the end of the init method;
+        its signature should be post_init(self)
     """
 
     def __init__(self, rmr_port=4562, rmr_wait_for_ready=True, use_fake_sdl=False, post_init=None):
@@ -191,14 +192,14 @@ class _BaseXapp:
 
     # Convenience (pass-thru) function for invoking SDL.
 
-    def sdl_set(self, ns, key, value, usemsgpack=True):
+    def sdl_set(self, namespace, key, value, usemsgpack=True):
         """
         Stores a key-value pair to SDL, optionally serializing the value
         to bytes using msgpack.
 
         Parameters
         ----------
-        ns: string
+        namespace: string
             SDL namespace
         key: string
             SDL key
@@ -212,16 +213,16 @@ class _BaseXapp:
             that is serializable by msgpack.
             If usemsgpack is False, the value must be bytes.
         """
-        self._sdl.set(ns, key, value, usemsgpack)
+        self._sdl.set(namespace, key, value, usemsgpack)
 
-    def sdl_get(self, ns, key, usemsgpack=True):
+    def sdl_get(self, namespace, key, usemsgpack=True):
         """
         Gets the value for the specified namespace and key from SDL,
         optionally deserializing stored bytes using msgpack.
 
         Parameters
         ----------
-        ns: string
+        namespace: string
             SDL namespace
         key: string
             SDL key
@@ -237,9 +238,9 @@ class _BaseXapp:
             See the usemsgpack parameter for an explanation of the returned value type.
             Answers None if the key is not found.
         """
-        return self._sdl.get(ns, key, usemsgpack)
+        return self._sdl.get(namespace, key, usemsgpack)
 
-    def sdl_find_and_get(self, ns, prefix, usemsgpack=True):
+    def sdl_find_and_get(self, namespace, prefix, usemsgpack=True):
         """
         Gets all key-value pairs in the specified namespace
         with keys that start with the specified prefix,
@@ -247,7 +248,7 @@ class _BaseXapp:
 
         Parameters
         ----------
-        ns: string
+        nnamespaces: string
            SDL namespace
         prefix: string
             the key prefix
@@ -265,20 +266,20 @@ class _BaseXapp:
             but is either a Python object or raw bytes as discussed above.
             Answers an empty dictionary if no keys matched the prefix.
         """
-        return self._sdl.find_and_get(ns, prefix, usemsgpack)
+        return self._sdl.find_and_get(namespace, prefix, usemsgpack)
 
-    def sdl_delete(self, ns, key):
+    def sdl_delete(self, namespace, key):
         """
         Deletes the key-value pair with the specified key in the specified namespace.
 
         Parameters
         ----------
-        ns: string
+        namespace: string
            SDL namespace
         key: string
             SDL key
         """
-        self._sdl.delete(ns, key)
+        self._sdl.delete(namespace, key)
 
     # Health
 
@@ -332,21 +333,24 @@ class _BaseXapp:
 
 class RMRXapp(_BaseXapp):
     """
-    Represents an Xapp that reacts only to RMR messages; i.e., when
-    messages are received, the Xapp does something. When run is called,
-    the xapp framework waits for RMR messages, and calls the appropriate
-    client-registered consume callback on each.
+    Represents an Xapp that reacts only to RMR messages; i.e., the Xapp
+    only performs an action when a message is received.  Clients should
+    invoke the run method, which has a loop that waits for RMR messages
+    and calls the appropriate client-registered consume callback on each.
 
-    If environment variable CONFIG_FILE_ENV is defined, and that value is a
-    path to an existing file, the configuration-change handler is invoked at
-    startup and on each configuration-file write event. If no handler is
-    supplied, this class defines a default handler that logs each invocation.
+    If environment variable CONFIG_FILE is defined, and that variable
+    contains a path to an existing file, this class polls a watcher
+    defined on that file to detect file-write events, and invokes a
+    configuration-change handler on each event. The handler is also
+    invoked at startup.  If no handler function is supplied to the
+    constructor, this class defines a default handler that only logs a
+    message.
 
     Parameters
     ----------
     default_handler: function
-        A function with the signature (summary, sbuf) to be called
-        when a message type is received for which no other handler is registered.
+        A function with the signature (summary, sbuf) to be called when a
+        message type is received for which no other handler is registered.
     default_handler argument summary: dict
         The RMR message summary, a dict of key-value pairs
     default_handler argument sbuf: ctypes c_void_p
@@ -390,8 +394,8 @@ class RMRXapp(_BaseXapp):
         # the user can override this and register their own handler
         # if they wish since the "last registered callback wins".
         def handle_healthcheck(self, summary, sbuf):
-            ok = self.healthcheck()
-            payload = b"OK\n" if ok else b"ERROR [RMR or SDL is unhealthy]\n"
+            healthy = self.healthcheck()
+            payload = b"OK\n" if healthy else b"ERROR [RMR or SDL is unhealthy]\n"
             self.rmr_rts(sbuf, new_payload=payload, new_mtype=RIC_HEALTH_CHECK_RESP)
             self.rmr_free(sbuf)
 

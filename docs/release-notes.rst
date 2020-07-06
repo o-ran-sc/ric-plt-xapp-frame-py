@@ -11,6 +11,10 @@ The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 
+[1.4.0] - 2020-07-06
+--------------------
+* Revise Alarm manager to send via RMR wormhole (`RIC-529 <https://jira.o-ran-sc.org/browse/RIC-529>`_)
+
 [1.3.0] - 2020-06-24
 --------------------
 * Add configuration-change API (`RIC-425 <https://jira.o-ran-sc.org/browse/RIC-425>`_)

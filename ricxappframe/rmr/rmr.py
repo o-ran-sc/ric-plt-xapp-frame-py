@@ -720,7 +720,8 @@ def rmr_wh_open(vctx: c_void_p, target: c_char_p) -> c_int:
     vctx: ctypes c_void_p
         Pointer to RMR context
     target: str
-        name/IP and port combination of the target process; e.g., "localhost:6123"
+        Pointer to bytes built from the target process host name and port number
+        as a string; e.g., b'localhost:4550'
 
     Returns
     -------

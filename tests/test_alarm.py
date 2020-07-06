@@ -15,9 +15,11 @@
 #   limitations under the License.
 # ==================================================================================
 import json
+import pytest
 import time
 from ricxappframe.alarm import alarm
-from ricxappframe.alarm.alarm import AlarmAction, AlarmDetail, AlarmManager, AlarmSeverity
+from ricxappframe.alarm.alarm import AlarmAction, AlarmDetail, AlarmManager, AlarmSeverity, ALARM_MGR_SERVICE_NAME_ENV, ALARM_MGR_SERVICE_PORT_ENV
+from ricxappframe.alarm.exceptions import InitFailed
 from ricxappframe.rmr import rmr
 
 MRC_SEND = None
@@ -47,7 +49,7 @@ def teardown_module():
     rmr.rmr_close(MRC_SEND)
 
 
-def test_alarm_set_get():
+def test_alarm_set_get(monkeypatch):
     """
     test set functions
     """
@@ -65,6 +67,19 @@ def test_alarm_set_get():
     assert det[alarm.KEY_IDENTIFYING_INFO] == "4"
     assert det[alarm.KEY_ADDITIONAL_INFO] == "5"
 
+    # missing environment variables
+    with pytest.raises(InitFailed):
+        alarm.AlarmManager(MRC_SEND, "missing", "envvars")
+
+    # invalid environment variables
+    monkeypatch.setenv(ALARM_MGR_SERVICE_NAME_ENV, "0")
+    monkeypatch.setenv(ALARM_MGR_SERVICE_PORT_ENV, "a")
+    with pytest.raises(InitFailed):
+        alarm.AlarmManager(MRC_SEND, "bogus", "envvars")
+
+    # good environment variables
+    monkeypatch.setenv(ALARM_MGR_SERVICE_NAME_ENV, "localhost")
+    monkeypatch.setenv(ALARM_MGR_SERVICE_PORT_ENV, "4567")  # any int is ok here
     mgr = alarm.AlarmManager(MRC_SEND, "moid2", "appid2")
     assert mgr is not None
     assert mgr.managed_object_id == "moid2"
@@ -86,10 +101,12 @@ def _receive_alarm_msg(action: AlarmAction):
     assert data[alarm.KEY_ALARM_ACTION] == action.name
 
 
-def test_alarm_manager():
+def test_alarm_manager(monkeypatch):
     """
     test send functions and ensure a message arrives
     """
+    monkeypatch.setenv(ALARM_MGR_SERVICE_NAME_ENV, "localhost")
+    monkeypatch.setenv(ALARM_MGR_SERVICE_PORT_ENV, "4567")  # must match rcv port above
     mgr = AlarmManager(MRC_SEND, "moid", "appid")
     assert mgr is not None
 

@@ -14,13 +14,16 @@ methods for creating, raising and clearing alarms.
 
 The alarm feature reuses the `ricxappframe.rmr` subpackage for
 transporting alarm messages. That in turn requires the RMR
-shared-object library to be available in a system library that is
+shared-object library to be available in a system directory that is
 searched by default, usually something like /usr/local/lib.
 
-The alarm feature sends messages using RMR message type
-`RIC_ALARM_UPDATE` in the `ricxappframe.alarm.alarm` module, currently
-value 13111. The Xapp's routing table must have one (or more) entries
-for that message type.
+The alarm feature opens a direct connection to the alarm manager
+using the RMR library's wormhole feature, taking the host name and
+port number from environment variables defined as the constants 
+`ALARM_MGR_SERVICE_NAME_ENV` and `ALARM_MGR_SERVICE_PORT_ENV` in
+the `ricxappframe.alarm.alarm` module. The message type is set to
+constant `RIC_ALARM_UPDATE` in the `ricxappframe.alarm.alarm` module,
+currently 13111.
 
 The complete API for the Alarm feature appears below.
 

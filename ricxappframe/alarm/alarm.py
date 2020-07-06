@@ -16,16 +16,19 @@
 # ==================================================================================
 """
 Provides classes and methods to define, raise, reraise and clear alarms.
-All actions are implemented by sending RMR messages to the Alarm Adapter
-that comply with the JSON schema in file alarm-schema.json.
+All actions are implemented by sending RMR messages to the Alarm Adapter.
+The alarm target host and port are set by environment variables. The alarm
+message contents comply with the JSON schema in file alarm-schema.json.
 """
 
 from ctypes import c_void_p
 from enum import Enum, auto
 import json
+import os
 import time
 from mdclogpy import Logger
 from ricxappframe.rmr import rmr
+from ricxappframe.alarm.exceptions import InitFailed
 
 ##############
 # PRIVATE API
@@ -40,6 +43,8 @@ RETRIES = 4
 
 # constants
 RIC_ALARM_UPDATE = 110
+ALARM_MGR_SERVICE_NAME_ENV = "ALARM_MGR_SERVICE_NAME"
+ALARM_MGR_SERVICE_PORT_ENV = "ALARM_MGR_SERVICE_PORT"
 
 # Publish dict keys as constants for convenience of client code.
 # Mixed lower/upper casing to comply with the Adapter JSON requirements.
@@ -123,15 +128,15 @@ class AlarmDetail(dict):
 class AlarmManager:
     """
     Provides an API for an Xapp to raise and clear alarms by sending messages
-    via RMR, which should route the messages to an Alarm Adapter.
+    via RMR directly to an Alarm Adapter. Requires environment variables
+    ALARM_MGR_SERVICE_NAME and ALARM_MGR_SERVICE_PORT with the destination host
+    (service) name and port number; raises an exception if not found.
 
     Parameters
     ----------
     vctx: ctypes c_void_p
         Pointer to RMR context obtained by initializing RMR.
         The context is used to allocate space and send messages.
-        The RMR routing table must have a destination for message
-        type RIC_ALARM_UPDATE as defined in this module.
 
     managed_object_id: str
         The name of the managed object that raises alarms
@@ -149,6 +154,16 @@ class AlarmManager:
         self.vctx = vctx
         self.managed_object_id = managed_object_id
         self.application_id = application_id
+        service = os.environ.get(ALARM_MGR_SERVICE_NAME_ENV, None)
+        port = os.environ.get(ALARM_MGR_SERVICE_PORT_ENV, None)
+        if service is None or port is None:
+            mdc_logger.error("init: missing env var(s) {0}, {1}".format(ALARM_MGR_SERVICE_NAME_ENV, ALARM_MGR_SERVICE_PORT_ENV))
+            raise InitFailed
+        target = "{0}:{1}".format(service, port)
+        self._wormhole_id = rmr.rmr_wh_open(self.vctx, target.encode('utf-8'))
+        if rmr.rmr_wh_state(self.vctx, self._wormhole_id) != rmr.RMR_OK:
+            mdc_logger.error("init: failed to open wormhole to target {}".format(target))
+            raise InitFailed
 
     def create_alarm(self,
                      specific_problem: int,
@@ -157,7 +172,7 @@ class AlarmManager:
                      additional_info: str = ""):
         """
         Convenience method that creates an alarm instance, an AlarmDetail object,
-        using cached values for managed object ID and application ID.
+        using cached values for the managed object ID and application ID.
 
         Parameters
         ----------
@@ -204,7 +219,8 @@ class AlarmManager:
 
     def _rmr_send_alarm(self, msg: dict):
         """
-        Serializes the dict and sends the result via RMR using a predefined message type.
+        Serializes the dict and sends the result via RMR using a predefined message
+        type to the wormhole initialized at start.
 
         Parameters
         ----------
@@ -222,7 +238,7 @@ class AlarmManager:
                                  mtype=RIC_ALARM_UPDATE, gen_transaction_id=True)
 
         for _ in range(0, RETRIES):
-            sbuf = rmr.rmr_send_msg(self.vctx, sbuf)
+            sbuf = rmr.rmr_wh_send_msg(self.vctx, self._wormhole_id, sbuf)
             post_send_summary = rmr.message_summary(sbuf)
             mdc_logger.debug("_rmr_send_alarm: try {0} result is {1}".format(_, post_send_summary[rmr.RMR_MS_MSG_STATE]))
             # stop trying if RMR does not indicate retry

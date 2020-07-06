@@ -1,7 +1,6 @@
 # do NOT use localhost, seems unresolved on jenkins VMs
 # first 3 lines (port 4564) are used for xapp frame tests
 # next 4 lines (port 3563-3564) are used in the rmr submodule
-# last line (port 4567) is used for alarms
 newrt|start
 mse| 60000 | -1 | 127.0.0.1:4564
 mse| 60001 | -1 | 127.0.0.1:4564
@@ -10,5 +9,4 @@ mse| 0 | -1 | 127.0.0.1:3563
 mse| 46656 | 777 | 127.0.0.1:3563
 mse| 1 | -1 | 127.0.0.1:3564
 mse| 2 | -1 | 127.0.0.1:3564
-mse| 110 | -1 | 127.0.0.1:4567
 newrt|end

@@ -158,9 +158,8 @@ class _BaseXapp:
             New payload to set
         new_mtype: int (optional)
             New message type (replaces the received message)
-        retries: int (optional)
-            Number of times to retry at the application level before
-            throwing exception RMRFailure
+        retries: int (optional, default 100)
+            Number of times to retry at the application level
 
         Returns
         -------

@@ -23,7 +23,7 @@ port number from environment variables defined as the constants
 `ALARM_MGR_SERVICE_NAME_ENV` and `ALARM_MGR_SERVICE_PORT_ENV` in
 the `ricxappframe.alarm.alarm` module. The message type is set to
 constant `RIC_ALARM_UPDATE` in the `ricxappframe.alarm.alarm` module,
-currently 13111.
+currently 110.
 
 The complete API for the Alarm feature appears below.
 

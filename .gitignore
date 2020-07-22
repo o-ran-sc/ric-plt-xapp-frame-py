@@ -114,3 +114,6 @@ coverage-reports
 .project
 .pydevproject
 .settings/
+
+# VS Code
+.vscode/

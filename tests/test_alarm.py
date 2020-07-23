@@ -47,6 +47,7 @@ def teardown_module():
     test alarm module teardown
     """
     rmr.rmr_close(MRC_SEND)
+    rmr.rmr_close(MRC_RCV)
 
 
 def test_alarm_set_get(monkeypatch):

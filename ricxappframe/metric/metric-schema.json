@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "reporter": {
+      "description": "the system reporting the metric",
+      "default":  "the RMR source string (host:port)",
+      "type": "string"
+    },
+    "generator": {
+      "description": "the system which generated the metric",
+      "default": "reporter is assumed to be the generator if this is omitted",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "milliseconds past the UNIX epoch; e.g. 1594298319000 == 2020/07/09 12:38:39.000Z",
+      "default":  "the message arrival time",
+      "type": "integer"
+    },
+    "data": {
+      "description": "one or more measurements",
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "description": "measurement name",
+              "type": "string"
+            },
+            "type": { 
+              "description": "future: measurement type such as counter, value, or similar",
+              "type": "string"
+            },
+            "value": {
+              "description": "actual value; treated as a double when forwarded",
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "value"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "data"
+  ]
+}

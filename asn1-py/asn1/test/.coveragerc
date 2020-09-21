@@ -1,0 +1,6 @@
+[run]
+omit =  ./asn1/test/*
+        ./asn1/asn1clib/*
+        ./env/*
+        ./main.py
+        ./setup.py

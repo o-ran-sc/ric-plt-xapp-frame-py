@@ -79,7 +79,7 @@ def test_alarm_set_get(monkeypatch):
         alarm.AlarmManager(MRC_SEND, "bogus", "envvars")
 
     # good environment variables
-    monkeypatch.setenv(ALARM_MGR_SERVICE_NAME_ENV, "localhost")
+    monkeypatch.setenv(ALARM_MGR_SERVICE_NAME_ENV, "127.0.0.1")     # do NOT use localhost
     monkeypatch.setenv(ALARM_MGR_SERVICE_PORT_ENV, "4567")  # any int is ok here
     mgr = alarm.AlarmManager(MRC_SEND, "moid2", "appid2")
     assert mgr is not None
@@ -106,7 +106,7 @@ def test_alarm_manager(monkeypatch):
     """
     test send functions and ensure a message arrives
     """
-    monkeypatch.setenv(ALARM_MGR_SERVICE_NAME_ENV, "localhost")
+    monkeypatch.setenv(ALARM_MGR_SERVICE_NAME_ENV, "127.0.0.1")     # do NOT use localhost
     monkeypatch.setenv(ALARM_MGR_SERVICE_PORT_ENV, "4567")  # must match rcv port above
     mgr = AlarmManager(MRC_SEND, "moid", "appid")
     assert mgr is not None

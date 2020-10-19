@@ -1,0 +1,7 @@
+Verified+1: ORAN Jobbuilder <releng+oran-jobbuilder@linuxfoundation.org>
+Code-Review+2: Timo Tietavainen <timo.tietavainen@nokia.com>
+Submitted-by: Timo Tietavainen <timo.tietavainen@nokia.com>
+Submitted-at: Mon, 19 Oct 2020 15:01:27 +0000
+Reviewed-on: https://gerrit.o-ran-sc.org/r/c/ric-plt/xapp-frame-py/+/4854
+Project: ric-plt/xapp-frame-py
+Branch: refs/heads/master

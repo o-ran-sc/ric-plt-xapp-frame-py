@@ -11,6 +11,11 @@ The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 
+[1.6.0] - 2020-10-23
+--------------------
+* Add SDL wrapping API (`RIC-659 <https://jira.o-ran-sc.org/browse/RIC-659>`_)
+
+
 [1.5.0] - 2020-07-10
 --------------------
 * Add Metrics API (`RIC-381 <https://jira.o-ran-sc.org/browse/RIC-381>`_)

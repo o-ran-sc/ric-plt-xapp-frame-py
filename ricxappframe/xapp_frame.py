@@ -83,7 +83,7 @@ class _BaseXapp:
         self._mrc = self._rmr_loop.mrc  # for convenience
 
         # SDL
-        self._sdl = SDLWrapper(use_fake_sdl)
+        self.sdl = SDLWrapper(use_fake_sdl)
 
         # Config
         # The environment variable specifies the path to the Xapp config file
@@ -193,6 +193,9 @@ class _BaseXapp:
 
     def sdl_set(self, namespace, key, value, usemsgpack=True):
         """
+        ** Deprecate Warning **
+        ** Will be removed in a future function **
+
         Stores a key-value pair to SDL, optionally serializing the value
         to bytes using msgpack.
 
@@ -212,10 +215,13 @@ class _BaseXapp:
             that is serializable by msgpack.
             If usemsgpack is False, the value must be bytes.
         """
-        self._sdl.set(namespace, key, value, usemsgpack)
+        self.sdl.set(namespace, key, value, usemsgpack)
 
     def sdl_get(self, namespace, key, usemsgpack=True):
         """
+        ** Deprecate Warning **
+        ** Will be removed in a future function **
+
         Gets the value for the specified namespace and key from SDL,
         optionally deserializing stored bytes using msgpack.
 
@@ -237,10 +243,13 @@ class _BaseXapp:
             See the usemsgpack parameter for an explanation of the returned value type.
             Answers None if the key is not found.
         """
-        return self._sdl.get(namespace, key, usemsgpack)
+        return self.sdl.get(namespace, key, usemsgpack)
 
     def sdl_find_and_get(self, namespace, prefix, usemsgpack=True):
         """
+        ** Deprecate Warning **
+        ** Will be removed in a future function **
+
         Gets all key-value pairs in the specified namespace
         with keys that start with the specified prefix,
         optionally deserializing stored bytes using msgpack.
@@ -265,10 +274,13 @@ class _BaseXapp:
             but is either a Python object or raw bytes as discussed above.
             Answers an empty dictionary if no keys matched the prefix.
         """
-        return self._sdl.find_and_get(namespace, prefix, usemsgpack)
+        return self.sdl.find_and_get(namespace, prefix, usemsgpack)
 
     def sdl_delete(self, namespace, key):
         """
+        ** Deprecate Warning **
+        ** Will be removed in a future function **
+
         Deletes the key-value pair with the specified key in the specified namespace.
 
         Parameters
@@ -278,7 +290,7 @@ class _BaseXapp:
         key: string
             SDL key
         """
-        self._sdl.delete(namespace, key)
+        self.sdl.delete(namespace, key)
 
     # Health
 
@@ -286,7 +298,7 @@ class _BaseXapp:
         """
         this needs to be understood how this is supposed to work
         """
-        return self._rmr_loop.healthcheck() and self._sdl.healthcheck()
+        return self._rmr_loop.healthcheck() and self.sdl.healthcheck()
 
     # Convenience function for discovering config change events
 

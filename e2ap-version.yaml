@@ -1,0 +1,3 @@
+# CI script installs asn1 for E2AP from PackageCloud using this version
+---
+version: 1.0.0

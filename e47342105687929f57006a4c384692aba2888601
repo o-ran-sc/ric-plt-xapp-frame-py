@@ -50,6 +50,24 @@
       "revId": "e47342105687929f57006a4c384692aba2888601",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ea6e2119_5332fa2a",
+        "filename": "tests/test_sdl.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1000037
+      },
+      "writtenOn": "2020-10-22T12:44:28Z",
+      "side": 1,
+      "message": "I think the reasoning for plural here is that the function is testing various invocations of set_and_publish, so the indication is \"test set and publish function variations.\"   From that perspective the plural (publishes actually) would be logical.  However, I do agree with Timo; using the singular \"publish\" in the function name makes more sense to me.",
+      "parentUuid": "71d3ee0d_eadd5a94",
+      "revId": "e47342105687929f57006a4c384692aba2888601",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
     }
   ]
 }

@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b6620040_df15dc31",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-10-22T12:10:43Z",
+      "side": 1,
+      "message": "Subject line max length should be around 50 character.\nAdd an empty line between subject line the body of a commit message.",
+      "revId": "e47342105687929f57006a4c384692aba2888601",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "303236ca_9dba8832",
+        "filename": "setup.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-10-22T12:10:43Z",
+      "side": 1,
+      "message": "Should you update new version number here and also to release-notes.rst file too?",
+      "revId": "e47342105687929f57006a4c384692aba2888601",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "71d3ee0d_eadd5a94",
+        "filename": "tests/test_sdl.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-10-22T12:10:43Z",
+      "side": 1,
+      "message": "Minor issue. Is plural \"_publishs\" correct here or should it be just \"_publish\"\nSimilarly at line 182",
+      "revId": "e47342105687929f57006a4c384692aba2888601",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}

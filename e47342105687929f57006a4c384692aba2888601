@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "ede787fb_4cd4e65c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-10-23T12:35:45Z",
+      "side": 1,
+      "message": "ok",
+      "parentUuid": "bdc2a6e3_4e076ed3",
+      "revId": "e47342105687929f57006a4c384692aba2888601",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "303236ca_9dba8832",
         "filename": "setup.py",
         "patchSetId": 2
@@ -69,6 +87,24 @@
       "revId": "e47342105687929f57006a4c384692aba2888601",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d6de36e8_b9acac3b",
+        "filename": "setup.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-10-23T12:35:45Z",
+      "side": 1,
+      "message": "ok",
+      "parentUuid": "2f42e5fb_5b55133d",
+      "revId": "e47342105687929f57006a4c384692aba2888601",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
     },
     {
       "key": {
@@ -122,6 +158,24 @@
       "revId": "e47342105687929f57006a4c384692aba2888601",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f25817e7_2958b50a",
+        "filename": "tests/test_sdl.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-10-23T12:35:45Z",
+      "side": 1,
+      "message": "ok",
+      "parentUuid": "4aabe0da_fe76f5a8",
+      "revId": "e47342105687929f57006a4c384692aba2888601",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": false
     }
   ]
 }

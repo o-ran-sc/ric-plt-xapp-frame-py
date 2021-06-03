@@ -38,6 +38,15 @@ These items in this repo must be kept in sync with the RMR version:
 #. ``rmr-version.yaml`` controls what version of RMR is installed for
    unit testing in Jenkins CI
 
+Registration/Deregistartion of Xapp
+-----------------------------------
+
+For registration and deregistration of Xapp following items need to be defined:
+
+#. CONFIG_FILE_PATH variable as a environment variable in Dockerfile if running
+   Xapp as a docker container or in configmap in case of Xapp as a pod.
+#. Copy the xappConfig.json into the docker image in Dockerfile.
+
 
 Unit Testing
 ------------

@@ -23,7 +23,9 @@ RUN mkdir -p /opt/route/
 COPY test_route.rt /opt/route/test_route.rt
 ENV LD_LIBRARY_PATH /usr/local/lib/:/usr/local/lib64
 ENV RMR_SEED_RT /opt/route/test_route.rt
-
+RUN mkdir -p /opt/config/
+COPY xappConfig.json /opt/config/xappConfig.json
+ENV CONFIG_FILE_PATH /opt/config/xappConfig.json
 # sdl needs gcc
 RUN apk update && apk add gcc musl-dev bash
 

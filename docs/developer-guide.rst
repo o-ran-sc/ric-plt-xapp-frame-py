@@ -17,6 +17,7 @@ these packages provided by the O-RAN-SC project and third parties:
 * msgpack
 * mdclogpy
 * ricsdl
+* protobuf
 
 
 Version bumping the framework

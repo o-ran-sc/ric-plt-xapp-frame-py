@@ -24,9 +24,15 @@ import os
 import queue
 import time
 from threading import Thread
+from typing import List, Set
+
 import inotify_simple
 from mdclogpy import Logger
+
 from ricxappframe import xapp_rmr
+from ricxappframe.constants import sdl_namespaces
+from ricxappframe.entities.rnib.nb_identity_pb2 import NbIdentity
+from ricxappframe.entities.rnib.nodeb_info_pb2 import Node
 from ricxappframe.rmr import rmr
 from ricxappframe.xapp_sdl import SDLWrapper
 import requests
@@ -463,6 +469,79 @@ class _BaseXapp:
             SDL key
         """
         self.sdl.delete(namespace, key)
+
+    def _get_rnib_info(self, node_type):
+        """
+        Since the difference between get_list_gnb_ids and get_list_enb_ids is only note-type,
+        this function extracted from the duplicated logic.
+
+        Parameters
+        ----------
+        node_type: string
+           Type of node. This is EnumDescriptor.
+           Available node types
+           - UNKNOWN
+           - ENG
+           - GNB
+
+        Returns
+        -------
+            List: (NbIdentity)
+
+        Raises
+        -------
+            SdlTypeError: If function's argument is of an inappropriate type.
+            NotConnected: If SDL is not connected to the backend data storage.
+            RejectedByBackend: If backend data storage rejects the request.
+            BackendError: If the backend data storage fails to process the request.
+        """
+        nbid_strings: Set[bytes] = self.sdl.get_members(sdl_namespaces.E2_MANAGER, node_type, usemsgpack=False)
+        ret: List[NbIdentity] = []
+        for nbid_string in nbid_strings:
+            nbid = NbIdentity()
+            nbid.ParseFromString(nbid_string)
+            ret.append(nbid)
+        return ret
+
+    def get_list_gnb_ids(self):
+        """
+        Retrieves the list of gNodeb identity entities
+
+        gNodeb information is stored in SDL by E2Manager. Therefore, gNode information
+        is stored in SDL's `e2Manager` namespace as protobuf serialized.
+
+        Returns
+        -------
+            List: (NbIdentity)
+
+        Raises
+        -------
+            SdlTypeError: If function's argument is of an inappropriate type.
+            NotConnected: If SDL is not connected to the backend data storage.
+            RejectedByBackend: If backend data storage rejects the request.
+            BackendError: If the backend data storage fails to process the request.
+        """
+        return self._get_rnib_info(Node.Type.Name(Node.Type.GNB))
+
+    def get_list_enb_ids(self):
+        """
+        Retrieves the list of eNodeb identity entities
+
+        eNodeb information is stored in SDL by E2Manager. Therefore, eNode information
+        is stored in SDL's `e2Manager` namespace as protobuf serialized.
+
+        Returns
+        -------
+            List: (NbIdentity)
+
+        Raises
+        ------
+            SdlTypeError: If function's argument is of an inappropriate type.
+            NotConnected: If SDL is not connected to the backend data storage.
+            RejectedByBackend: If backend data storage rejects the request.
+            BackendError: If the backend data storage fails to process the request.
+        """
+        return self._get_rnib_info(Node.Type.Name(Node.Type.ENB))
 
     # Health
 

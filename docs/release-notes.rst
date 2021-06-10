@@ -11,6 +11,11 @@ The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 
+[2.1.0] - 2021-06-18
+--------------------
+* Add `RNIB <https://gerrit.o-ran-sc.org/r/admin/repos/ric-plt/nodeb-rnib>`_ feature (`RIC-788 <https://jira.o-ran-sc.org/browse/RIC-788>`_)
+
+
 [2.0.0] - 2021-06-14
 --------------------
 * Add Xapp registration/deregistration APIs (`RIC-706 <https://jira.o-ran-sc.org/browse/RIC-706>`_)

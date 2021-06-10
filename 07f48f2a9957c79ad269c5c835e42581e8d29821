@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd205c43_22e5a79d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-10T08:01:16Z",
+      "side": 1,
+      "message": "For review. Take new SDL version into use in xapp frame",
+      "revId": "07f48f2a9957c79ad269c5c835e42581e8d29821",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}

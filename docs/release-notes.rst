@@ -11,6 +11,10 @@ The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 
+[1.6.1] - 2021-06-10
+--------------------
+* Take SDL version 3.0.0 into use, which has implemented RIC-699 and RIC-795
+
 [1.6.0] - 2020-10-23
 --------------------
 * Add SDL wrapping API (`RIC-659 <https://jira.o-ran-sc.org/browse/RIC-659>`_)

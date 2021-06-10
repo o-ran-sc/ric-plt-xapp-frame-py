@@ -99,11 +99,15 @@ class _BaseXapp:
             self._inotify = None
             self.logger.warning("__init__: NOT watching any config file")
 
-        self._configfile_path = os.environ.get(CONFIG_FILE_PATH, None)
-        with open(self._configfile_path) as json_file:
-            self._config_data = json.load(json_file)
         # used for thread control
-        self._keep_going = True
+        self._keep_registration = True
+        self._configfile_path = os.environ.get(CONFIG_FILE_PATH, None)
+        if self._configfile_path and os.path.isfile(self._configfile_path):
+            with open(self._configfile_path) as json_file:
+                self._config_data = json.load(json_file)
+        else:
+            self._keep_registration = False
+            self.logger.warning("__init__: Cannot Read config file for xapp Registration")
 
         Thread(target=self.registerXapp).start()
 
@@ -204,7 +208,7 @@ class _BaseXapp:
         """
             registers the xapp
         """
-        while self._keep_going:
+        while self._keep_registration:
             time.sleep(5)
             healthy = self.healthcheck()
             if healthy==False:

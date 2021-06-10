@@ -28,7 +28,7 @@ RUN pip install --upgrade pip && pip install tox
 # copies
 COPY ricxappframe/ /tmp/ricxappframe
 COPY tests/ /tmp/tests
-COPY setup.py tox.ini LICENSE.txt /tmp/
+COPY setup.py tox.ini LICENSE.txt .coveragerc /tmp/
 WORKDIR /tmp
 
 # Run the unit tests

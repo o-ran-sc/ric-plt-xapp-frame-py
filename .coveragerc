@@ -1,0 +1,4 @@
+[run]
+omit =
+    # omit compiled protobuf files
+    ricxappframe/entities/*

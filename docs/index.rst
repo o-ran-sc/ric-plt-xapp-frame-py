@@ -15,6 +15,7 @@ xApp Python Framework
    user-guide.rst
    rmr_api.rst
    alarm_api.rst
+   rnib.rst
    developer-guide.rst
    release-notes.rst
 

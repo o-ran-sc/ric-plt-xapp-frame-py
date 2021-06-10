@@ -16,6 +16,8 @@
 # ==================================================================================
 import pytest
 
+from ricxappframe.entities.rnib.nb_identity_pb2 import NbIdentity
+
 
 # These are here just to reduce the size of the code in test_rmr so those (important) tests are more readable; in theory these dicts could be large
 # The actual value of the constants should be ignored by the tests; all we should care
@@ -75,3 +77,20 @@ def expected_states():
         14: "RMR_ERR_TRUNC",
         15: "RMR_ERR_INITFAILED",
     }
+
+
+@pytest.fixture
+def rnib_information():
+    rnib1 = NbIdentity()
+    rnib1.inventory_name = "nodeb_1234"
+    rnib1.global_nb_id.plmn_id = "plmn_1234"
+    rnib1.global_nb_id.nb_id = "nb_1234"
+    rnib1.connection_status = 1
+
+    rnib2 = NbIdentity()
+    rnib1.inventory_name = "nodeb_5678"
+    rnib1.global_nb_id.plmn_id = "plmn_5678"
+    rnib1.global_nb_id.nb_id = "nb_5678"
+    rnib1.connection_status = 6
+
+    return [rnib1.SerializeToString(), rnib2.SerializeToString()]

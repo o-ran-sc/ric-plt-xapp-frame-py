@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0b1ab3a_5d2bce6d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001361
+      },
+      "writtenOn": "2021-06-11T09:43:29Z",
+      "side": 1,
+      "message": "For Review of Xapp Registration/Deregistration. Please merge the change if it looks okay.",
+      "revId": "bac18952225035e44ae7672b81dacc2793944a16",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}

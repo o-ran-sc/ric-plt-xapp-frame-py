@@ -11,6 +11,13 @@ The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 
+[2.0.0] - 2021-06-14
+--------------------
+* Add Xapp registration/deregistration APIs (`RIC-706 <https://jira.o-ran-sc.org/browse/RIC-706>`_)
+* Upgrade SDL 3.0.0 version, SDL scaling (`RIC-699 <https://jira.o-ran-sc.org/browse/RIC-699>`_)
+* Upgrade SDL 3.0.0 version, notification fix (`RIC-795 <https://jira.o-ran-sc.org/browse/RIC-795>`_)
+
+
 [1.6.0] - 2020-10-23
 --------------------
 * Add SDL wrapping API (`RIC-659 <https://jira.o-ran-sc.org/browse/RIC-659>`_)

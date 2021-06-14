@@ -139,7 +139,7 @@ def test_sdl_set_and_publish_with_handle_events():
         # test is cb called
         CALLED = True
         assert channel == CH
-        assert event == EVENT
+        assert event[0] == EVENT
 
     sdl = SDLWrapper(use_fake_sdl=True)
     sdl.subscribe_channel(NS, cb, "channel")
@@ -193,7 +193,7 @@ def test_sdl_remove_and_publish_with_start_event_listener():
         nonlocal CALLED
         CALLED = True
         assert channel == CH
-        assert event == EVENT
+        assert event[0] == EVENT
 
     sdl = SDLWrapper(use_fake_sdl=True)
     sdl.subscribe_channel(NS, cb, "channel")

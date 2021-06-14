@@ -630,8 +630,8 @@ class SDLWrapper:
     def handle_events(self):
         """
         handle_events is a non-blocking function that returns a tuple containing channel
-        name and message received from an event. The registered callback function will
-        still be called when an event is received.
+        name and a list of message(s) received from an event. The registered callback
+        function will still be called when an event is received.
 
         This function is called if SDL user decides to handle notifications in its own
         event loop. Calling this function after start_event_listener raises an exception.
@@ -640,7 +640,7 @@ class SDLWrapper:
         Returns
         -------
         Tuple:
-            (channel: str, message: str)
+            (channel: str, message: list of str)
         """
         return self._sdl.handle_events()
 

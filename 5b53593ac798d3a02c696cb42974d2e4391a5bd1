@@ -16,6 +16,24 @@
       "message": "Where are unit test for this change?",
       "revId": "5b53593ac798d3a02c696cb42974d2e4391a5bd1",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3cae0d46_a9adbf4b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-18T08:12:40Z",
+      "side": 1,
+      "message": "Earlier reported UT coverage was 88% now with this change it has been dropped 80%.",
+      "parentUuid": "23c7e26b_026a8f76",
+      "revId": "5b53593ac798d3a02c696cb42974d2e4391a5bd1",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

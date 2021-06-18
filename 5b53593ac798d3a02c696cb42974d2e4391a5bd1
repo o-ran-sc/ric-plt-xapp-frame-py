@@ -34,6 +34,24 @@
       "parentUuid": "23c7e26b_026a8f76",
       "revId": "5b53593ac798d3a02c696cb42974d2e4391a5bd1",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f878155f_0e55e64f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-18T08:33:27Z",
+      "side": 1,
+      "message": "Perhaps you could exclude generated code (ricxappframe/entities/) not to be part of coverage calculation. I think you can do it by modifying tox.ini file\u0027s pytest --cov command to omit some files/directories.",
+      "parentUuid": "3cae0d46_a9adbf4b",
+      "revId": "5b53593ac798d3a02c696cb42974d2e4391a5bd1",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88c4f483_fcd93eb5",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-18T09:36:05Z",
+      "side": 1,
+      "message": "Very minor issue:\nnote-type\n--\u003e\nnode-type",
+      "revId": "750eb5b040db75fae264da5e422038e08e5da345",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}

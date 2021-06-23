@@ -11,6 +11,11 @@ The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 
+[2.2.0] - 2021-06-23
+--------------------
+* Add E2AP package (`RIC-664 <https://jira.o-ran-sc.org/browse/RIC-664>`_)
+
+
 [2.1.0] - 2021-06-18
 --------------------
 * Add `RNIB <https://gerrit.o-ran-sc.org/r/admin/repos/ric-plt/nodeb-rnib>`_ feature (`RIC-788 <https://jira.o-ran-sc.org/browse/RIC-788>`_)

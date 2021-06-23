@@ -14,13 +14,38 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 # ==================================================================================
-FROM python:3.8-alpine
+FROM python:3.8-slim as stretch
 
 # sdl uses hiredis which needs gcc
-RUN apk update && apk add gcc musl-dev
+RUN apt-get update && \
+    apt-get install -y \
+        wget gcc musl-dev
 
-# copy rmr libraries from builder image in lieu of an Alpine package
-COPY --from=nexus3.o-ran-sc.org:10002/o-ran-sc/bldr-alpine3-rmr:4.1.2 /usr/local/lib64/librmr* /usr/local/lib64/
+ARG rmr_version=4.1.2
+ARG e2ap_version=1.1.0
+
+# download rmr and e2ap libraries from package cloud
+RUN wget -nv --content-disposition https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/rmr_${rmr_version}_amd64.deb/download.deb
+RUN wget -nv --content-disposition https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/rmr-dev_${rmr_version}_amd64.deb/download.deb
+
+RUN wget -nv --content-disposition https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/riclibe2ap_${e2ap_version}_amd64.deb/download.deb
+RUN wget -nv --content-disposition https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/riclibe2ap-dev_${e2ap_version}_amd64.deb/download.deb
+
+RUN dpkg -i rmr_${rmr_version}_amd64.deb
+RUN dpkg -i rmr-dev_${rmr_version}_amd64.deb
+
+RUN dpkg -i riclibe2ap_${e2ap_version}_amd64.deb
+RUN dpkg -i riclibe2ap-dev_${e2ap_version}_amd64.deb
+
+RUN ls /usr/local/lib/
+
+FROM python:3.8-slim
+
+ARG rmr_version=4.1.2
+ARG e2ap_version=1.1.0
+
+COPY --from=stretch /usr/local/lib/librmr_si.so.${rmr_version} /usr/local/lib/librmr_si.so
+COPY --from=stretch /usr/local/lib/libriclibe2ap.so.${e2ap_version} /usr/local/lib/libriclibe2ap.so
 
 # Upgrade pip, install tox
 RUN pip install --upgrade pip && pip install tox

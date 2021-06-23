@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "54af7d3c_1e8496de",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-23T07:50:17Z",
+      "side": 1,
+      "message": "Looks okay to me, although I don\u0027t know much about E2AP in general.  ",
+      "revId": "26f15d649bf3687b2b6864f0e05c9fb88eec5456",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}

@@ -37,7 +37,7 @@ setup(
     author="O-RAN Software Community",
     description="Xapp and RMR framework for Python",
     url="https://gerrit.o-ran-sc.org/r/admin/repos/ric-plt/xapp-frame-py",
-    install_requires=["inotify_simple", "msgpack", "mdclogpy", "ricsdl>=3.0.0,<4.0.0", "requests", "protobuf"],
+    install_requires=["inotify_simple", "msgpack", "mdclogpy", "ricsdl>=3.0.0,<4.0.0", "requests", "protobuf", "inotify"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Telecommunications Industry",

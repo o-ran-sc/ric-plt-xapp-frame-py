@@ -16,6 +16,24 @@
       "message": "One general question. If we now move com/pylog code under xapp-frame-py repo, are we going to still publish individual pip packages to the pypi.org for the both mdclogpy and xapp-frame-py and both having their own version numbers?\nhttps://pypi.org/project/mdclogpy/\nhttps://pypi.org/project/ricxappframe/\nOr are going to publish only ricxappframe pip package what includes also mdclog?",
       "revId": "e310e43fc236b16d8dc8c6796cfc368fb029c7da",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c2483ec_330f7f18",
+        "filename": "setup.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-08-12T09:11:43Z",
+      "side": 1,
+      "message": "After reviewing further the code changes, idea seems to be that mdclog will be part of the ricxappframe package:\n\"from ricxappframe.logger.mdclogger import Level, MDCLogger\"",
+      "parentUuid": "b6a1854a_feb84b47",
+      "revId": "e310e43fc236b16d8dc8c6796cfc368fb029c7da",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

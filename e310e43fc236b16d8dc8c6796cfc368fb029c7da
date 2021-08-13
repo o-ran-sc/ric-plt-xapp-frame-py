@@ -88,6 +88,24 @@
       "parentUuid": "e6d67433_849ca9b4",
       "revId": "e310e43fc236b16d8dc8c6796cfc368fb029c7da",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8ac748a_a88b8096",
+        "filename": "setup.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000475
+      },
+      "writtenOn": "2021-08-13T06:35:24Z",
+      "side": 1,
+      "message": "Hello Timo, thank you for identifying the version bump and update in release notes. If you feel implementation correctly addresses the RIC-330 then we can merge this patch and identified improvement I will do it as subsequent commit.",
+      "parentUuid": "97197f22_3f41f612",
+      "revId": "e310e43fc236b16d8dc8c6796cfc368fb029c7da",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

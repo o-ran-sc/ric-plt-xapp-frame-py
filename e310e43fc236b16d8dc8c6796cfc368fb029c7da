@@ -52,6 +52,24 @@
       "parentUuid": "4c2483ec_330f7f18",
       "revId": "e310e43fc236b16d8dc8c6796cfc368fb029c7da",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e6d67433_849ca9b4",
+        "filename": "setup.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-08-13T04:43:40Z",
+      "side": 1,
+      "message": "Thanks. This is clear now.",
+      "parentUuid": "12cde39f_c1f426a7",
+      "revId": "e310e43fc236b16d8dc8c6796cfc368fb029c7da",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

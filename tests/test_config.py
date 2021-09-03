@@ -19,7 +19,9 @@ import time
 import os
 from contextlib import suppress
 from mdclogpy import Logger
-from ricxappframe.xapp_frame import RMRXapp, CONFIG_FILE_ENV
+
+from ricxappframe.util.constants import Constants
+from ricxappframe.xapp_frame import RMRXapp
 
 mdc_logger = Logger(name=__name__)
 rmr_xapp_config = None
@@ -41,7 +43,7 @@ def write_config_file():
 
 def test_config_no_env(monkeypatch):
     init_config_file()
-    monkeypatch.delenv(CONFIG_FILE_ENV, raising=False)
+    monkeypatch.delenv(Constants.CONFIG_FILE_ENV, raising=False)
 
     def default_rmr_handler(self, summary, sbuf):
         pass
@@ -67,7 +69,7 @@ def test_config_no_env(monkeypatch):
 def test_default_config_handler(monkeypatch):
     """Just for coverage"""
     init_config_file()
-    monkeypatch.setenv(CONFIG_FILE_ENV, config_file_path)
+    monkeypatch.setenv(Constants.CONFIG_FILE_ENV, config_file_path)
 
     def default_rmr_handler(self, summary, sbuf):
         pass
@@ -86,7 +88,7 @@ def test_default_config_handler(monkeypatch):
 def test_custom_config_handler(monkeypatch):
     # point watcher at the file
     init_config_file()
-    monkeypatch.setenv(CONFIG_FILE_ENV, config_file_path)
+    monkeypatch.setenv(Constants.CONFIG_FILE_ENV, config_file_path)
 
     def default_handler(self, summary, sbuf):
         pass

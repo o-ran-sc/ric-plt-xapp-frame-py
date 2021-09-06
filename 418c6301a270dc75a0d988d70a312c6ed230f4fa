@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b27ffde_a8faf704",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001361
+      },
+      "writtenOn": "2021-09-06T16:50:09Z",
+      "side": 1,
+      "message": "Configuration reading from xapp descriptor (environment)",
+      "revId": "418c6301a270dc75a0d988d70a312c6ed230f4fa",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}

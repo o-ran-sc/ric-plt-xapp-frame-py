@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "95d642f9_4d14100c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-09-08T13:04:42Z",
+      "side": 1,
+      "message": "Hi,\nCan you add an explanation to the commit message why this change was made, meaning why configuration is now read from env instead of a file. I didn\u0027t catch that when I read the ticket RIC-706.\nThanks.",
+      "revId": "418c6301a270dc75a0d988d70a312c6ed230f4fa",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "0b27ffde_a8faf704",
@@ -14,6 +31,40 @@
       "writtenOn": "2021-09-06T16:50:09Z",
       "side": 1,
       "message": "Configuration reading from xapp descriptor (environment)",
+      "revId": "418c6301a270dc75a0d988d70a312c6ed230f4fa",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8a15385_f73fb40f",
+        "filename": "ricxappframe/util/constants.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-09-08T13:04:42Z",
+      "side": 1,
+      "message": "Should Class Constants now include all the xapp-frame constants, such as:\nRIC_HEALTH_CHECK_REQ \u003d 100\nRIC_HEALTH_CHECK_RESP \u003d 101\nCONFIG_FILE_ENV \u003d \"CONFIG_FILE\"\nor only some specific subset of constants like now?",
+      "revId": "418c6301a270dc75a0d988d70a312c6ed230f4fa",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f5f467e1_4c76e89a",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-09-08T13:04:42Z",
+      "side": 1,
+      "message": "Can we have here specific error log what tells if it is url what is empty or a namespace. I think it helps troubleshooting if you see from the error log itself which one is empty.",
       "revId": "418c6301a270dc75a0d988d70a312c6ed230f4fa",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }

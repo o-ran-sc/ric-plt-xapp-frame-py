@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "e8491576_3a1d08ac",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1001361
+      },
+      "writtenOn": "2021-09-13T08:29:31Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "95d642f9_4d14100c",
+      "revId": "418c6301a270dc75a0d988d70a312c6ed230f4fa",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "0b27ffde_a8faf704",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 7
@@ -54,6 +72,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ddd1f17b_34ce4044",
+        "filename": "ricxappframe/util/constants.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1001361
+      },
+      "writtenOn": "2021-09-13T08:29:31Z",
+      "side": 1,
+      "message": "yes right they should also be moved to the Class Constants.",
+      "parentUuid": "e8a15385_f73fb40f",
+      "revId": "418c6301a270dc75a0d988d70a312c6ed230f4fa",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f5f467e1_4c76e89a",
         "filename": "ricxappframe/xapp_frame.py",
         "patchSetId": 7
@@ -65,6 +101,24 @@
       "writtenOn": "2021-09-08T13:04:42Z",
       "side": 1,
       "message": "Can we have here specific error log what tells if it is url what is empty or a namespace. I think it helps troubleshooting if you see from the error log itself which one is empty.",
+      "revId": "418c6301a270dc75a0d988d70a312c6ed230f4fa",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d74ff39b_356e06af",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1001361
+      },
+      "writtenOn": "2021-09-13T08:29:31Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "f5f467e1_4c76e89a",
       "revId": "418c6301a270dc75a0d988d70a312c6ed230f4fa",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }

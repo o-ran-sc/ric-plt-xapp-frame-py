@@ -88,6 +88,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "51d13281_ebf0adc8",
+        "filename": "ricxappframe/util/constants.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-09-13T09:04:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ddd1f17b_34ce4044",
+      "revId": "418c6301a270dc75a0d988d70a312c6ed230f4fa",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f5f467e1_4c76e89a",

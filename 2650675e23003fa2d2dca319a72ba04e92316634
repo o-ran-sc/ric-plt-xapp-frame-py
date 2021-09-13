@@ -16,6 +16,23 @@
       "message": "Hello , I have addressed the comments and made the changes.\nKindly review.",
       "revId": "2650675e23003fa2d2dca319a72ba04e92316634",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "53534646_4c5bf7c9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-09-13T09:04:39Z",
+      "side": 1,
+      "message": "Looks good to me after the review changes.",
+      "revId": "2650675e23003fa2d2dca319a72ba04e92316634",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

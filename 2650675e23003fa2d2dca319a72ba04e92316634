@@ -50,6 +50,24 @@
       "message": "Shall I submit this change?\nWhat about xapp-frame-py version number upgrading from the current version 2.2.0 to a newer version, are you doing it later as separate commits?\n\u003egit grep \"2.2.0\"\n\u003e\u003edocs/release-notes.rst:[2.2.0] - 2021-06-23\n\u003e\u003ereleases/pypi-release-ricxappframe.yaml:version: 2.2.0\n\u003e\u003esetup.py:    version\u003d\"2.2.0\",\n",
       "revId": "2650675e23003fa2d2dca319a72ba04e92316634",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9bbfa871_2cb05b80",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001361
+      },
+      "writtenOn": "2021-09-15T11:07:24Z",
+      "side": 1,
+      "message": "yes Please submit I will upgrade the version in another commit.",
+      "parentUuid": "9bbdfee9_6f349309",
+      "revId": "2650675e23003fa2d2dca319a72ba04e92316634",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

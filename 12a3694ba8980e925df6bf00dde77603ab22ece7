@@ -16,6 +16,23 @@
       "message": "updated version",
       "revId": "12a3694ba8980e925df6bf00dde77603ab22ece7",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3deeb434_f8b25f15",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-09-17T11:47:11Z",
+      "side": 1,
+      "message": "I think there has been made also \"Integrate pylog with xapp-frame-py\" change on top of old 2.2.0 version, maybe it\u0027s worth to mention here that pylog change has came in version 2.3.0 also.",
+      "revId": "12a3694ba8980e925df6bf00dde77603ab22ece7",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

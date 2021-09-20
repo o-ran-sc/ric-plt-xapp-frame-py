@@ -16,6 +16,24 @@
       "message": "Looks good to me. Shall I submit this change or is there someone who wants to review still?",
       "revId": "9eddcfa0683bedadd472ef382535f4359b281f08",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "26c4d363_db6b322a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001361
+      },
+      "writtenOn": "2021-09-20T07:41:04Z",
+      "side": 1,
+      "message": "Please go ahead and merge",
+      "parentUuid": "273230c1_02d864eb",
+      "revId": "9eddcfa0683bedadd472ef382535f4359b281f08",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

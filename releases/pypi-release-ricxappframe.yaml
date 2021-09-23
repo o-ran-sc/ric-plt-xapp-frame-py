@@ -3,6 +3,6 @@ pypi_project: ricxappframe
 # python version must be parsed as a string, not number
 python_version: '3.7'
 # version to release
-version: 2.2.0
+version: 2.3.0
 # partial URL of logs from job that staged the package to test.pypi.org
-log_dir: ric-plt-xapp-frame-py-pypi-stage-master/11
+log_dir: ric-plt-xapp-frame-py-pypi-stage-master/12

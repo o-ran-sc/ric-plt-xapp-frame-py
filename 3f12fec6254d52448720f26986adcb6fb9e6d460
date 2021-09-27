@@ -67,6 +67,24 @@
       "message": "I need to comment \"stage-release\" in the previous commit ,  its not working , Am I missing anything?",
       "revId": "3f12fec6254d52448720f26986adcb6fb9e6d460",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "33ace381_de3a568e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-09-27T18:44:58Z",
+      "side": 1,
+      "message": "Hi Naman,\nYou did right when you add a comment \"stage-release\" to the previous review +/6709. It triggered below Jenkins job but it failed mysteriously with error \"InvalidConfiguration: Missing \u0027pypi-test\u0027 section from ~/.pypirc\".\nhttps://jenkins.o-ran-sc.org/view/ric-plt-xapp-frame-py/job/ric-plt-xapp-frame-py-pypi-stage-master/12/console\n\nI created a ticket to LF Jenkins support to investigate this issue. Link to the ticket is:\nhttps://jira.linuxfoundation.org/plugins/servlet/theme/portal/2/IT-22972#\nWe need to wait now their response.",
+      "parentUuid": "ccd7f883_21516749",
+      "revId": "3f12fec6254d52448720f26986adcb6fb9e6d460",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

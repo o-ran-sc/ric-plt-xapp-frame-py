@@ -85,6 +85,23 @@
       "parentUuid": "ccd7f883_21516749",
       "revId": "3f12fec6254d52448720f26986adcb6fb9e6d460",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d803cf49_47439a56",
+        "filename": "releases/pypi-release-ricxappframe.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-09-30T03:07:15Z",
+      "side": 1,
+      "message": "LF Jenkins support team fixed the pip package release issue to the test area of the pypi.org. Now the successful Jenkins logs are from Jenkins run number 14, so can you change here also log_dir\u0027s number from 12 to 14?",
+      "revId": "3f12fec6254d52448720f26986adcb6fb9e6d460",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

@@ -120,6 +120,24 @@
       "parentUuid": "d803cf49_47439a56",
       "revId": "3f12fec6254d52448720f26986adcb6fb9e6d460",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ebfcb683_109f16b2",
+        "filename": "releases/pypi-release-ricxappframe.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-10-01T09:30:18Z",
+      "side": 1,
+      "message": "Thanks, looks good to me. It seems that Jenkins verify job has failed, maybe because of some network issue with wget commmand. I\u0027ll try again to run the job.",
+      "parentUuid": "c59095da_7f763219",
+      "revId": "3f12fec6254d52448720f26986adcb6fb9e6d460",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

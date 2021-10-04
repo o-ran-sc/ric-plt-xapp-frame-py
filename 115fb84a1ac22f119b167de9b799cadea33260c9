@@ -50,6 +50,23 @@
       "message": "recheck",
       "revId": "115fb84a1ac22f119b167de9b799cadea33260c9",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6fc30df7_e322921f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001361
+      },
+      "writtenOn": "2021-10-04T05:44:05Z",
+      "side": 1,
+      "message": "Thank you Timo and Andrew for resolving the issue 😊",
+      "revId": "115fb84a1ac22f119b167de9b799cadea33260c9",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

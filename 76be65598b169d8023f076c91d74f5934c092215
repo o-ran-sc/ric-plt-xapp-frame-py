@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d78faf1_f3b5c5c4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-10-14T08:26:47Z",
+      "side": 1,
+      "message": "Typos:\nErrki --\u003e Erkki\nremiving -\u003e removing",
+      "revId": "76be65598b169d8023f076c91d74f5934c092215",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}

@@ -15,6 +15,7 @@
 #   limitations under the License.
 # ==================================================================================
 import ctypes
+from ctypes.util import find_library
 import json
 
 # Subpackage that creates and publishes a reference to the C shared library.
@@ -27,7 +28,12 @@ import json
 rmr_c_lib = ctypes.CDLL("librmr_si.so", mode=ctypes.RTLD_GLOBAL)
 _rmr_get_consts = rmr_c_lib.rmr_get_consts
 _rmr_get_consts.argtypes = []
-_rmr_get_consts.restype = ctypes.c_char_p
+_rmr_get_consts.restype = ctypes.c_void_p
+
+libc = ctypes.CDLL(find_library("c"))
+_libc_free = libc.free
+_libc_free.argtypes = [ctypes.c_void_p]
+_libc_free.restype = None
 
 
 def get_constants(cache={}):
@@ -38,8 +44,10 @@ def get_constants(cache={}):
     if cache:
         return cache
 
-    js = _rmr_get_consts()  # read json string
+    ptr = _rmr_get_consts()  # read pointer to json data
+    js = ctypes.cast(ptr, ctypes.c_char_p).value  # cast it to python string
     cache = json.loads(str(js.decode()))  # create constants value object as a hash
+    _libc_free(ptr)
     return cache
 
 

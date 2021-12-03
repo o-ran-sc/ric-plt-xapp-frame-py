@@ -16,6 +16,23 @@
       "message": "For review.",
       "revId": "ab881ae80afeee1ce99802dd6a50530ad7378268",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e013535_bacc1348",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-12-03T11:38:38Z",
+      "side": 1,
+      "message": "stage-release",
+      "revId": "ab881ae80afeee1ce99802dd6a50530ad7378268",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

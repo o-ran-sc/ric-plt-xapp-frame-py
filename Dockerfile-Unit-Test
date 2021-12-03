@@ -21,7 +21,7 @@ RUN apt-get update && \
     apt-get install -y \
         wget gcc musl-dev
 
-ARG rmr_version=4.1.2
+ARG rmr_version=4.8.0
 ARG e2ap_version=1.1.0
 
 # download rmr and e2ap libraries from package cloud
@@ -41,7 +41,7 @@ RUN ls /usr/local/lib/
 
 FROM python:3.8-slim
 
-ARG rmr_version=4.1.2
+ARG rmr_version=4.8.0
 ARG e2ap_version=1.1.0
 
 COPY --from=stretch /usr/local/lib/librmr_si.so.${rmr_version} /usr/local/lib/librmr_si.so

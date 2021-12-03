@@ -27,7 +27,11 @@ import json
 rmr_c_lib = ctypes.CDLL("librmr_si.so", mode=ctypes.RTLD_GLOBAL)
 _rmr_get_consts = rmr_c_lib.rmr_get_consts
 _rmr_get_consts.argtypes = []
-_rmr_get_consts.restype = ctypes.c_char_p
+_rmr_get_consts.restype = ctypes.POINTER(ctypes.c_char)
+
+_rmr_free_consts = rmr_c_lib.rmr_free_consts
+_rmr_free_consts.argtypes = [ctypes.POINTER(ctypes.c_char)]
+_rmr_free_consts.restype = None
 
 
 def get_constants(cache={}):
@@ -38,8 +42,10 @@ def get_constants(cache={}):
     if cache:
         return cache
 
-    js = _rmr_get_consts()  # read json string
+    ptr = _rmr_get_consts()  # read char pointer
+    js = ctypes.cast(ptr, ctypes.c_char_p).value  # cast to json string
     cache = json.loads(str(js.decode()))  # create constants value object as a hash
+    _rmr_free_consts(ptr)
     return cache
 
 

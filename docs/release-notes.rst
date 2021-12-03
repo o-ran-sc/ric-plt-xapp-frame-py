@@ -10,6 +10,11 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
+[3.0.0] - 2021-12-03
+--------------------
+* Upgrade to RMR version 4.8.0 to fix memory leak in get_constants() function (`RIC-858 <https://jira.o-ran-sc.org/browse/RIC-858>`_)
+* From xapp-frame-py version 3.0.0 onwards it is required to have RMR version 4.8.0 or newer.
+
 [2.3.0] - 2021-09-15
 --------------------
 * Add Xapp Registration (`RIC-706 <https://jira.o-ran-sc.org/browse/RIC-706>`_)

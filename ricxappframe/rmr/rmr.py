@@ -685,7 +685,7 @@ def rmr_wh_call(vctx: c_void_p, whid: c_int, ptr_mbuf: POINTER(rmr_mbuf_t), call
     return _rmr_wh_call(vctx, whid, ptr_mbuf, call_id, max_wait)
 
 
-_rmr_wh_close = _wrap_rmr_function('rmr_close', None, [c_void_p, c_int])
+_rmr_wh_close = _wrap_rmr_function('rmr_wh_close', None, [c_void_p, c_int])
 
 
 def rmr_wh_close(vctx: c_void_p, whid: c_int):

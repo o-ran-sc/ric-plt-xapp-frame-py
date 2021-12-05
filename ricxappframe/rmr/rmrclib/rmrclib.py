@@ -16,6 +16,7 @@
 # ==================================================================================
 import ctypes
 import json
+from contextlib import contextmanager
 
 # Subpackage that creates and publishes a reference to the C shared library.
 # Intended to be private; RMR-python and xapp-frame-py users should not need this.
@@ -34,6 +35,15 @@ _rmr_free_consts.argtypes = [ctypes.POINTER(ctypes.c_char)]
 _rmr_free_consts.restype = None
 
 
+@contextmanager
+def _rmr_get_consts_decorator():
+    ptr = _rmr_get_consts()
+    try:
+        yield ptr
+    finally:
+        _rmr_free_consts(ptr)
+
+
 def get_constants(cache={}):
     """
     Gets constants published by RMR and caches for subsequent calls.
@@ -42,10 +52,11 @@ def get_constants(cache={}):
     if cache:
         return cache
 
-    ptr = _rmr_get_consts()  # read char pointer
-    js = ctypes.cast(ptr, ctypes.c_char_p).value  # cast to json string
-    cache = json.loads(str(js.decode()))  # create constants value object as a hash
-    _rmr_free_consts(ptr)
+    # read pointer to json data
+    with _rmr_get_consts_decorator() as ptr:
+        js = ctypes.cast(ptr, ctypes.c_char_p).value  # cast it to python string
+        cache = json.loads(str(js.decode()))  # create constants value object as a hash
+
     return cache
 
 

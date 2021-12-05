@@ -388,6 +388,13 @@ def test_wh():
     assert send_summary[rmr.RMR_MS_MSG_TYPE] == rcv_summary[rmr.RMR_MS_MSG_TYPE] == mtype
     assert send_summary[rmr.RMR_MS_PAYLOAD] == rcv_summary[rmr.RMR_MS_PAYLOAD] == payload
 
+    sbuf_send = rmr.rmr_alloc_msg(MRC_SEND, SIZE)
+    _assert_new_sbuf(sbuf_send)
+    mtype = 1
+    sbuf_send.contents.mtype = mtype
+    payload = b"Birds like worms"
+    rmr.set_payload_and_length(payload, sbuf_send)
+
     # send without waiting for a response
     rmr.rmr_wh_send_msg(MRC_SEND, whid, sbuf_send)
 

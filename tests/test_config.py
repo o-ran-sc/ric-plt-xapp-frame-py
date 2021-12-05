@@ -64,6 +64,7 @@ def test_config_no_env(monkeypatch):
     time.sleep(3)
     assert not config_event_seen
     rmr_xapp_noconfig.stop()
+    rmr_xapp_noconfig = None
 
 
 def test_default_config_handler(monkeypatch):
@@ -83,6 +84,7 @@ def test_default_config_handler(monkeypatch):
     # give the work loop a chance to timeout on RMR and process the config event
     time.sleep(3)
     rmr_xapp_defconfig.stop()
+    rmr_xapp_defconfig = None
 
 
 def test_custom_config_handler(monkeypatch):
@@ -115,6 +117,7 @@ def test_custom_config_handler(monkeypatch):
     time.sleep(3)
     assert change_config_event
     rmr_xapp_config.stop()
+    rmr_xapp_config = None
 
 
 def teardown_module():
@@ -126,8 +129,9 @@ def teardown_module():
     """
     os.remove(config_file_path)
     with suppress(Exception):
-        rmr_xapp_config.stop()
-    with suppress(Exception):
-        rmr_xapp_defconfig.stop()
-    with suppress(Exception):
-        rmr_xapp_noconfig.stop()
+        if rmr_xapp_config:
+            rmr_xapp_config.stop()
+        if rmr_xapp_defconfig:
+            rmr_xapp_defconfig.stop()
+        if rmr_xapp_noconfig:
+            rmr_xapp_noconfig.stop()

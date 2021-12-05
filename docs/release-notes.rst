@@ -10,6 +10,11 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
+[3.0.1] - 2021-12-07
+--------------------
+* Take configuration and rmr unit tests back into use after fixing the tests (`RIC-865 <https://jira.o-ran-sc.org/browse/RIC-865>`_)
+* Improve memory leak fix done in the version 3.0.0 to free memory also if python exception has been thrown.
+
 [3.0.0] - 2021-12-03
 --------------------
 * Upgrade to RMR version 4.8.0 to fix memory leak in get_constants() function (`RIC-858 <https://jira.o-ran-sc.org/browse/RIC-858>`_)

@@ -16,6 +16,23 @@
       "message": "Great that also UT is now working. Looks good to me.",
       "revId": "61c6508543204e10aa105b1a8e940c8c7d604fac",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ab8c8c6_52bc4570",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-12-07T09:53:41Z",
+      "side": 1,
+      "message": "remerge",
+      "revId": "61c6508543204e10aa105b1a8e940c8c7d604fac",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

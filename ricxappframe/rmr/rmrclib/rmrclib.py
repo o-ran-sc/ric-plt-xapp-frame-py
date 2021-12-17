@@ -97,9 +97,13 @@ def get_mapping_dict(cache={}):
 
 def state_to_status(stateno):
     """
-    Converts a msg state integer to a status string.
+    Converts a msg state integer to a status string and caches for subsequent calls.
 
     Returns "UNKNOWN STATE" if the int value is not known.
     """
-    sdict = get_mapping_dict()
-    return sdict.get(stateno, "UNKNOWN STATE")
+    try:
+        return state_to_status.sdict.get(stateno, "UNKNOWN STATE")
+    except AttributeError:  # sdict does not exist on first call
+        state_to_status.sdict = get_mapping_dict()
+
+    return state_to_status.sdict.get(stateno, "UNKNOWN STATE")

@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9041c841_2b6ffd06",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1001074
+      },
+      "writtenOn": "2021-12-21T22:58:31Z",
+      "side": 1,
+      "message": "Please see \"rtdv3-global-verify-master/1961/console-timestamp.log.gz\" at 22:01:05\nIt seems to be an internal connection issue.\nLocal tests with Dockerfile-Unit-Test has been passed.\nAny idea?",
+      "revId": "68d2a468704e1521bccf7a567ebe0246e7454dbe",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}

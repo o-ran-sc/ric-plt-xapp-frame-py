@@ -52,6 +52,24 @@
       "parentUuid": "6b731634_324bab84",
       "revId": "68d2a468704e1521bccf7a567ebe0246e7454dbe",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "56dae1ea_a7654cc9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-12-22T06:12:26Z",
+      "side": 1,
+      "message": "Ok, that\u0027s great.\nI merged this commit and I used REPLY button to sent \"stage-release\" comment to trigger Jenkins job to build the pip package and push it to the test.pypi.org.\nPlease, create now a new commit for the releases/pypi-release-ricxappframe.yaml file change. When we\u0027ll merge yaml file change that should then trigger another Jenkins job what will push the new pip package to the pypi.org.",
+      "parentUuid": "548ed687_a8876197",
+      "revId": "68d2a468704e1521bccf7a567ebe0246e7454dbe",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

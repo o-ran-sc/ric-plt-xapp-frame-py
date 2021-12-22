@@ -10,6 +10,11 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
+[3.0.2] - 2021-12-17
+--------------------
+* Fix caching of error code data not happening (`RIC-862 <https://jira.o-ran-sc.org/browse/RIC-862>`_)
+* Improves performance of xapp-frame-py by caching the mapping dict of error codes.
+
 [3.0.1] - 2021-12-07
 --------------------
 * Take configuration and rmr unit tests back into use after fixing the tests (`RIC-865 <https://jira.o-ran-sc.org/browse/RIC-865>`_)

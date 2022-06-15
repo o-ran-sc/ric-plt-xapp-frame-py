@@ -32,12 +32,12 @@ def _long_descr():
 
 setup(
     name="ricxappframe",
-    version="3.0.2",
+    version="3.1.0",
     packages=find_packages(exclude=["tests.*", "tests"]),
     author="O-RAN Software Community",
     description="Xapp and RMR framework for Python",
     url="https://gerrit.o-ran-sc.org/r/admin/repos/ric-plt/xapp-frame-py",
-    install_requires=["inotify_simple", "msgpack", "mdclogpy", "ricsdl>=3.0.0,<4.0.0", "requests", "protobuf", "inotify"],
+    install_requires=["inotify_simple", "msgpack", "mdclogpy", "ricsdl>=3.0.0,<4.0.0", "requests", "protobuf<3.21.0", "inotify"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Telecommunications Industry",

@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
+[3.1.0] - 2022-03-22
+--------------------
+* Added the symptomdata module
+
 [3.0.2] - 2021-12-17
 --------------------
 * Fix caching of error code data not happening (`RIC-862 <https://jira.o-ran-sc.org/browse/RIC-862>`_)

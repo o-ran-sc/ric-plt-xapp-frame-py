@@ -1,0 +1,325 @@
+swagger: '2.0'
+info:
+  description: This is the initial REST API for RIC subscription
+  version: 0.0.4
+  title: RIC subscription
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: hostname
+basePath: /ric/v1
+schemes:
+  - http
+paths:
+  /config:
+    get:
+      summary: Returns the configuration of all xapps
+      tags:
+        - xapp
+      operationId: getXappConfigList
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        '200':
+          description: successful query of xApp config
+          schema:
+            $ref: '#/definitions/XappConfigList'
+        '500':
+          description: Internal error
+  /subscriptions:
+    get:
+      summary: Returns list of subscriptions
+      tags:
+        - common
+      operationId: getAllSubscriptions
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful query of subscriptions
+          schema:
+            $ref: '#/definitions/SubscriptionList'
+        '500':
+          description: Internal error
+    post:
+      tags:
+        - common
+      operationId: Subscribe
+      summary: Subscribe a list of X2AP event triggers to receive messages sent by RAN
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: SubscriptionParams
+          in: body
+          description: Subscription parameters
+          schema:
+            $ref: '#/definitions/SubscriptionParams'
+      responses:
+        '201':
+          description: Subscription successfully created
+          schema:
+            $ref: '#/definitions/SubscriptionResponse'
+        '400':
+          description: Not Found
+        '404':
+          description: Invalid input
+        '500':
+          description: Internal error
+        '503':
+          description: Service Unavailable
+  '/subscriptions/{subscriptionId}':
+    delete:
+      tags:
+        - common
+      summary: Unsubscribe X2AP events from Subscription Manager
+      operationId: Unsubscribe
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: subscriptionId
+          in: path
+          description: The subscriptionId received in the Subscription Response
+          required: true
+          type: string
+      responses:
+        '204':
+          description: Operation done successfully
+        '400':
+          description: Invalid subscriptionId supplied
+        '500':
+          description: Internal error
+definitions:
+  ConfigMetadata:
+    type: object
+    required:
+      - xappName
+      - configType
+    properties:
+      xappName:
+        type: string
+        description: Name of the xApp
+      configType:
+        type: string
+        description: The type of the content
+        enum:
+          - json
+          - xml
+          - other
+  XAppConfig:
+    type: object
+    required:
+      - metadata
+      - config
+    properties:
+      metadata:
+        $ref: '#/definitions/ConfigMetadata'
+      config:
+        type: object
+        description: Configuration in JSON format
+  XappConfigList:
+    type: array
+    items:
+      $ref: '#/definitions/XAppConfig'
+  ActionDefinition:
+    type: array
+    description: E2SM byte array. ActionDefinition is an OPTIONAL IE
+    items:
+      type: integer
+  SubsequentAction:
+    description: SubsequentAction is an OPTIONAL IE
+    type: object
+    required:
+      - SubsequentActionType
+      - TimeToWait
+    properties:
+      SubsequentActionType:
+        type: string
+        enum:
+          - continue
+          - wait
+      TimeToWait:
+        type: string
+        enum:
+          - zero
+          - w1ms
+          - w2ms
+          - w5ms
+          - w10ms
+          - w20ms
+          - w30ms
+          - w40ms
+          - w50ms
+          - w100ms
+          - w200ms
+          - w500ms
+          - w1s
+          - w2s
+          - w5s
+          - w10s
+          - w20s
+          - w60s
+  ActionToBeSetup:
+    type: object
+    required:
+      - ActionID
+      - ActionType
+    properties:
+      ActionID:
+        type: integer
+        minimum: 0
+        maximum: 255
+      ActionType:
+        type: string
+        enum:
+          - insert
+          - policy
+          - report
+      ActionDefinition:
+        $ref: '#/definitions/ActionDefinition'
+      SubsequentAction:
+        $ref: '#/definitions/SubsequentAction'
+  ActionsToBeSetup:
+    type: array
+    items:
+      $ref: '#/definitions/ActionToBeSetup'
+  EventTriggerDefinition:
+    type: array
+    description: E2SM byte array
+    items:
+      type: integer
+  SubscriptionDetail:
+    type: object
+    required:
+      - XappEventInstanceId
+      - EventTriggers
+      - ActionToBeSetupList
+    properties:
+      XappEventInstanceId:
+        type: integer
+        minimum: 0
+        maximum: 65535
+      EventTriggers:
+        $ref: '#/definitions/EventTriggerDefinition'
+      ActionToBeSetupList:
+        $ref: '#/definitions/ActionsToBeSetup'
+  SubscriptionDetailsList:
+    type: array
+    items:
+      $ref: '#/definitions/SubscriptionDetail'
+  SubscriptionParams:
+    type: object
+    required:
+      - ClientEndpoint
+      - Meid
+      - RANFunctionID
+      - SubscriptionDetails
+    properties:
+      SubscriptionId:
+       type: string
+       description: Optional subscription ID (Submgr allocates if not given)
+      ClientEndpoint:
+        type: object
+        description: xApp service address and port
+        properties:
+          Host:
+            description: >-
+              xApp service address name like
+              'service-ricxapp-xappname-http.ricxapp'
+            type: string
+          HTTPPort:
+            description: xApp HTTP service address port
+            type: integer
+            minimum: 0
+            maximum: 65535
+          RMRPort:
+            description: xApp RMR service address port
+            type: integer
+            minimum: 0
+            maximum: 65535
+      Meid:
+        type: string
+      RANFunctionID:
+        type: integer
+        minimum: 0
+        maximum: 4095
+      E2SubscriptionDirectives:
+        description: Optional. If not set Submgr uses its default values
+        type: object
+        properties:
+          E2TimeoutTimerValue:
+            description: How long time response is waited from E2 node
+            type: integer
+            minimum: 1
+            maximum: 10
+          E2RetryCount:
+            description: How many times E2 subscription request is retried
+            type: integer
+            minimum: 0
+            maximum: 10
+          RMRRoutingNeeded:
+            description: Subscription needs RMR route from E2Term to xApp 
+            type: boolean
+      SubscriptionDetails:
+        $ref: '#/definitions/SubscriptionDetailsList'
+  SubscriptionResponse:
+    type: object
+    required:
+      - SubscriptionId
+      - SubscriptionInstances
+    properties:
+      SubscriptionId:
+        type: string
+      SubscriptionInstances:
+        type: array
+        items:
+          $ref: '#/definitions/SubscriptionInstance'
+  SubscriptionInstance:
+    type: object
+    required:
+      - XappEventInstanceId
+      - E2EventInstanceId
+    properties:
+      XappEventInstanceId:
+        type: integer
+        minimum: 0
+        maximum: 65535
+      E2EventInstanceId:
+        type: integer
+        minimum: 0
+        maximum: 65535
+      ErrorCause:
+        description: Descriptive error cause. Empty string when no error.
+        type: string
+      ErrorSource:
+        description: Source of error cause.
+        type: string
+        enum: [SUBMGR, RTMGR, DBAAS, ASN1, E2Node]
+      TimeoutType:
+        description: Type timeout. xApp should retry if timeout occurs.
+        type: string
+        enum: [E2-Timeout, RTMGR-Timeout, DBAAS-Timeout]
+  SubscriptionData:
+    type: object
+    properties:
+      SubscriptionId:
+        type: integer
+      Meid:
+        type: string
+      ClientEndpoint:
+        type: array
+        items:
+          type: string
+      SubscriptionInstances:
+        type: array
+        items:
+          $ref: '#/definitions/SubscriptionInstance'
+  SubscriptionList:
+    type: array
+    description: A list of subscriptions
+    items:
+      $ref: '#/definitions/SubscriptionData'

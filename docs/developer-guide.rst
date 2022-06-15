@@ -11,7 +11,7 @@ Information for users of this framework (i.e., Xapp developers) is in the User G
 Tech Stack
 ----------
 
-The framework requires Python version 3.7 or later, and depends on
+The framework requires Python version 3.8 or later, and depends on
 these packages provided by the O-RAN-SC project and third parties:
 
 * msgpack
@@ -48,6 +48,73 @@ For registration and deregistration of Xapp following items need to be defined:
    Xapp as a docker container or in configmap in case of Xapp as a pod.
 #. Copy the xappConfig.json into the docker image in Dockerfile.
 
+Example Xapp
+------------
+
+Director examples has many examples for creating the xapp having features like:
+* REST subscription interface
+* symptomdata handler
+* rmr send/receive
+* REST healthy and ready response handler
+* REST config handler
+
+List of xapps:
+* ping_xapp.py and ping_xapp.py using RMR to send and receive
+* xapp_symptomdata.py for subscribing the symptomdata event
+* xapp_test.py for both symptomdata, RMR recveice, k8s healthy service and REST subscription
+
+xapp_test.py
+------------
+
+Test xapp can be run by creating the docker container or as standalone process. For testing restserversimu.py
+has been made to emulate the REST subscription request responses and responding the symptomdata dynamic registration
+reponse. When running the xapp_test you need to create the RMR static routing file so that the rmr initialization
+will return (otherwise it will wait for rtmgr connection).
+
+Test xapp has as well the config file in descriptor/config-file.json where your can adjust the local runtime
+environment for subscriptions and symptomdata lwsd service ip address.
+
+Subsciprion interface url has the submgr service endpoint : ``http://service-ricplt-submgr-http.ricplt:8088/``
+Symptomdata registration url set to lwsd service url : ``http://service-ricplt-lwsd-http.ricplt:8080/ric/v1/lwsd``
+
+In case of using restserversimu.py for testing configure your host ip address, for example 192.168.1.122 port 8090:
+
+Subsciprion interface url has the submgr service endpoint : ``http://192.168.1.122:9000/``
+Symptomdata registration url set to lwsd service url : ``http://192.168.1.122:9000/ric/v1/lwsd``
+
+Then start the restserversimu:
+
+export PYTHONPATH=./
+python3 examples/restserversimu.py -port 9000 -address 192.168.1.122
+
+and then the xapp_test:
+
+export PYTHONPATH=./
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+export RMR_SEED_RT=examples/descriptor/xapp-test.rt
+export RMR_SRC_ID="192.168.1.122"
+python3 examples/xapp_test.py -config examples/descriptor/config-file.json -port 8888 -xapp xapp-test -service xapp-test
+
+If you like to implement the kubernetes healthy service responder, you can follow the example how to use the 
+xapp_rest.py defined rest hander. Basically you can initiate the REST service listener and add the handlers (examples in
+xapp_tets.py).
+
+Subscription REST interface
+---------------------------
+
+api/xapp_rest_api.yaml defines interface and it has been used to generate the swagger api calls.
+
+Generating the swagger client model:
+docker run --rm -v ${PWD}:/local -u $(id -u ${USER}):$(id -g ${USER}) swaggerapi/swagger-codegen-cli generate -i /local/api/xapp_rest_api.yaml -l python -o /local/out
+
+swagger-codegen-cli generated code result needs to be adjusted to have the ricxappframe prefix. 
+Replace the module name to have the ricxappframe prefix:
+
+find ./out/swagger_client -type f -exec sed -i -e 's/swagger_client/ricxappframe\.swagger_client/g' {} \;
+
+Then copy the generated ./out/swagger_client directory to ./ricxappframe/subsclient directory:
+
+cp -r ./out/swagger_client/* ./ricxappframe/subsclient
 
 Unit Testing
 ------------

@@ -1,0 +1,83 @@
+{
+  "name": "ts-kpi-storage",
+  "version": "0.7.0",
+  "vendor": "Nokia",
+  "moId": "SEP",
+  "containers": [
+    {
+      "name": "xapp-test",
+      "image": {
+        "registry": "edgeapps-docker-local.artifactory-blr1.int.net.nokia.com",
+        "name": "xapp-test",
+        "tag": "0.1"
+      },
+      "resources": {
+        "limits": {},
+        "requests": {}
+      }
+    }
+  ],
+  "livenessProbe": {
+    "httpGet": {
+      "path": "ric/v1/health/alive",
+      "port": 8080
+    },
+    "initialDelaySeconds": 5,
+    "periodSeconds": 15
+  },
+  "readinessProbe": {
+    "httpGet": {
+      "path": "ric/v1/health/ready",
+      "port": 8080
+    },
+    "initialDelaySeconds": 5,
+    "periodSeconds": 15
+  },
+  "messaging": {
+    "ports": [
+      {
+        "name": "http",
+        "container": "xapp-test",
+        "port": 8080,
+        "description": "http service"
+      },
+      {
+        "name": "rmrroute",
+        "container": "xapp-test",
+        "port": 4561,
+        "description": "rmr route port"
+      },
+      {
+        "name": "rmrdata",
+        "container": "xapp-test",
+        "port": 4560,
+        "maxSize": 2072,
+        "rxMessages": [],
+        "txMessages": [],
+        "policies": [],
+        "description": "rmr data port"
+      }
+    ]
+  },
+  "controls": {
+    "logger": {
+      "level": 3
+    },
+    "symptomdata": {
+        "lwsd": {
+            "url": "http://192.168.1.122:9000/ric/v1/lwsd",
+            "timeout": 10
+		}
+    },
+    "subscription": {
+      "url": "http://192.168.1.122:9000/",
+      "clientEndpoint": "192.168.1.122"
+    }
+  },
+  "metrics": {
+    "url": "/ric/v1/metrics",
+    "namespace": "ricxapp"
+  },
+  "faults": {},
+  "measurements": []
+}

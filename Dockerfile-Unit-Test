@@ -48,13 +48,15 @@ COPY --from=stretch /usr/local/lib/librmr_si.so.${rmr_version} /usr/local/lib/li
 COPY --from=stretch /usr/local/lib/libriclibe2ap.so.${e2ap_version} /usr/local/lib/libriclibe2ap.so
 
 # Upgrade pip, install tox
-RUN pip install --upgrade pip && pip install tox
+RUN pip install --upgrade pip && pip install tox && pip install certifi six python_dateutil setuptools urllib3 inotify_simple mdclogpy
 
 # copies
 COPY ricxappframe/ /tmp/ricxappframe
 COPY tests/ /tmp/tests
 COPY setup.py tox.ini LICENSE.txt .coveragerc /tmp/
 WORKDIR /tmp
+# wa because of the swagger api model needs six package and the import fails always
+RUN ln -s /usr/local/lib/python3.8/site-packages/six.py /tmp/six.py
 
 # Run the unit tests
 RUN tox -e code,flake8

@@ -31,8 +31,12 @@ from mdclogpy import Logger
 
 from ricxappframe import xapp_rmr
 from ricxappframe.constants import sdl_namespaces
+
+import ricxappframe.entities.rnib.nodeb_info_pb2 as pb_nbi
+import ricxappframe.entities.rnib.cell_pb2 as pb_cell
 from ricxappframe.entities.rnib.nb_identity_pb2 import NbIdentity
 from ricxappframe.entities.rnib.nodeb_info_pb2 import Node
+
 from ricxappframe.rmr import rmr
 from ricxappframe.util.constants import Constants
 from ricxappframe.xapp_sdl import SDLWrapper
@@ -79,6 +83,7 @@ class _BaseXapp:
         """
         # PUBLIC, can be used by xapps using self.(name):
         self.logger = Logger(name=__name__)
+        self._appthread = None
 
         # Start rmr rcv thread
         self._rmr_loop = xapp_rmr.RmrLoop(port=rmr_port, wait_for_ready=rmr_wait_for_ready)
@@ -111,7 +116,7 @@ class _BaseXapp:
             self.logger.error("__init__: Cannot Read config file for xapp Registration")
             self._config_data = {}
 
-        Thread(target=self.registerXapp).start()
+        self._appthread = Thread(target=self.registerXapp).start()
 
         # run the optionally provided user post init
         if post_init:
@@ -481,7 +486,7 @@ class _BaseXapp:
 
     def _get_rnib_info(self, node_type):
         """
-        Since the difference between get_list_gnb_ids and get_list_enb_ids is only note-type,
+        Since the difference between get_list_gnb_ids and get_list_enb_ids is only node-type,
         this function extracted from the duplicated logic.
 
         Parameters
@@ -490,7 +495,7 @@ class _BaseXapp:
            Type of node. This is EnumDescriptor.
            Available node types
            - UNKNOWN
-           - ENG
+           - ENB
            - GNB
 
         Returns
@@ -530,7 +535,7 @@ class _BaseXapp:
             RejectedByBackend: If backend data storage rejects the request.
             BackendError: If the backend data storage fails to process the request.
         """
-        return self._get_rnib_info(Node.Type.Name(Node.Type.GNB))
+        return self._get_rnib_info(Node.Type.Name(Node.GNB))
 
     def get_list_enb_ids(self):
         """
@@ -550,9 +555,223 @@ class _BaseXapp:
             RejectedByBackend: If backend data storage rejects the request.
             BackendError: If the backend data storage fails to process the request.
         """
-        return self._get_rnib_info(Node.Type.Name(Node.Type.ENB))
+        return self._get_rnib_info(Node.Type.Name(Node.ENB))
 
-    # Health
+    """
+        Following RNIB methods are made to be inline of the go-lang based RNIB methods.
+        Method names are same as in repository:
+        gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/rnib
+    """
+    def GetNodeb(self, inventoryName):
+        """
+        Returns nodeb info
+        In RNIB SDL key is defined following way:
+            RAN:<inventoryName>
+
+        Parameters
+        ----------
+        inventoryName: string
+
+        Returns
+        -------
+            NodebInfo()
+
+        Raises
+        -------
+            SdlTypeError: If function's argument is of an inappropriate type.
+            NotConnected: If SDL is not connected to the backend data storage.
+            RejectedByBackend: If backend data storage rejects the request.
+            BackendError: If the backend data storage fails to process the request.
+        """
+        nbid_string: Set[bytes] = self.sdl_get(sdl_namespaces.E2_MANAGER, 'RAN:' + inventoryName, usemsgpack=False)
+        if nbid_string is not None:
+            nbinfo = pb_nbi.NodebInfo()
+            nbinfo.ParseFromString(nbid_string)
+            return nbinfo
+        return None
+
+    def GetNodebByGlobalNbId(self, nodeType, plmnId, nbId):
+        """
+        Returns nodeb identity based on type, plmn id and node id
+        In RNIB SDL key is defined following way:
+            <nodeType>:<plmnId>:<nbId>
+
+        Parameters
+        ----------
+            nodeType: string
+            plmnId: string
+            nbId: string
+
+        Returns
+        -------
+            NbIdentity()
+
+        Raises
+        -------
+            SdlTypeError: If function's argument is of an inappropriate type.
+            NotConnected: If SDL is not connected to the backend data storage.
+            RejectedByBackend: If backend data storage rejects the request.
+            BackendError: If the backend data storage fails to process the request.
+        """
+        nbid_string: Set[bytes] = self.sdl_get(sdl_namespaces.E2_MANAGER, nodeType + ':' + plmnId + ':' + nbId, usemsgpack=False)
+        if nbid_string is not None:
+            nbid = NbIdentity()
+            nbid.ParseFromString(nbid_string)
+            return nbid
+        return None
+
+    def GetCellList(self, inventoryName):
+        """
+        Returns nodeb served cell list from the saved node data
+        In RNIB SDL key is defined following way:
+            RAN:<inventoryName>
+
+        Parameters
+        ----------
+            nodeType: string
+            plmnId: string
+            nbId: string
+
+        Returns
+        -------
+            ServedCellInfo() in case of ENB
+            ServedNRCell() in case of GNB
+
+        Raises
+        -------
+            SdlTypeError: If function's argument is of an inappropriate type.
+            NotConnected: If SDL is not connected to the backend data storage.
+            RejectedByBackend: If backend data storage rejects the request.
+            BackendError: If the backend data storage fails to process the request.
+        """
+        nodeb = self.GetNodeb(inventoryName)
+        if nodeb is not None:
+            if nodeb.HasField('enb'):
+                return nodeb.enb.served_cells
+            elif nodeb.HasField('gnb'):
+                return nodeb.gnb.served_nr_cells
+        return None
+
+    def GetCellById(self, cell_type, cell_id):
+        """
+        Returns cell info by cell type and id.
+        In RNIB SDL keys are defined based on the cell type:
+            ENB type CELL:<cell_id>
+            GNB type NRCELL:<cell_id>
+
+        Parameters
+        ----------
+        cell_type: string
+           Available cell types
+           - ENB
+           - GNB
+
+        Returns
+        -------
+            Cell()
+
+        Raises
+        -------
+            SdlTypeError: If function's argument is of an inappropriate type.
+            NotConnected: If SDL is not connected to the backend data storage.
+            RejectedByBackend: If backend data storage rejects the request.
+            BackendError: If the backend data storage fails to process the request.
+        """
+        cellstr = None
+        if cell_type == pb_cell.Cell.Type.Name(pb_cell.Cell.LTE_CELL):
+            cellstr = 'CELL'
+        elif cell_type == pb_cell.Cell.Type.Name(pb_cell.Cell.NR_CELL):
+            cellstr = 'NRCELL'
+        if cellstr is not None:
+            cell_string: Set[bytes] = self.sdl_get(sdl_namespaces.E2_MANAGER, cellstr + ':' + cell_id, usemsgpack=False)
+            if cell_string is not None:
+                cell = pb_cell.Cell()
+                cell.ParseFromString(cell_string)
+                return cell
+        return None
+
+    def GetListNodebIds(self):
+        """
+        Returns both enb and gnb NbIdentity list
+
+        Returns
+        -------
+            List: (NbIdentity)
+
+        Raises
+        -------
+            SdlTypeError: If function's argument is of an inappropriate type.
+            NotConnected: If SDL is not connected to the backend data storage.
+            RejectedByBackend: If backend data storage rejects the request.
+            BackendError: If the backend data storage fails to process the request.
+        """
+        nlist1 = self._get_rnib_info(Node.Type.Name(Node.ENB))
+        nlist2 = self._get_rnib_info(Node.Type.Name(Node.GNB))
+
+        for n in nlist2:
+            nlist1.append(n)
+        return nlist1
+
+    def GetCell(self, inventoryName, pci):
+        """
+        Returns cell info using pci
+        In RNIB SDL key is defined following way:
+            PCI:<inventoryName>:<pci hex val>
+
+        Parameters
+        ----------
+        inventoryName: string
+        pci: int
+
+        Returns
+        -------
+            Cell()
+
+        Raises
+        -------
+            SdlTypeError: If function's argument is of an inappropriate type.
+            NotConnected: If SDL is not connected to the backend data storage.
+            RejectedByBackend: If backend data storage rejects the request.
+            BackendError: If the backend data storage fails to process the request.
+        """
+        cell_string: Set[bytes] = self.sdl_get(sdl_namespaces.E2_MANAGER, 'PCI:{0:s}:{1:02x}'.format(inventoryName, pci), usemsgpack=False)
+        if cell_string is not None:
+            cell = pb_cell.Cell()
+            cell.ParseFromString(cell_string)
+            return cell
+        return None
+
+    def GetRanFunctionDefinition(self, inventoryName, ran_function_oid):
+        """
+        Returns GNB ran function definition list based on the ran_function_oid
+        In RNIB SDL key is defined following way:
+            RAN:<inventoryName>
+
+        Parameters
+        ----------
+            inventoryName: string
+            ran_function_oid: int
+
+        Returns
+        -------
+            array of ran_function_definition matching to ran_function_oid
+
+        Raises
+        -------
+            SdlTypeError: If function's argument is of an inappropriate type.
+            NotConnected: If SDL is not connected to the backend data storage.
+            RejectedByBackend: If backend data storage rejects the request.
+            BackendError: If the backend data storage fails to process the request.
+        """
+        nodeb = self.GetNodeb(inventoryName)
+        if nodeb is not None:
+            if nodeb.HasField('gnb') and nodeb.gnb.ran_functions is not None:
+                ranFDList = []
+                for rf in nodeb.gnb.ran_functions:
+                    if rf.ran_function_oid == ran_function_oid:
+                        ranFDList.append(rf.ran_function_definition)
+                return ranFDList
+        return None
 
     def healthcheck(self):
         """
@@ -595,6 +814,8 @@ class _BaseXapp:
         TODO: can we register a ctrl-c handler so this gets called on
         ctrl-c? Because currently two ctrl-c are needed to stop.
         """
+        if self._appthread is not None:
+            self._appthread.join()
 
         self.xapp_shutdown()
 

@@ -5,6 +5,8 @@ from docs_conf.conf import *
 # autodoc needs this to find the code
 sys.path.insert(0, os.path.abspath("../"))
 
+language = 'en'
+
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.intersphinx", "sphinx.ext.viewcode", "numpydoc"]
 
 # don't alphabetically order

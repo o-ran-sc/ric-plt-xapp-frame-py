@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The root schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
+  "examples": [
+      {
+          "logger": {
+              "level": 3
+          },
+      }
+  ],
+  "required": [
+      "logger"
+  ],
+  "properties": {
+      "logger": {
+          "$id": "#/properties/logger",
+          "type": "object",
+          "title": "The logger schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": {},
+          "examples": [
+              {
+                  "level": 3
+              }
+          ],
+          "required": [
+              "level"
+          ],
+          "properties": {
+              "level": {
+                  "$id": "#/properties/logger/properties/level",
+                  "type": "integer",
+                  "title": "The level schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0,
+                  "examples": [
+                      3
+                  ]
+              }
+          },
+          "additionalProperties": true
+      }
+  },
+  "additionalProperties": true
+}

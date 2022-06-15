@@ -1,0 +1,56 @@
+FROM python:3.8-slim as stretch
+
+RUN apt-get clean -y && apt-get update -y && \
+    apt-get install -y wget curl less nano \
+    nmap mtr net-tools tcpdump apt-utils sudo jq tree iproute2 iputils-ping traceroute
+    
+ARG rmr_version=4.8.0
+ARG e2ap_version=1.1.0
+
+# download rmr and e2ap libraries from package cloud
+RUN wget -nv --content-disposition https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/rmr_${rmr_version}_amd64.deb/download.deb
+RUN wget -nv --content-disposition https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/rmr-dev_${rmr_version}_amd64.deb/download.deb
+
+RUN wget -nv --content-disposition https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/riclibe2ap_${e2ap_version}_amd64.deb/download.deb
+RUN wget -nv --content-disposition https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/riclibe2ap-dev_${e2ap_version}_amd64.deb/download.deb
+
+RUN dpkg -i rmr_${rmr_version}_amd64.deb
+RUN dpkg -i rmr-dev_${rmr_version}_amd64.deb
+
+RUN dpkg -i riclibe2ap_${e2ap_version}_amd64.deb
+RUN dpkg -i riclibe2ap-dev_${e2ap_version}_amd64.deb
+
+RUN ls /usr/local/lib/
+
+FROM python:3.8-slim
+
+ARG rmr_version=4.8.0
+ARG e2ap_version=1.1.0
+
+COPY --from=stretch /usr/local/lib/librmr_si.so.${rmr_version} /usr/local/lib/librmr_si.so
+COPY --from=stretch /usr/local/lib/libriclibe2ap.so.${e2ap_version} /usr/local/lib/libriclibe2ap.so
+RUN chmod -R 755 /usr/local/lib/librmr_si.so
+RUN chmod -R 755 /usr/local/lib/libriclibe2ap.so
+
+# Upgrade pip, install tox
+RUN pip install --upgrade pip && pip install certifi six python_dateutil setuptools urllib3 logger requests inotify_simple mdclogpy google-api-python-client msgpack ricsdl
+
+RUN mkdir -p /opt/nokia/ric/xapp-test && chmod -R 755 /opt/nokia/ric/xapp-test
+RUN mkdir -p /opt/nokia/ric/xapp-test/ricxappframe && chmod -R 755 /opt/nokia/ric/xapp-test/ricxappframe
+RUN mkdir -p /opt/ric/config && chmod -R 755 /opt/ric/config
+
+WORKDIR /opt/nokia/ric/xapp-test
+
+COPY ricxappframe /opt/nokia/ric/xapp-test/ricxappframe
+
+COPY examples/descriptor /opt/ric/config/.
+
+COPY examples/*.py /opt/nokia/ric/xapp-test/
+COPY examples/start.sh /opt/nokia/ric/xapp-test/.
+
+ENV CFG_FILE=/opt/ric/config/config-file.json
+
+ENV LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
+
+#ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/opt/nokia/ric/xapp-test/start.sh"]

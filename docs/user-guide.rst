@@ -49,3 +49,27 @@ Application writers may instantiate this class directly to communicate with the 
 
 .. autoclass:: ricxappframe.xapp_sdl.SDLWrapper
     :members:
+
+Class Symptomdata
+-----------------
+
+Application writers may instantiate this class directly to communicate with the symptomdata service.
+
+.. autoclass:: ricxappframe.xapp_symptomdata.Symptomdata
+    :members:
+
+Class NewSubscriber
+-------------------
+
+Application writers may instantiate this class directly to communicate REST based subscriptions.
+
+.. autoclass:: ricxappframe.xapp_subscribe.NewSubscriber
+    :members:
+
+Class RestHandler
+-----------------
+
+Application writers may instantiate this class directly to have the xapp REST server service.
+
+.. autoclass:: ricxappframe.xapp_rest.RestHandler
+    :members:

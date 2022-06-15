@@ -1,4 +1,4 @@
 [run]
 omit =
     # omit compiled protobuf files
-    ricxappframe/entities/*
+    ricxappframe/entities/*,ricxappframe/subsclient/*

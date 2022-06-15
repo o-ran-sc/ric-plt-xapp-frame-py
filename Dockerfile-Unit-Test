@@ -48,7 +48,7 @@ COPY --from=stretch /usr/local/lib/librmr_si.so.${rmr_version} /usr/local/lib/li
 COPY --from=stretch /usr/local/lib/libriclibe2ap.so.${e2ap_version} /usr/local/lib/libriclibe2ap.so
 
 # Upgrade pip, install tox
-RUN pip install --upgrade pip && pip install tox
+RUN pip install --upgrade pip && pip install tox && pip install certifi six python_dateutil setuptools urllib3 inotify_simple mdclogpy
 
 # copies
 COPY ricxappframe/ /tmp/ricxappframe
@@ -56,5 +56,12 @@ COPY tests/ /tmp/tests
 COPY setup.py tox.ini LICENSE.txt .coveragerc /tmp/
 WORKDIR /tmp
 
+# following is to get the docker instance and run tests from the bash shell, remove comment in the 
+# the next ENTRYPOINT line and comment out the last RUN line to get the runable docker instance.
+# Bbuild named image and run the instance - if you modify the files those are visible in container
+# docker build  -t xappframe:latest -f Dockerfile-Unit-Test .
+# docker run -ti --name xappframe --rm -v ${PWD}:/tmp -u $(id -u ${USER}):$(id -g ${USER}) --workdir /tmp xappframe:latest
+# then run : tox -e code,flake8,docs,docs-linkcheck
+#ENTRYPOINT ["/bin/bash"]
 # Run the unit tests
 RUN tox -e code,flake8

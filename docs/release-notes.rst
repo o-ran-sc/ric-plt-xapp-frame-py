@@ -10,6 +10,12 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
+[3.2.0] - 2022-06-16
+--------------------
+* Added REST E2 subscription support
+* rnib enhancements
+* REST service with health and config interface
+
 [3.1.0] - 2022-03-22
 --------------------
 * Added the symptomdata module

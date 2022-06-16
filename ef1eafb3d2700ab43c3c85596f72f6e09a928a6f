@@ -1,0 +1,7 @@
+Verified+1: ORAN Jobbuilder <releng+oran-jobbuilder@linuxfoundation.org>
+Code-Review+2: Erkki Hietala <erkki.hietala@nokia.com>
+Submitted-by: Thoralf Czichy <thoralf.czichy@nokia.com>
+Submitted-at: Thu, 16 Jun 2022 12:49:26 +0000
+Reviewed-on: https://gerrit.o-ran-sc.org/r/c/ric-plt/xapp-frame-py/+/8582
+Project: ric-plt/xapp-frame-py
+Branch: refs/heads/master

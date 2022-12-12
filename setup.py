@@ -32,7 +32,7 @@ def _long_descr():
 
 setup(
     name="ricxappframe",
-    version="3.2.0",
+    version="3.2.1",
     packages=find_packages(exclude=["tests.*", "tests"]),
     author="O-RAN Software Community",
     description="Xapp and RMR framework for Python",

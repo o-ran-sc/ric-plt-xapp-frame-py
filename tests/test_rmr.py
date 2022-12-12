@@ -165,7 +165,7 @@ def test_rcv_timeout():
     summary = rmr.message_summary(sbuf_rcv)
     assert summary[rmr.RMR_MS_MSG_STATE] == rmr.RMR_ERR_TIMEOUT
     assert summary[rmr.RMR_MS_MSG_STATUS] == "RMR_ERR_TIMEOUT"
-    assert(time.time() - start_rcv_sec > 0.5)  # test duration should be longer than the timeout
+    assert (time.time() - start_rcv_sec > 0.5)  # test duration should be longer than the timeout
 
 
 def test_send_rcv():
@@ -325,12 +325,12 @@ def test_rcv_all():
     start_rcv_sec = time.time()
     bundle = helpers.rmr_rcvall_msgs(MRC_RCV, timeout=1001)  # non-zero timeout means wait
     assert len(bundle) == 0  # we should get none
-    assert(time.time() - start_rcv_sec > 1)  # test duration should be longer than 1 second
+    assert (time.time() - start_rcv_sec > 1)  # test duration should be longer than 1 second
 
     start_rcv_sec = time.time()
     bundle = helpers.rmr_rcvall_msgs_raw(MRC_RCV, timeout=1002)  # non-zero timeout means wait
     assert len(bundle) == 0  # we should get none
-    assert(time.time() - start_rcv_sec > 1)  # test duration should be longer than 1 second
+    assert (time.time() - start_rcv_sec > 1)  # test duration should be longer than 1 second
 
 
 def test_bad_buffer():

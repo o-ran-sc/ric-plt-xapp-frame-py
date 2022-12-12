@@ -192,15 +192,15 @@ class MDCLogger():
 
         severity_level = Level.ERROR
 
-        if(level == ""):
+        if (level == ""):
             print("Invalid Log Level defined in ConfigMap")
-        elif((level.upper() == "ERROR") or (level.upper() == "ERR")):
+        elif ((level.upper() == "ERROR") or (level.upper() == "ERR")):
             severity_level = Level.ERROR
-        elif((level.upper() == "WARNING") or (level.upper() == "WARN")):
+        elif ((level.upper() == "WARNING") or (level.upper() == "WARN")):
             severity_level = Level.WARNING
-        elif(level.upper() == "INFO"):
+        elif (level.upper() == "INFO"):
             severity_level = Level.INFO
-        elif(level.upper() == "DEBUG"):
+        elif (level.upper() == "DEBUG"):
             severity_level = Level.DEBUG
 
         self.set_level(severity_level)

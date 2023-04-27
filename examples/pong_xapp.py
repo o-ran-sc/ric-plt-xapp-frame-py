@@ -31,7 +31,7 @@ def sixtyh(self, summary, sbuf):
     self.logger.info("pong registered 60000 handler called!")
     # see comment in ping about this; bytes does not work with the ric mdc logger currently
     print("pong 60000 handler received: {0}".format(summary))
-    jpay = json.loads(summary[rmr.RMR_MS_MSG_PAYLOAD])
+    jpay = json.loads(summary[rmr.RMR_MS_PAYLOAD])
     self.rmr_rts(sbuf, new_payload=json.dumps({"ACK": jpay["test_send"]}).encode(), new_mtype=60001, retries=100)
     self.rmr_free(sbuf)
 

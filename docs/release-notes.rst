@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <http://keepachangelog.com/>`__
 and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
+[3.2.2] - 2023-06-08
+--------------------
+* update RMR version to 4.9.1
+
 [3.2.1] - 2022-12-12
 --------------------
 * small permission fix in python init files

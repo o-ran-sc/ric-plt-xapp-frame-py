@@ -40,13 +40,12 @@ def write_config_file():
     with open(config_file_path, "w") as file:
         file.write('{ "change" : "value2" }')
 
+def default_rmr_handler(self, summary, sbuf):
+        pass
 
 def test_config_no_env(monkeypatch):
     init_config_file()
     monkeypatch.delenv(Constants.CONFIG_FILE_ENV, raising=False)
-
-    def default_rmr_handler(self, summary, sbuf):
-        pass
 
     config_event_seen = False
 
@@ -67,13 +66,9 @@ def test_config_no_env(monkeypatch):
     rmr_xapp_noconfig = None
 
 
-def test_default_config_handler(monkeypatch):
+def test_default_config_handler():
     """Just for coverage"""
     init_config_file()
-    monkeypatch.setenv(Constants.CONFIG_FILE_ENV, config_file_path)
-
-    def default_rmr_handler(self, summary, sbuf):
-        pass
 
     # listen port is irrelevant, no messages arrive
     global rmr_xapp_defconfig
@@ -87,13 +82,9 @@ def test_default_config_handler(monkeypatch):
     rmr_xapp_defconfig = None
 
 
-def test_custom_config_handler(monkeypatch):
+def test_custom_config_handler():
     # point watcher at the file
     init_config_file()
-    monkeypatch.setenv(Constants.CONFIG_FILE_ENV, config_file_path)
-
-    def default_handler(self, summary, sbuf):
-        pass
 
     startup_config_event = False
     change_config_event = False
@@ -109,7 +100,7 @@ def test_custom_config_handler(monkeypatch):
 
     # listen port is irrelevant, no messages arrive
     global rmr_xapp_config
-    rmr_xapp_config = RMRXapp(default_handler, config_handler=config_handler, rmr_port=4567, use_fake_sdl=True)
+    rmr_xapp_config = RMRXapp(default_rmr_handler, config_handler=config_handler, rmr_port=4567, use_fake_sdl=True)
     assert startup_config_event
     rmr_xapp_config.run(thread=True, rmr_timeout=1)  # in unit tests we need to thread here or else execution is not returned!
     write_config_file()

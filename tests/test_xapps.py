@@ -16,6 +16,7 @@
 # ==================================================================================
 import json
 import time
+import requests
 from contextlib import suppress
 
 from ricxappframe.util.constants import Constants
@@ -58,9 +59,7 @@ def test_rmr_init():
     # create a general xapp that will demonstrate some SDL functionality and launch some requests against the rmr xapp
 
     def entry(self):
-
         time.sleep(1)
-
         self.sdl_set("testns", "mykey", 6)
         assert self.sdl_get("testns", "mykey") == 6
         assert self.sdl_find_and_get("testns", "myk") == {"mykey": 6}
@@ -68,14 +67,14 @@ def test_rmr_init():
 
         val = json.dumps({"test send 60000": 1}).encode()
         self.rmr_send(val, 60000)
-
+        
         val = json.dumps({"test send 60001": 2}).encode()
         self.rmr_send(val, 60001)
 
         self.sdl_delete("testns", "bogus")
 
     global gen_xapp
-    gen_xapp = Xapp(entrypoint=entry, use_fake_sdl=True)
+    gen_xapp = Xapp(xapp_ready_cb=entry, use_fake_sdl=True)
     gen_xapp.run()
 
     time.sleep(1)
@@ -114,7 +113,7 @@ def test_rmr_healthcheck():
 
 def test_rnib_get_list_nodeb(rnib_information):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
 
     # Test there is no rnib information.
     gnb_list = rnib_xapp.get_list_gnb_ids()
@@ -142,7 +141,7 @@ def test_rnib_get_list_nodeb(rnib_information):
 
 def test_rnib_get_list_all_nodeb(rnib_information):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
 
     # Add rnib information directly.
     for rnib in rnib_information:
@@ -163,7 +162,7 @@ def test_rnib_get_list_all_nodeb(rnib_information):
 def test_rnib_get_list_cells(rnib_cellinformation):
     global rnib_xapp
 
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
 
     mynb = pb_nb.NbIdentity()
     mynb.inventory_name = "nodeb_1234"
@@ -181,7 +180,7 @@ def test_rnib_get_list_cells(rnib_cellinformation):
 
 def test_rnib_get_nodeb(rnib_helpers):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
     nb1 = rnib_helpers.createNodebInfo('nodeb_1234', 'GNB', '192.168.1.1', 8088)
     rnib_xapp.sdl.set(sdl_namespaces.E2_MANAGER, "RAN:" + 'nodeb_1234', nb1.SerializeToString(), usemsgpack=False)
     nb2 = rnib_helpers.createNodebInfo('nodeb_1234', 'ENB', '192.168.1.2', 8088)
@@ -198,7 +197,7 @@ def test_rnib_get_nodeb(rnib_helpers):
 
 def test_rnib_get_cell(rnib_helpers):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
     c1 = rnib_helpers.createCell('c1234', 8)
     rnib_xapp.sdl.set(sdl_namespaces.E2_MANAGER, "PCI:c1234:08", c1.SerializeToString(), usemsgpack=False)
     c2 = rnib_helpers.createCell('c1235', 11)
@@ -215,7 +214,7 @@ def test_rnib_get_cell(rnib_helpers):
 
 def test_rnib_get_cell_by_id(rnib_helpers):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
     c1 = rnib_helpers.createCell('c1234', 8)
     rnib_xapp.sdl.set(sdl_namespaces.E2_MANAGER, "CELL:c1234", c1.SerializeToString(), usemsgpack=False)
     c2 = rnib_helpers.createCell('c1235', 11)
@@ -232,7 +231,7 @@ def test_rnib_get_cell_by_id(rnib_helpers):
 
 def test_rnib_get_cells(rnib_helpers):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
     nb1 = rnib_helpers.createNodebInfo('nodeb_1234', 'GNB', '192.168.1.1', 8088)
     rnib_xapp.sdl.set(sdl_namespaces.E2_MANAGER, "RAN:" + 'nodeb_1234', nb1.SerializeToString(), usemsgpack=False)
     nb2 = rnib_helpers.createNodebInfo('nodeb_1234', 'ENB', '192.168.1.2', 8088)
@@ -249,7 +248,7 @@ def test_rnib_get_cells(rnib_helpers):
 
 def test_rnib_get_global_nodeb(rnib_helpers):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
     nb1 = rnib_helpers.createNodeb('nodeb_1234', '358', 'nb_1234')
     rnib_xapp.sdl.set(sdl_namespaces.E2_MANAGER, "GNB:" + '358:' + 'nodeb_1234', nb1.SerializeToString(), usemsgpack=False)
     nb2 = rnib_helpers.createNodeb('nodeb_1235', '356', 'nb_1235')
@@ -266,7 +265,7 @@ def test_rnib_get_global_nodeb(rnib_helpers):
 
 def test_rnib_get_ranfunction(rnib_helpers):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
     nb1 = rnib_helpers.createNodebInfo('nodeb_1234', 'GNB', '192.168.1.1', 8088)
     rnib_xapp.sdl.set(sdl_namespaces.E2_MANAGER, "RAN:" + 'nodeb_1234', nb1.SerializeToString(), usemsgpack=False)
     nb2 = rnib_helpers.createNodebInfo('nodeb_1235', 'GNB', '192.168.1.2', 8088)

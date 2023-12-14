@@ -39,7 +39,7 @@ class RmrLoop:
     running consume function does not block the reading of new messages.
     """
 
-    def __init__(self, port, wait_for_ready=True):
+    def __init__(self, port):
         """
         sets up RMR, then launches a thread that reads and injects
         messages into a queue.
@@ -65,42 +65,35 @@ class RmrLoop:
         # RMR context; RMRFL_MTCALL puts RMR into a multithreaded mode, where a thread
         # populates a ring of messages that receive calls read from
         self.mrc = rmr.rmr_init(str(port).encode(), rmr.RMR_MAX_RCV_BYTES, rmr.RMRFL_MTCALL)
-
-        if wait_for_ready:
-            mdc_logger.debug("Waiting for rmr to init on port {}..".format(port))
-            while rmr.rmr_ready(self.mrc) == 0:
-                time.sleep(0.1)
+        mdc_logger.debug(f"RMR is initialized on port {port}..")
 
         # Private
         self._keep_going = True  # used to tell this thread to stop
-        self._last_ran = time.time()  # used for healthcheck
+        self._last_ran = time.time()  # used for healthcheckno75
         self._loop_is_running = False  # used in stop to know when it's safe to kill the mrc
 
-        def loop():
-            mdc_logger.debug("Work loop starts")
-            self._loop_is_running = True
-            while self._keep_going:
+    def _loop(self):
+        mdc_logger.debug("Work loop starts")
 
-                # read our mailbox
-                # TODO: take a flag as to whether RAW is needed or not
-                # RAW allows for RTS however the caller must free, and
-                # the caller may not need RTS. Currently after
-                # consuming, callers must call rmr.rmr_free_msg(sbuf)
-                # Use a non-trivial timeout to avoid spinning the CPU.
-                # The function returns if no messages arrive for that
-                # interval, which allows a stop request to be processed.
-                for (msg, sbuf) in helpers.rmr_rcvall_msgs_raw(self.mrc, timeout=5000):
-                    self.rcv_queue.put((msg, sbuf))
+        self._loop_is_running = True
 
-                self._last_ran = time.time()
+        while self._keep_going:
 
-            self._loop_is_running = False
-            mdc_logger.debug("Work loop ends")
+            # read our mailbox
+            # TODO: take a flag as to whether RAW is needed or not
+            # RAW allows for RTS however the caller must free, and
+            # the caller may not need RTS. Currently after
+            # consuming, callers must call rmr.rmr_free_msg(sbuf)
+            # Use a non-trivial timeout to avoid spinning the CPU.
+            # The function returns if no messages arrive for that
+            # interval, which allows a stop request to be processed.
+            for (msg, sbuf) in helpers.rmr_rcvall_msgs_raw(self.mrc, timeout=5000):
+                self.rcv_queue.put((msg, sbuf))
 
-        # start the work loop
-        mdc_logger.debug("Starting loop thread")
-        self._thread = Thread(target=loop)
-        self._thread.start()
+            self._last_ran = time.time()
+
+        self._loop_is_running = False
+        mdc_logger.debug("Work loop ends")
 
     def stop(self):
         """
@@ -133,3 +126,14 @@ class RmrLoop:
             the rmr loop is determined healthy if it has completed in the last (seconds)
         """
         return self._thread.is_alive() and ((time.time() - self._last_ran) < seconds)
+
+    def start(self, wait_for_ready=True):
+        if wait_for_ready:
+            mdc_logger.debug("Waiting for RMR to be ready")
+            while rmr.rmr_ready(self.mrc) == 0:
+                time.sleep(0.1)
+            
+        # start the work loop
+        mdc_logger.debug("Starting loop thread")
+        self._thread = Thread(target=self._loop)
+        self._thread.start()

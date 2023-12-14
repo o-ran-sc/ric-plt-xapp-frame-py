@@ -41,6 +41,12 @@ from ricxappframe.rmr import rmr
 from ricxappframe.util.constants import Constants
 from ricxappframe.xapp_sdl import SDLWrapper
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+
+
+class XappError(Exception):
+    """An exception caused by a failure when operating Xapp object"""
 
 
 class _BaseXapp:
@@ -77,16 +83,17 @@ class _BaseXapp:
         its signature should be post_init(self)
     """
 
-    def __init__(self, rmr_port=4562, rmr_wait_for_ready=True, use_fake_sdl=False, post_init=None):
+    def __init__(self, rmr_port=4562, use_fake_sdl=False, post_init=None):
         """
         Documented in the class comment.
         """
         # PUBLIC, can be used by xapps using self.(name):
         self.logger = Logger(name=__name__)
-        self._appthread = None
-
+        self._rmrthread = None
+        self._is_registered = False
+        
         # Start rmr rcv thread
-        self._rmr_loop = xapp_rmr.RmrLoop(port=rmr_port, wait_for_ready=rmr_wait_for_ready)
+        self._rmr_loop = xapp_rmr.RmrLoop(port=rmr_port)
         self._mrc = self._rmr_loop.mrc  # for convenience
 
         # SDL
@@ -103,33 +110,29 @@ class _BaseXapp:
             self._inotify = None
             self.logger.warning("__init__: NOT watching any config file")
 
-        # used for thread control of Registration of Xapp
-        self._keep_registration = True
-
         # configuration data  for xapp registration and deregistration
         self._config_data = None
         if self._config_path and os.path.isfile(self._config_path):
             with open(self._config_path) as json_file:
                 self._config_data = json.load(json_file)
         else:
-            self._keep_registration = False
             self.logger.error("__init__: Cannot Read config file for xapp Registration")
             self._config_data = {}
 
-        self._appthread = Thread(target=self.registerXapp).start()
+        self.http_endpoint = self._get_service(Constants.SERVICE_HTTP)
+        self.rmr_endpoint = self._get_service(Constants.SERVICE_RMR)
+        self.logger.info(f'HTTP endpoint: {self.http_endpoint}, RMR endpoint: {self.rmr_endpoint}')
 
         # run the optionally provided user post init
         if post_init:
             post_init(self)
 
-    def get_service(self, host, service):
+    def _get_service(self, service):
         """
         To find the url for connecting to the service
 
         Parameters
         ----------
-        host: string
-            defines the hostname in the url
         service: string
             defines the servicename in the url
 
@@ -138,158 +141,131 @@ class _BaseXapp:
         string
             url for the service
         """
-        app_namespace = self._config_data.get("APP_NAMESPACE")
-        if app_namespace is None:
-            app_namespace = Constants.DEFAULT_XAPP_NS
+        host = os.environ.get("HOSTNAME", Constants.DEFAULT_HOSTNAME)
+        app_namespace = self._config_data.get("APP_NAMESPACE", Constants.DEFAULT_XAPP_NS)
+
         self.logger.debug("service : {} host : {},appnamespace : {}".format(service, host, app_namespace))
-        if app_namespace is not None and host is not None:
-            svc = service.format(app_namespace.upper(), host.upper())
-            urlkey = svc.replace("-", "_")
-            url = os.environ.get(urlkey).split("//")
-            self.logger.debug("Service urlkey : {} and url: {}".format(urlkey, url))
-            if len(url) > 1:
-                return url[1]
-        return ""
 
-    def do_post(self, plt_namespace, url, msg):
+        svc = service.format(app_namespace.upper(), host.upper())
+        urlkey = svc.replace("-", "_")
+        print("Service urlkey : {}".format(os.environ.get(urlkey)))
+        url = os.environ.get(urlkey).split("//")
+        
+        self.logger.debug("Service urlkey : {} and url: {}".format(urlkey, url))
+        
+        if len(url) <= 1:
+            raise XappError(f"Unable to get endpoint URL. Check value of environment variable {urlkey}")
+        
+        return url[1]
+
+    def _do_post(self, url, msg, num_of_retries=5):
         """
-        registration of the xapp using the url and json msg
-
+        Method for xAPp to send POST request with retry mechanism
         Parameters
         ----------
-        plt_namespace: string
-            platform namespace where the xapp is running
         url: string
-            url for xapp registration
+            endpoint to send request
         msg: string
             json msg containing the xapp details
-
         Returns
         -------
-        bool
-            whether or not the xapp is registered
+        object
+            response from server
         """
-        if url is None:
-            self.logger.error("url is empty ")
-            return False
-        if plt_namespace is None:
-            self.logger.error("plt_namespace is empty")
-            return False
-        try:
-            request_url = url.format(plt_namespace, plt_namespace)
-            resp = requests.post(request_url, json=msg)
-            self.logger.debug("Post to '{}' done, status : {}".format(request_url, resp.status_code))
-            self.logger.debug("Response Text : {}".format(resp.text))
-            return resp.status_code == 200 or resp.status_code == 201
-        except requests.exceptions.RequestException as err:
-            self.logger.error("Error : {}".format(err))
-            return format(err)
-        except requests.exceptions.HTTPError as errh:
-            self.logger.error("Http Error: {}".format(errh))
-            return errh
-        except requests.exceptions.ConnectionError as errc:
-            self.logger.error("Error Connecting: {}".format(errc))
-            return errc
-        except requests.exceptions.Timeout as errt:
-            self.logger.error("Timeout Error: {}".format(errt))
-            return errt
+        retries = Retry(total=num_of_retries, backoff_factor=1, allowed_methods=frozenset(['GET', 'POST']))
+        adapter = HTTPAdapter(max_retries=retries)
+        resp = None
+
+        with requests.Session() as session:
+            # set Retry mechanism for any failure
+            
+            session.mount('http://', adapter)
+            session.mount('https://', adapter)
+
+            resp = session.post(url, msg)
+
+            if resp.status_code != 200 and resp.status_code != 201:
+                raise XappError(f"Response of POST request: {resp.text}")
+
+        return resp
 
     def register(self):
         """
-            function to registers the xapp
+        Function to register the xapp
 
-        Returns
-        -------
-        bool
-            whether or not the xapp is registered
+        Raises:
+            XappError: Couldn't resolve service endpoints
+            XappError: Registration failed
         """
-        hostname = os.environ.get("HOSTNAME")
+        hostname = os.environ.get("HOSTNAME", Constants.DEFAULT_HOSTNAME)
         xappname = self._config_data.get("name")
         xappversion = self._config_data.get("version")
-        pltnamespace = os.environ.get("PLT_NAMESPACE")
-        if pltnamespace is None:
-            pltnamespace = Constants.DEFAULT_PLT_NS
-        self.logger.debug("config details hostname : {} xappname: {} xappversion : {} pltnamespace : {}".format(
-            hostname, xappname, xappversion, pltnamespace))
-
-        http_endpoint = self.get_service(hostname, Constants.SERVICE_HTTP)
-        rmr_endpoint = self.get_service(hostname, Constants.SERVICE_RMR)
-        if http_endpoint == "" or rmr_endpoint == "":
-            self.logger.error(
-                "Couldn't resolve service endpoints: http_endpoint={} rmr_endpoint={}".format(http_endpoint,
-                                                                                              rmr_endpoint))
-            return False
-        self.logger.debug(
-            "config details hostname : {} xappname: {} xappversion : {} pltnamespace : {} http_endpoint : {} rmr_endpoint "
-            ": {} configpath : {}".format(hostname, xappname, xappversion, pltnamespace, http_endpoint, rmr_endpoint,
-                                          self._config_data.get("CONFIG_PATH")))
+        pltnamespace = os.environ.get("PLT_NAMESPACE", Constants.DEFAULT_PLT_NS)
+        
         request_string = {
             "appName": hostname,
             "appVersion": xappversion,
-            "configPath": "",
+            "configPath": Constants.CONFIG_PATH,
             "appInstanceName": xappname,
-            "httpEndpoint": http_endpoint,
-            "rmrEndpoint": rmr_endpoint,
+            "httpEndpoint": self.http_endpoint,
+            "rmrEndpoint": self.rmr_endpoint,
             "config": json.dumps(self._config_data)
         }
-        self.logger.info("REQUEST STRING :{}".format(request_string))
-        return self.do_post(pltnamespace, Constants.REGISTER_PATH, request_string)
 
-    def registerXapp(self):
-        """
-            registers the xapp
-        """
-        retries = 5
-        while self._keep_registration and retries > 0:
-            time.sleep(2)
-            retries = retries-1
-            # checking for rmr/sdl/xapp health
-            healthy = self.healthcheck()
-            if not healthy:
-                self.logger.warning(
-                    "Application='{}' is not ready yet, waiting ...".format(self._config_data.get("name")))
-                continue
+        reg_url = Constants.REGISTER_PATH.format(pltnamespace, pltnamespace)
 
-            self.logger.debug("Application='{}'  is now up and ready, continue with registration ...".format(
-                self._config_data.get("name")))
-            if self.register():
-                self.logger.debug("Registration done, proceeding with startup ...")
-                break
+        try:
+            self._do_post(reg_url, request_string)
+        except XappError as xe:
+            self.logger.debug(f'Registration request: {request_string}')
+            raise XappError("Registration failed") from xe
+
+        self.logger.info('Xapp registered')
+        self._is_registered = True
 
     def deregister(self):
         """
-            Deregisters the xapp
+        Function to deregister the xapp
+
+        Raises:
+            XappError: De-registration failed
+        """
+        xappname = self._config_data.get("name")
+        pltnamespace = os.environ.get("PLT_NAMESPACE", Constants.DEFAULT_PLT_NS)
+
+        request_string = {
+                "appName": xappname,
+                "appInstanceName": xappname,
+        }
+
+        dereg_url = Constants.DEREGISTER_PATH.format(pltnamespace, pltnamespace)
+
+        try:
+            self._do_post(dereg_url, request_string)
+        except XappError as xe:
+            self.logger.debug(f'De-registration request: {request_string}')
+            raise XappError("De-registration failed") from xe
+        
+        self.logger.info('Xapp de-registered')
+        self._is_registered = False
+
+    def registered(self):
+        """
+        Provide registration status of xApp
 
         Returns
         -------
         bool
-            whether or not the xapp is registered
+            Whether or not the xapp is registered
         """
-        healthy = self.healthcheck()
-        if not healthy:
-            self.logger.error("RMR or SDL or xapp == Not Healthy")
-            return None
-        if self._config_data is None:
-            return None
-        name = os.environ.get("HOSTNAME")
-        xappname = self._config_data.get("name")
-        pltnamespace = os.environ.get("PLT_NAMESPACE")
-        if pltnamespace is None:
-            pltnamespace = Constants.DEFAULT_PLT_NS
-        request_string = {
-                "appName": name,
-                "appInstanceName": xappname,
-        }
-
-        return self.do_post(pltnamespace, Constants.DEREGISTER_PATH, request_string)
+        return self._is_registered
 
     def xapp_shutdown(self):
         """
-             Deregisters the xapp while shutting down
+        Deregisters the xapp while shutting down
         """
         self.deregister()
         self.logger.debug("Wait for xapp to get unregistered")
-        time.sleep(10)
 
     # Public rmr methods
 
@@ -800,6 +776,11 @@ class _BaseXapp:
         events = self._inotify.read(timeout=timeout)
         return list(events)
 
+    def run(self, wait_for_ready=True):
+        self._rmrthread = Thread(target=self._rmr_loop.start, args=(wait_for_ready,)).start()
+        self.register()
+        
+
     def stop(self):
         """
         cleans up and stops the xapp rmr thread (currently). This is
@@ -809,8 +790,8 @@ class _BaseXapp:
         TODO: can we register a ctrl-c handler so this gets called on
         ctrl-c? Because currently two ctrl-c are needed to stop.
         """
-        if self._appthread is not None:
-            self._appthread.join()
+        if self._rmrthread is not None:
+            self._rmrthread.join()
 
         self.xapp_shutdown()
 
@@ -862,14 +843,14 @@ class RMRXapp(_BaseXapp):
         its signature should be post_init(self)
     """
 
-    def __init__(self, default_handler, config_handler=None, rmr_port=4562, rmr_wait_for_ready=True, use_fake_sdl=False,
+    def __init__(self, default_handler, config_handler=None, rmr_port=4562, use_fake_sdl=False,
                  post_init=None):
         """
         Also see _BaseXapp
         """
         # init base
         super().__init__(
-            rmr_port=rmr_port, rmr_wait_for_ready=rmr_wait_for_ready, use_fake_sdl=use_fake_sdl, post_init=post_init
+            rmr_port=rmr_port, use_fake_sdl=use_fake_sdl, post_init=post_init
         )
 
         # setup callbacks
@@ -927,7 +908,7 @@ class RMRXapp(_BaseXapp):
         """
         self._dispatch[message_type] = handler
 
-    def run(self, thread=False, rmr_timeout=5, inotify_timeout=0):
+    def run(self, thread=False, wait_for_ready=True, rmr_timeout=5, inotify_timeout=0):
         """
         This function should be called when the reactive Xapp is ready to start.
         After start, the Xapp's handlers will be called on received messages.
@@ -946,6 +927,7 @@ class RMRXapp(_BaseXapp):
         inotify_timeout: integer (optional, default is 0 seconds)
             Length of time to wait for an inotify event to arrive.
         """
+        super().run(wait_for_ready)
 
         def loop():
             while self._keep_going:
@@ -972,7 +954,8 @@ class RMRXapp(_BaseXapp):
                         self.logger.debug("run: invoking config handler on change event {}".format(event))
                         self._config_handler(self, data)
                 except Exception as error:
-                    self.logger.error("run: configuration handler failed: {}".format(error))
+                    self.logger.debug(f"Config path: {self._config_path}")
+                    raise XappError(f"Error occurred during polling configuration handler: {error}")
 
         if thread:
             Thread(target=loop).start()
@@ -999,8 +982,8 @@ class Xapp(_BaseXapp):
 
     Parameters
     ----------
-    entrypoint: function
-        This function is called when the Xapp class's run method is invoked.
+    xapp_ready_cb: function
+        This function is called when the underlying operations, i.e. register, route ready, are complete.
         The function signature must be just function(self)
     rmr_port: integer (optional, default is 4562)
         Initialize RMR to listen on this port
@@ -1010,7 +993,7 @@ class Xapp(_BaseXapp):
         Use an in-memory store instead of the real SDL service
     """
 
-    def __init__(self, entrypoint, rmr_port=4562, rmr_wait_for_ready=True, use_fake_sdl=False):
+    def __init__(self, xapp_ready_cb=None, rmr_port=4562, use_fake_sdl=False):
         """
         Parameters
         ----------
@@ -1018,14 +1001,15 @@ class Xapp(_BaseXapp):
         For the other parameters, see class _BaseXapp.
         """
         # init base
-        super().__init__(rmr_port=rmr_port, rmr_wait_for_ready=rmr_wait_for_ready, use_fake_sdl=use_fake_sdl)
-        self._entrypoint = entrypoint
+        super().__init__(rmr_port=rmr_port, use_fake_sdl=use_fake_sdl)
+        self._xapp_ready_cb = xapp_ready_cb
 
-    def run(self):
+    def run(self, wait_for_ready=True):
         """
         This function should be called when the general Xapp is ready to start.
         """
-        self._entrypoint(self)
+        super().run(wait_for_ready)
+        self._xapp_ready_cb(self)
 
     # there is no need for stop currently here (base has, and nothing
     # special to do here)

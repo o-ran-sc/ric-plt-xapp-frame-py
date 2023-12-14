@@ -16,6 +16,7 @@
 # ==================================================================================
 import pytest
 
+from ricxappframe.util.constants import Constants
 from ricxappframe.entities.rnib.nb_identity_pb2 import NbIdentity
 from ricxappframe.entities.rnib.cell_pb2 import Cell
 import ricxappframe.entities.rnib.nb_identity_pb2 as pb_nb
@@ -24,6 +25,12 @@ import ricxappframe.entities.rnib.enb_pb2 as pb_enb
 import ricxappframe.entities.rnib.gnb_pb2 as pb_gnb
 import ricxappframe.entities.rnib.cell_pb2 as pb_cell
 import ricxappframe.entities.rnib.ran_function_pb2 as pb_rf
+
+
+mp = pytest.MonkeyPatch()
+mp.setenv("SERVICE_RICXAPP_HOSTNAME_HTTP_PORT", "tcp://127.0.0.1:8080")
+mp.setenv("SERVICE_RICXAPP_HOSTNAME_RMR_PORT", "tcp://127.0.0.1:4560")
+mp.setenv(Constants.CONFIG_FILE_ENV, "/tmp/file.json")
 
 
 # These are here just to reduce the size of the code in test_rmr so those (important) tests are more readable; in theory these dicts could be large

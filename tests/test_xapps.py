@@ -17,7 +17,8 @@
 import json
 import time
 from contextlib import suppress
-
+import requests
+from unittest.mock import Mock
 from ricxappframe.util.constants import Constants
 from ricxappframe.xapp_frame import _BaseXapp, Xapp, RMRXapp
 from ricxappframe.constants import sdl_namespaces
@@ -30,7 +31,11 @@ gen_xapp = None
 rnib_xapp = None
 
 
-def test_rmr_init():
+mock_post_200 = Mock(return_value=Mock(status_code=200, text='Mocked response'))
+mock_post_204 = Mock(return_value=Mock(status_code=204, text='Mocked response'))
+
+
+def test_rmr_init(monkeypatch):
 
     # test variables
     def_pay = None
@@ -49,6 +54,7 @@ def test_rmr_init():
         self.rmr_free(sbuf)
 
     global rmr_xapp
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
     rmr_xapp = RMRXapp(default_handler, rmr_port=4564, use_fake_sdl=True)
     rmr_xapp.register_callback(sixtythou_handler, 60000)
     rmr_xapp.run(thread=True)  # in unit tests we need to thread here or else execution is not returned!
@@ -58,9 +64,6 @@ def test_rmr_init():
     # create a general xapp that will demonstrate some SDL functionality and launch some requests against the rmr xapp
 
     def entry(self):
-
-        time.sleep(1)
-
         self.sdl_set("testns", "mykey", 6)
         assert self.sdl_get("testns", "mykey") == 6
         assert self.sdl_find_and_get("testns", "myk") == {"mykey": 6}
@@ -75,7 +78,7 @@ def test_rmr_init():
         self.sdl_delete("testns", "bogus")
 
     global gen_xapp
-    gen_xapp = Xapp(entrypoint=entry, use_fake_sdl=True)
+    gen_xapp = Xapp(xapp_ready_cb=entry, use_fake_sdl=True)
     gen_xapp.run()
 
     time.sleep(1)
@@ -84,7 +87,7 @@ def test_rmr_init():
     assert sixty_pay == {"test send 60000": 1}
 
 
-def test_rmr_healthcheck():
+def test_rmr_healthcheck(monkeypatch):
     # thanos uses the rmr xapp to healthcheck the rmr xapp
 
     # test variables
@@ -97,6 +100,7 @@ def test_rmr_healthcheck():
         pass
 
     global rmr_xapp_health
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
     rmr_xapp_health = RMRXapp(default_handler, post_init=post_init, rmr_port=4666, use_fake_sdl=True)
 
     def health_handler(self, summary, sbuf):
@@ -112,9 +116,10 @@ def test_rmr_healthcheck():
     assert health_pay == b"OK\n"
 
 
-def test_rnib_get_list_nodeb(rnib_information):
+def test_rnib_get_list_nodeb(rnib_information, monkeypatch):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
 
     # Test there is no rnib information.
     gnb_list = rnib_xapp.get_list_gnb_ids()
@@ -137,12 +142,14 @@ def test_rnib_get_list_nodeb(rnib_information):
     for enb in enb_list:
         assert enb.SerializeToString() in rnib_information
 
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     rnib_xapp.stop()
 
 
-def test_rnib_get_list_all_nodeb(rnib_information):
+def test_rnib_get_list_all_nodeb(rnib_information, monkeypatch):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
 
     # Add rnib information directly.
     for rnib in rnib_information:
@@ -157,13 +164,14 @@ def test_rnib_get_list_all_nodeb(rnib_information):
     nb_list = rnib_xapp.GetListNodebIds()
     assert len(nb_list) == 4
 
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     rnib_xapp.stop()
 
 
-def test_rnib_get_list_cells(rnib_cellinformation):
+def test_rnib_get_list_cells(rnib_cellinformation, monkeypatch):
     global rnib_xapp
-
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
 
     mynb = pb_nb.NbIdentity()
     mynb.inventory_name = "nodeb_1234"
@@ -176,12 +184,15 @@ def test_rnib_get_list_cells(rnib_cellinformation):
     for rnib in rnib_cellinformation:
         rnib_xapp.sdl.add_member(sdl_namespaces.E2_MANAGER, "ENBCELL1", rnib, usemsgpack=False)
         rnib_xapp.sdl.add_member(sdl_namespaces.E2_MANAGER, "ENBCELL2", rnib, usemsgpack=False)
+
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     rnib_xapp.stop()
 
 
-def test_rnib_get_nodeb(rnib_helpers):
+def test_rnib_get_nodeb(rnib_helpers, monkeypatch):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
     nb1 = rnib_helpers.createNodebInfo('nodeb_1234', 'GNB', '192.168.1.1', 8088)
     rnib_xapp.sdl.set(sdl_namespaces.E2_MANAGER, "RAN:" + 'nodeb_1234', nb1.SerializeToString(), usemsgpack=False)
     nb2 = rnib_helpers.createNodebInfo('nodeb_1234', 'ENB', '192.168.1.2', 8088)
@@ -193,12 +204,15 @@ def test_rnib_get_nodeb(rnib_helpers):
     assert gnb == nb1
     gnb = rnib_xapp.GetNodeb('nodeb_1230')
     assert gnb is None
+
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     rnib_xapp.stop()
 
 
-def test_rnib_get_cell(rnib_helpers):
+def test_rnib_get_cell(rnib_helpers, monkeypatch):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
     c1 = rnib_helpers.createCell('c1234', 8)
     rnib_xapp.sdl.set(sdl_namespaces.E2_MANAGER, "PCI:c1234:08", c1.SerializeToString(), usemsgpack=False)
     c2 = rnib_helpers.createCell('c1235', 11)
@@ -210,12 +224,15 @@ def test_rnib_get_cell(rnib_helpers):
     assert cell == c1
     cell = rnib_xapp.GetCell('c1236', 11)
     assert cell is None
+
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     rnib_xapp.stop()
 
 
-def test_rnib_get_cell_by_id(rnib_helpers):
+def test_rnib_get_cell_by_id(rnib_helpers, monkeypatch):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
     c1 = rnib_helpers.createCell('c1234', 8)
     rnib_xapp.sdl.set(sdl_namespaces.E2_MANAGER, "CELL:c1234", c1.SerializeToString(), usemsgpack=False)
     c2 = rnib_helpers.createCell('c1235', 11)
@@ -227,12 +244,15 @@ def test_rnib_get_cell_by_id(rnib_helpers):
     assert cell == c1
     cell = rnib_xapp.GetCellById('LTE_CELL', 'c1236')
     assert cell is None
+
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     rnib_xapp.stop()
 
 
-def test_rnib_get_cells(rnib_helpers):
+def test_rnib_get_cells(rnib_helpers, monkeypatch):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
     nb1 = rnib_helpers.createNodebInfo('nodeb_1234', 'GNB', '192.168.1.1', 8088)
     rnib_xapp.sdl.set(sdl_namespaces.E2_MANAGER, "RAN:" + 'nodeb_1234', nb1.SerializeToString(), usemsgpack=False)
     nb2 = rnib_helpers.createNodebInfo('nodeb_1234', 'ENB', '192.168.1.2', 8088)
@@ -244,12 +264,15 @@ def test_rnib_get_cells(rnib_helpers):
     assert sc == nb1.gnb.served_nr_cells
     sc = rnib_xapp.GetCellList('nodeb_1230')
     assert sc is None
+
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     rnib_xapp.stop()
 
 
-def test_rnib_get_global_nodeb(rnib_helpers):
+def test_rnib_get_global_nodeb(rnib_helpers, monkeypatch):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
     nb1 = rnib_helpers.createNodeb('nodeb_1234', '358', 'nb_1234')
     rnib_xapp.sdl.set(sdl_namespaces.E2_MANAGER, "GNB:" + '358:' + 'nodeb_1234', nb1.SerializeToString(), usemsgpack=False)
     nb2 = rnib_helpers.createNodeb('nodeb_1235', '356', 'nb_1235')
@@ -261,12 +284,15 @@ def test_rnib_get_global_nodeb(rnib_helpers):
     assert gnb == nb1
     gnb = rnib_xapp.GetNodebByGlobalNbId('GNB', '356', 'nodeb_1230')
     assert gnb is None
+
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     rnib_xapp.stop()
 
 
-def test_rnib_get_ranfunction(rnib_helpers):
+def test_rnib_get_ranfunction(rnib_helpers, monkeypatch):
     global rnib_xapp
-    rnib_xapp = _BaseXapp(rmr_port=4777, rmr_wait_for_ready=False, use_fake_sdl=True)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
+    rnib_xapp = _BaseXapp(rmr_port=4777, use_fake_sdl=True)
     nb1 = rnib_helpers.createNodebInfo('nodeb_1234', 'GNB', '192.168.1.1', 8088)
     rnib_xapp.sdl.set(sdl_namespaces.E2_MANAGER, "RAN:" + 'nodeb_1234', nb1.SerializeToString(), usemsgpack=False)
     nb2 = rnib_helpers.createNodebInfo('nodeb_1235', 'GNB', '192.168.1.2', 8088)
@@ -280,6 +306,8 @@ def test_rnib_get_ranfunction(rnib_helpers):
     assert sc == ['te524367153']
     sc = rnib_xapp.GetRanFunctionDefinition('nodeb_1235', "1.3.6.1.4.1.1.2.2.5")
     assert sc == []
+
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     rnib_xapp.stop()
 
 

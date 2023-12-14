@@ -16,8 +16,13 @@
 # ==================================================================================
 import time
 import pytest
+import requests
+from unittest.mock import Mock
 from ricxappframe.rmr.exceptions import InitFailed
 from ricxappframe.xapp_frame import Xapp, RMRXapp
+
+mock_post_200 = Mock(return_value=Mock(status_code=200, text='Mocked response'))
+mock_post_204 = Mock(return_value=Mock(status_code=204, text='Mocked response'))
 
 
 def test_bad_init():
@@ -27,7 +32,7 @@ def test_bad_init():
         pass
 
     with pytest.raises(InitFailed):
-        bad_xapp = Xapp(entrypoint=entry, rmr_port=-1)
+        bad_xapp = Xapp(xapp_ready_cb=entry, rmr_port=-1)
         bad_xapp.run()  # we wont get here
 
     def defh(self):
@@ -38,26 +43,30 @@ def test_bad_init():
         bad_xapp.run()  # we wont get here
 
 
-def test_init_general_xapp():
+def test_init_general_xapp(monkeypatch):
     def entry(self):
         # normally we would have some kind of loop here
         print("bye")
 
-    gen_xapp = Xapp(entrypoint=entry, rmr_wait_for_ready=False, use_fake_sdl=True)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
+    gen_xapp = Xapp(xapp_ready_cb=entry, use_fake_sdl=True)
     gen_xapp.run()
     time.sleep(1)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     gen_xapp.stop()  # pytest will never return without this.
 
 
-def test_init_rmr_xapp():
+def test_init_rmr_xapp(monkeypatch):
     def post_init(self):
         print("hey")
 
     def foo(self, _summary, _sbuf):
         pass
 
-    rmr_xapp = RMRXapp(foo, post_init=post_init, rmr_wait_for_ready=False, use_fake_sdl=True)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
+    rmr_xapp = RMRXapp(foo, post_init=post_init, use_fake_sdl=True)
     # pytest will never return without thread and stop
     rmr_xapp.run(thread=True)
     time.sleep(1)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     rmr_xapp.stop()

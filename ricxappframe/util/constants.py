@@ -27,6 +27,7 @@ class Constants:
     DEREGISTER_PATH = "http://service-{}-appmgr-http.{}:8080/ric/v1/deregister"
     DEFAULT_PLT_NS = "ricplt"
     DEFAULT_XAPP_NS = "ricxapp"
+    DEFAULT_HOSTNAME = "hostname"
 
     # message-type constants
     RIC_HEALTH_CHECK_REQ = 100

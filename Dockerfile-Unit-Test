@@ -14,7 +14,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 # ==================================================================================
-FROM python:3.8-slim as stretch
+FROM python:3.10-slim as stretch
 
 # sdl uses hiredis which needs gcc
 RUN apt-get update && \
@@ -39,13 +39,17 @@ RUN dpkg -i riclibe2ap-dev_${e2ap_version}_amd64.deb
 
 RUN ls /usr/local/lib/
 
-FROM python:3.8-slim
+FROM python:3.10-slim
 
 ARG rmr_version=4.9.1
 ARG e2ap_version=1.1.0
 
 COPY --from=stretch /usr/local/lib/librmr_si.so.${rmr_version} /usr/local/lib/librmr_si.so
 COPY --from=stretch /usr/local/lib/libriclibe2ap.so.${e2ap_version} /usr/local/lib/libriclibe2ap.so
+
+RUN apt-get update && \
+    apt-get install -y \
+        wget gcc musl-dev
 
 # Upgrade pip, install tox
 RUN pip install --upgrade pip && pip install tox && pip install certifi six python_dateutil setuptools urllib3 inotify_simple mdclogpy

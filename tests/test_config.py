@@ -17,9 +17,10 @@
 
 import time
 import os
+import requests
 from contextlib import suppress
 from mdclogpy import Logger
-
+from unittest.mock import Mock
 from ricxappframe.util.constants import Constants
 from ricxappframe.xapp_frame import RMRXapp
 
@@ -41,12 +42,18 @@ def write_config_file():
         file.write('{ "change" : "value2" }')
 
 
+def default_rmr_handler(self, summary, sbuf):
+    pass
+
+
+mock_post_200 = Mock(return_value=Mock(status_code=200, text='Mocked response'))
+mock_post_204 = Mock(return_value=Mock(status_code=204, text='Mocked response'))
+
+
 def test_config_no_env(monkeypatch):
     init_config_file()
     monkeypatch.delenv(Constants.CONFIG_FILE_ENV, raising=False)
-
-    def default_rmr_handler(self, summary, sbuf):
-        pass
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
 
     config_event_seen = False
 
@@ -63,6 +70,7 @@ def test_config_no_env(monkeypatch):
     # give the work loop a chance to timeout on RMR and process the config event
     time.sleep(3)
     assert not config_event_seen
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     rmr_xapp_noconfig.stop()
     rmr_xapp_noconfig = None
 
@@ -70,10 +78,7 @@ def test_config_no_env(monkeypatch):
 def test_default_config_handler(monkeypatch):
     """Just for coverage"""
     init_config_file()
-    monkeypatch.setenv(Constants.CONFIG_FILE_ENV, config_file_path)
-
-    def default_rmr_handler(self, summary, sbuf):
-        pass
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
 
     # listen port is irrelevant, no messages arrive
     global rmr_xapp_defconfig
@@ -83,6 +88,7 @@ def test_default_config_handler(monkeypatch):
     write_config_file()
     # give the work loop a chance to timeout on RMR and process the config event
     time.sleep(3)
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     rmr_xapp_defconfig.stop()
     rmr_xapp_defconfig = None
 
@@ -90,10 +96,7 @@ def test_default_config_handler(monkeypatch):
 def test_custom_config_handler(monkeypatch):
     # point watcher at the file
     init_config_file()
-    monkeypatch.setenv(Constants.CONFIG_FILE_ENV, config_file_path)
-
-    def default_handler(self, summary, sbuf):
-        pass
+    monkeypatch.setattr(requests.Session, 'post', mock_post_200)
 
     startup_config_event = False
     change_config_event = False
@@ -109,13 +112,14 @@ def test_custom_config_handler(monkeypatch):
 
     # listen port is irrelevant, no messages arrive
     global rmr_xapp_config
-    rmr_xapp_config = RMRXapp(default_handler, config_handler=config_handler, rmr_port=4567, use_fake_sdl=True)
+    rmr_xapp_config = RMRXapp(default_rmr_handler, config_handler=config_handler, rmr_port=4567, use_fake_sdl=True)
     assert startup_config_event
     rmr_xapp_config.run(thread=True, rmr_timeout=1)  # in unit tests we need to thread here or else execution is not returned!
     write_config_file()
     # give the work loop a chance to timeout on RMR and process the config event
     time.sleep(3)
     assert change_config_event
+    monkeypatch.setattr(requests.Session, 'post', mock_post_204)
     rmr_xapp_config.stop()
     rmr_xapp_config = None
 

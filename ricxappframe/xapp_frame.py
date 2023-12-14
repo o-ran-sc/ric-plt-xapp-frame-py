@@ -85,10 +85,6 @@ class _BaseXapp:
         self.logger = Logger(name=__name__)
         self._appthread = None
 
-        # Start rmr rcv thread
-        self._rmr_loop = xapp_rmr.RmrLoop(port=rmr_port, wait_for_ready=rmr_wait_for_ready)
-        self._mrc = self._rmr_loop.mrc  # for convenience
-
         # SDL
         self.sdl = SDLWrapper(use_fake_sdl)
 
@@ -117,6 +113,10 @@ class _BaseXapp:
             self._config_data = {}
 
         self._appthread = Thread(target=self.registerXapp).start()
+
+        # Start rmr rcv thread
+        self._rmr_loop = xapp_rmr.RmrLoop(port=rmr_port, wait_for_ready=rmr_wait_for_ready)
+        self._mrc = self._rmr_loop.mrc  # for convenience
 
         # run the optionally provided user post init
         if post_init:
@@ -209,7 +209,7 @@ class _BaseXapp:
         pltnamespace = os.environ.get("PLT_NAMESPACE")
         if pltnamespace is None:
             pltnamespace = Constants.DEFAULT_PLT_NS
-        self.logger.debug("config details hostname : {} xappname: {} xappversion : {} pltnamespace : {}".format(
+        self.logger.debug("config details hostname : {}, xappname: {}, xappversion : {}, pltnamespace : {}".format(
             hostname, xappname, xappversion, pltnamespace))
 
         http_endpoint = self.get_service(hostname, Constants.SERVICE_HTTP)
@@ -220,9 +220,9 @@ class _BaseXapp:
                                                                                               rmr_endpoint))
             return False
         self.logger.debug(
-            "config details hostname : {} xappname: {} xappversion : {} pltnamespace : {} http_endpoint : {} rmr_endpoint "
-            ": {} configpath : {}".format(hostname, xappname, xappversion, pltnamespace, http_endpoint, rmr_endpoint,
-                                          self._config_data.get("CONFIG_PATH")))
+            "config details hostname : {}, xappname: {}, xappversion : {}, pltnamespace : {}, http_endpoint : {}, rmr_endpoint "
+            ": {}, configpath : {}".format(hostname, xappname, xappversion, pltnamespace, http_endpoint, rmr_endpoint,
+            self._config_data.get("CONFIG_PATH")))
         request_string = {
             "appName": hostname,
             "appVersion": xappversion,

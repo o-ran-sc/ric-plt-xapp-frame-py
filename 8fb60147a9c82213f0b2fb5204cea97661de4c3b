@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c7a60055_928316ec",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000108
+      },
+      "writtenOn": "2023-12-15T08:26:15Z",
+      "side": 1,
+      "message": "Actually I think moving the RMR registration after xApp registration might not be the right thing to do. Any particular reason/scenario that you had in mind on why this needs to be changed? \n\nI think in terms of timing the idea is that RMR is initialized first so that the routing manager can contact the xApp\u0027s routing table port. The routing manager will do this once the xApp has registered to the App Manager and teh App manager has forwarded the infomration about the new xApp to the routing manager. I.e., the xApp should be ready for the call from routing manager at any time after it has registerd. \"at any time\" might be 0.00001ms (just to get a feeling fro the timing), but if e.g. the xApp is \"slow\" for some reason and only initiates the next step after \"self._appthread \u003d Thread(target\u003dself.registerXapp).start()\" only after 0.1ms, then we have an issue as the xApp is not yet listening for routing manager updates.\n\nAnyway, could you please explain why you think this change is needed?",
+      "revId": "8fb60147a9c82213f0b2fb5204cea97661de4c3b",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}

@@ -16,6 +16,41 @@
       "message": "Actually I think moving the RMR registration after xApp registration might not be the right thing to do. Any particular reason/scenario that you had in mind on why this needs to be changed? \n\nI think in terms of timing the idea is that RMR is initialized first so that the routing manager can contact the xApp\u0027s routing table port. The routing manager will do this once the xApp has registered to the App Manager and teh App manager has forwarded the infomration about the new xApp to the routing manager. I.e., the xApp should be ready for the call from routing manager at any time after it has registerd. \"at any time\" might be 0.00001ms (just to get a feeling fro the timing), but if e.g. the xApp is \"slow\" for some reason and only initiates the next step after \"self._appthread \u003d Thread(target\u003dself.registerXapp).start()\" only after 0.1ms, then we have an issue as the xApp is not yet listening for routing manager updates.\n\nAnyway, could you please explain why you think this change is needed?",
       "revId": "8fb60147a9c82213f0b2fb5204cea97661de4c3b",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0fb81d21_a7203912",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002313
+      },
+      "writtenOn": "2023-12-15T17:19:52Z",
+      "side": 1,
+      "message": "In xapp_rmr (line 69-72), when RmRLoop is initialized, it will block until rmr_ready returns (which only returns after xApp is registered). So putting RMR registration before App registration will block the xApp to proceed next steps (register with App mgr) forever. This is the issue with AD xApp when setting to use Rtmgr instead of local RMR.\n\nFor your concern of \"slow\" xApp, I see that in the thread, the method register is called after 2s. IMHO, this gives RMR registration procedure enough time to finish.",
+      "revId": "8fb60147a9c82213f0b2fb5204cea97661de4c3b",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b06e0ee0_aa1366e1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002313
+      },
+      "writtenOn": "2023-12-15T17:19:52Z",
+      "side": 1,
+      "message": "In xapp_rmr (line 69-72), when RmRLoop is initialized, it will block until rmr_ready returns (which only returns after xApp is registered). So putting RMR registration before App registration will block the xApp to proceed next steps (register with App mgr) forever. This is the issue with AD xApp when setting to use Rtmgr instead of local RMR.\n\nFor your concern of \"slow\" xApp, I see that in the thread, the method register is called after 2s. IMHO, this gives RMR registration procedure enough time to finish.",
+      "parentUuid": "c7a60055_928316ec",
+      "revId": "8fb60147a9c82213f0b2fb5204cea97661de4c3b",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc6ae234_49468a9c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002067
+      },
+      "writtenOn": "2023-12-29T08:44:07Z",
+      "side": 1,
+      "message": "I believe, here there are too many changes that are in the context of original bug (RIC-1032). For example public API changes.\n\nLet\u0027s try to root cause the bug first, by adding appropriate logs (if required in the `debug` mode). That is **why** is RMR not ready before registration is sent. Logically those two things should not be related. \n\nAt a very high level, even this code suffers from the same **race condition** as the original race condition, where an XApp could potentially send registration **before** RMR is completely Ready.",
+      "revId": "d0e8bfae4ec5928ef3cc217190d9572daaf0195e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cb00c94d_12ba923a",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1002067
+      },
+      "writtenOn": "2023-12-29T08:44:07Z",
+      "side": 1,
+      "message": "While this is an internal function and it\u0027s okay to change this, but I believe this should still be done properly in the context of a proper Epic/Story.",
+      "revId": "d0e8bfae4ec5928ef3cc217190d9572daaf0195e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7b09713_ad5b299d",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 1002067
+      },
+      "writtenOn": "2023-12-29T08:44:07Z",
+      "side": 1,
+      "message": "Since this is a public API, changing this in the context of fixing a Bug is not a good idea. Probably a good idea to define a story/epic to fix this and do this if strictly required.",
+      "revId": "d0e8bfae4ec5928ef3cc217190d9572daaf0195e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5399864_413ee2c3",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1002067
+      },
+      "writtenOn": "2023-12-29T08:44:07Z",
+      "side": 1,
+      "message": "Same as above for `register`",
+      "revId": "d0e8bfae4ec5928ef3cc217190d9572daaf0195e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9011b0f_efcd7869",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 992,
+      "author": {
+        "id": 1002067
+      },
+      "writtenOn": "2023-12-29T08:44:07Z",
+      "side": 1,
+      "message": "Again change to public API.",
+      "revId": "d0e8bfae4ec5928ef3cc217190d9572daaf0195e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "320d2163_d97f28f3",
+        "filename": "ricxappframe/xapp_frame.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 1007,
+      "author": {
+        "id": 1002067
+      },
+      "writtenOn": "2023-12-29T08:44:07Z",
+      "side": 1,
+      "message": "Original code also had this race condition and the same exists here. There is no guarantee that an XApp would send registration only *after* RMR is ready.",
+      "revId": "d0e8bfae4ec5928ef3cc217190d9572daaf0195e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b309664c_d37360da",
+        "filename": "ricxappframe/xapp_rmr.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1002067
+      },
+      "writtenOn": "2023-12-29T08:44:07Z",
+      "side": 1,
+      "message": "This explicit `start` is a good idea. I didn\u0027t like the original, thread start inside the `__init__`.",
+      "revId": "d0e8bfae4ec5928ef3cc217190d9572daaf0195e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}

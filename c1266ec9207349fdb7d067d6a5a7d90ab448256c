@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99802384_b1d154c6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 19
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000108
+      },
+      "writtenOn": "2024-01-16T14:22:59Z",
+      "side": 1,
+      "message": "let\u0027s continue with this, but we need (1) a rough explanation of what this patchset does (in the commit message) and (2) we need to refer to RIC-1035 (instead of RIC-1032).",
+      "revId": "c1266ec9207349fdb7d067d6a5a7d90ab448256c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}

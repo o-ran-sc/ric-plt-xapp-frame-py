@@ -34,20 +34,24 @@ repositories:
     - ric-plt/xapp-frame-py
 committers:
     - <<: *oran_ric_plt_xapp_frame_py_ptl
-    - name: 'Erkki Hietala'
-      email: 'erkki.hietala@nokia.com'
+    - name: 'Rakshith T Pai'
+      email: 'rakshith.r_pai@nokia.com'
       company: 'nokia'
-      id: 'ehietala'
-      timezone: Europe/Helsinki
-    - name: Timo Tietavainen
-      email: timo.tietavainen@nokia.com
-      company: Nokia
-      id: tietavai
-      timezone: Europe/Helsinki
+      id: 'rakshithpai'
+      timezone: 'Asia/Kolkata'
 tsc:
     # yamllint disable rule:line-length
     approval: https://lists.o-ran-sc.org/g/main/topic/71383459#488
     changes:
+        - type: 'Removal'
+          name: 'Erkki Hietala'
+          link: ''
+        - type: 'Removal'
+          name: 'Timo Tietavainen'
+          link: ''
+        - type: 'Promotion'
+          name: 'Rakshith T Pai'
+          link: ''
         - type: 'Promotion'
           name: 'Erkki Hietala'
           link: ''

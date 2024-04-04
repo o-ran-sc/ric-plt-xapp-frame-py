@@ -1,0 +1,115 @@
+---
+name: Gerrit Merge
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+    inputs:
+      GERRIT_BRANCH:
+        description: "Branch that change is against"
+        required: true
+        type: string
+      GERRIT_CHANGE_ID:
+        description: "The ID for the change"
+        required: true
+        type: string
+      GERRIT_CHANGE_NUMBER:
+        description: "The Gerrit number"
+        required: true
+        type: string
+      GERRIT_CHANGE_URL:
+        description: "URL to the change"
+        required: true
+        type: string
+      GERRIT_EVENT_TYPE:
+        description: "Type of Gerrit event"
+        required: true
+        type: string
+      GERRIT_PATCHSET_NUMBER:
+        description: "The patch number for the change"
+        required: true
+        type: string
+      GERRIT_PATCHSET_REVISION:
+        description: "The revision sha"
+        required: true
+        type: string
+      GERRIT_PROJECT:
+        description: "Project in Gerrit"
+        required: true
+        type: string
+      GERRIT_REFSPEC:
+        description: "Gerrit refspec of change"
+        required: true
+        type: string
+    secrets:
+      SONAR_TOKEN:
+        description: "Sonar Cloud access token"
+        required: true
+
+concurrency:
+  # yamllint disable-line rule:line-length
+  group: gerrit-merge-${{ github.workflow }}-${{ github.event.inputs.GERRIT_CHANGE_ID || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify job start
+        # yamllint disable-line rule:line-length
+        uses: lfit/gerrit-review-action@9627b9a144f2a2cad70707ddfae87c87dce60729  # v0.8
+        with:
+          host: ${{ vars.GERRIT_SERVER }}
+          username: ${{ vars.GERRIT_SSH_USER }}
+          key: ${{ secrets.GERRIT_SSH_PRIVKEY }}
+          known_hosts: ${{ vars.GERRIT_KNOWN_HOSTS }}
+          gerrit-change-number: ${{ inputs.GERRIT_CHANGE_NUMBER }}
+          gerrit-patchset-number: ${{ inputs.GERRIT_PATCHSET_NUMBER }}
+          vote-type: clear
+          comment-only: true
+      - name: Allow replication
+        run: sleep 10s
+
+  call-sonarcloud-scan:
+    runs-on: ubuntu-latest
+    needs: notify
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.GERRIT_BRANCH }}
+          submodules: "true"
+      - name: Run SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.build.sourceEncoding=UTF-8
+            -Dsonar.organization=o-ran-sc
+            -Dsonar.projectBaseDir=.
+            -Dsonar.projectKey=o-ran-sc_ric-plt-xapp-frame-py
+            -Dsonar.projectName=ric-plt-xapp-frame-py
+            -Dsonar.exclusions=setup.py,tests/*.py
+            -Dsonar.python.coverage.reportPaths=./coverage.xml
+            -Dsonar.sources=ricxappframe
+            -Dsonar.verbose=true
+
+  report-status:
+    if: ${{ always() }}
+    needs: [notify, call-sonarcloud-scan]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get workflow conclusion
+        uses: technote-space/workflow-conclusion-action@v3
+      - name: Report workflow conclusion
+        # yamllint disable-line rule:line-length
+        uses: lfit/gerrit-review-action@9627b9a144f2a2cad70707ddfae87c87dce60729  # v0.8
+        with:
+          host: ${{ vars.GERRIT_SERVER }}
+          username: ${{ vars.GERRIT_SSH_USER }}
+          key: ${{ secrets.GERRIT_SSH_PRIVKEY }}
+          known_hosts: ${{ vars.GERRIT_KNOWN_HOSTS }}
+          gerrit-change-number: ${{ inputs.GERRIT_CHANGE_NUMBER }}
+          gerrit-patchset-number: ${{ inputs.GERRIT_PATCHSET_NUMBER }}
+          vote-type: ${{ env.WORKFLOW_CONCLUSION }}
+          comment-only: true

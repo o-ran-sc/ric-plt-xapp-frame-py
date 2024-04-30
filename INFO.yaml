@@ -4,11 +4,11 @@ project_creation_date: '2020-02-25'
 project_category: ''
 lifecycle_state: Incubation
 project_lead: &oran_ric_plt_xapp_frame_py_ptl
-    name: Thoralf Czichy
-    email: thoralf.czichy@nokia.com
-    id: czichy
+    name: Abdul Wahid W
+    email: abdulwahid.w@nokia.com
+    id: wahidw
     company: Nokia
-    timezone: Europe/Helsinki
+    timezone: Asia/Kolkata
 primary_contact: *oran_ric_plt_xapp_frame_py_ptl
 issue_tracking:
     type: jira

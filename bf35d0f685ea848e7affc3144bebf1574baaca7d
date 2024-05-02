@@ -1,0 +1,8 @@
+Verified+1: ORAN Jobbuilder <releng+oran-jobbuilder@linuxfoundation.org>
+Verified+1: ORAN Required GHA <releng+oran.required.gha@linuxfoundation.org>
+Code-Review+2: Rakshith Pai <rakshith.r_pai@nokia.com>
+Submitted-by: Rakshith Pai <rakshith.r_pai@nokia.com>
+Submitted-at: Thu, 02 May 2024 07:21:01 +0000
+Reviewed-on: https://gerrit.o-ran-sc.org/r/c/ric-plt/xapp-frame-py/+/12845
+Project: ric-plt/xapp-frame-py
+Branch: refs/heads/master

@@ -34,70 +34,70 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 [3.0.2] - 2021-12-17
 --------------------
-* Fix caching of error code data not happening (`RIC-862 <https://jira.o-ran-sc.org/browse/RIC-862>`_)
+* Fix caching of error code data not happening (`RIC-862 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-862>`_)
 * Improves performance of xapp-frame-py by caching the mapping dict of error codes.
 
 [3.0.1] - 2021-12-07
 --------------------
-* Take configuration and rmr unit tests back into use after fixing the tests (`RIC-865 <https://jira.o-ran-sc.org/browse/RIC-865>`_)
+* Take configuration and rmr unit tests back into use after fixing the tests (`RIC-865 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-865>`_)
 * Improve memory leak fix done in the version 3.0.0 to free memory also if python exception has been thrown.
 
 [3.0.0] - 2021-12-03
 --------------------
-* Upgrade to RMR version 4.8.0 to fix memory leak in get_constants() function (`RIC-858 <https://jira.o-ran-sc.org/browse/RIC-858>`_)
+* Upgrade to RMR version 4.8.0 to fix memory leak in get_constants() function (`RIC-858 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-858>`_)
 * From xapp-frame-py version 3.0.0 onwards it is required to have RMR version 4.8.0 or newer.
 
 [2.3.0] - 2021-09-15
 --------------------
-* Add Xapp Registration (`RIC-706 <https://jira.o-ran-sc.org/browse/RIC-706>`_)
-* Integrate pylog (https://gerrit.o-ran-sc.org/r/admin/repos/com/pylog) with xapp-frame-py (`RIC-330 <https://jira.o-ran-sc.org/browse/RIC-330>`_)
+* Add Xapp Registration (`RIC-706 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-706>`_)
+* Integrate pylog (https://gerrit.o-ran-sc.org/r/admin/repos/com/pylog) with xapp-frame-py (`RIC-330 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-330>`_)
 
 [2.2.0] - 2021-06-23
 --------------------
-* Add E2AP package (`RIC-664 <https://jira.o-ran-sc.org/browse/RIC-664>`_)
+* Add E2AP package (`RIC-664 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-664>`_)
 
 
 [2.1.0] - 2021-06-18
 --------------------
-* Add `RNIB <https://gerrit.o-ran-sc.org/r/admin/repos/ric-plt/nodeb-rnib>`_ feature (`RIC-788 <https://jira.o-ran-sc.org/browse/RIC-788>`_)
+* Add `RNIB <https://gerrit.o-ran-sc.org/r/admin/repos/ric-plt/nodeb-rnib>`_ feature (`RIC-788 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-788>`_)
 
 
 [2.0.0] - 2021-06-14
 --------------------
-* Add Xapp registration/deregistration APIs (`RIC-706 <https://jira.o-ran-sc.org/browse/RIC-706>`_)
-* Upgrade SDL 3.0.0 version, SDL scaling (`RIC-699 <https://jira.o-ran-sc.org/browse/RIC-699>`_)
-* Upgrade SDL 3.0.0 version, notification fix (`RIC-795 <https://jira.o-ran-sc.org/browse/RIC-795>`_)
+* Add Xapp registration/deregistration APIs (`RIC-706 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-706>`_)
+* Upgrade SDL 3.0.0 version, SDL scaling (`RIC-699 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-699>`_)
+* Upgrade SDL 3.0.0 version, notification fix (`RIC-795 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-795>`_)
 
 
 [1.6.0] - 2020-10-23
 --------------------
-* Add SDL wrapping API (`RIC-659 <https://jira.o-ran-sc.org/browse/RIC-659>`_)
+* Add SDL wrapping API (`RIC-659 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-659>`_)
 
 
 [1.5.0] - 2020-07-10
 --------------------
-* Add Metrics API (`RIC-381 <https://jira.o-ran-sc.org/browse/RIC-381>`_)
+* Add Metrics API (`RIC-381 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-381>`_)
 
 
 [1.4.0] - 2020-07-06
 --------------------
-* Revise Alarm manager to send via RMR wormhole (`RIC-529 <https://jira.o-ran-sc.org/browse/RIC-529>`_)
+* Revise Alarm manager to send via RMR wormhole (`RIC-529 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-529>`_)
 
 
 [1.3.0] - 2020-06-24
 --------------------
-* Add configuration-change API (`RIC-425 <https://jira.o-ran-sc.org/browse/RIC-425>`_)
+* Add configuration-change API (`RIC-425 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-425>`_)
 
 
 [1.2.1] - 2020-06-22
 --------------------
-* Revise alarm message type (`RIC-514 <https://jira.o-ran-sc.org/browse/RIC-514>`_)
+* Revise alarm message type (`RIC-514 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-514>`_)
 
 
 [1.2.0] - 2020-06-04
 --------------------
 * Extend RMR module to support wormhole methods
-* Add alarm API (`RIC-380 <https://jira.o-ran-sc.org/browse/RIC-380>`_)
+* Add alarm API (`RIC-380 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-380>`_)
 
 
 [1.1.2] - 2020-05-13
@@ -107,13 +107,13 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`__.
 
 [1.1.1] - 2020-05-07
 --------------------
-* Use timeout on queue get method to avoid 100% CPU usage (`RIC-354 <https://jira.o-ran-sc.org/browse/RIC-354>`_)
+* Use timeout on queue get method to avoid 100% CPU usage (`RIC-354 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-354>`_)
 * Upgrade to RMR version 4.0.5
 
 
 [1.1.0] - 2020-05-06
 --------------------
-* Use RMR timeout on receive to avoid 100% CPU usage (`RIC-354 <https://jira.o-ran-sc.org/browse/RIC-354>`_)
+* Use RMR timeout on receive to avoid 100% CPU usage (`RIC-354 <https://lf-o-ran-sc.atlassian.net/jira/browse/RIC-354>`_)
 * Publish message-summary dict keys as constants to avoid hardcoding strings
 * Add wrapper and test for RMR method rmr_set_vlevel(int)
 

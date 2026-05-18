@@ -133,8 +133,6 @@ def test_sdl_set_and_publish_with_handle_events():
     CALLED = None
 
     def cb(channel, event):
-        nonlocal CH
-        nonlocal EVENT
         nonlocal CALLED
         # test is cb called
         CALLED = True
@@ -188,8 +186,6 @@ def test_sdl_remove_and_publish_with_start_event_listener():
     CALLED = None
 
     def cb(channel, event):
-        nonlocal CH
-        nonlocal EVENT
         nonlocal CALLED
         CALLED = True
         assert channel == CH
